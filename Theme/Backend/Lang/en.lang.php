@@ -13,7 +13,7 @@
  * @version    1.0.0
  * @link       http://orange-management.com
  */
-return ['Tasks' => [
+return ['Workflow' => [
     'Workflow'  => 'Workflow',
     'Workflows' => 'Workflows',
 ]];
