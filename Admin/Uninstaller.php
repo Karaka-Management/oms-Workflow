@@ -15,8 +15,8 @@ declare(strict_types = 1);
 namespace Modules\Workflow\Admin;
 
 use phpOMS\DataStorage\Database\DatabasePool;
-use phpOMS\Module\UpdateAbstract;
-use phpOMS\System\File\Directory;
+use phpOMS\DataStorage\Database\Schema\Builder;
+use phpOMS\Module\UninstallerAbstract;
 use phpOMS\Module\InfoManager;
 
 /**
@@ -27,16 +27,24 @@ use phpOMS\Module\InfoManager;
  * @link       http://website.orange-management.de
  * @since      1.0.0
  */
-class Update extends UpdateAbstract
+class Uninstaller extends UninstallerAbstract
 {
 
     /**
      * {@inheritdoc}
      */
-    public static function update(DatabasePool $dbPool, InfoManager $info)
+    public static function uninstall(DatabasePool $dbPool, InfoManager $info)
     {
-        Directory::deletePath(__DIR__ . '/Update');
-        mkdir('Update');
-        parent::update($dbPool, $info);
+        parent::uninstall($dbPool, $info);
+
+        $query = new Builder($dbPool->get());
+
+        $query->prefix($dbPool->get()->getPrefix())->drop(
+            'task_element',
+            'task_account',
+            'task'
+        );
+
+        $dbPool->get()->con->prepare($query->toSql())->execute();
     }
 }
