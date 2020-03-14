@@ -12,7 +12,7 @@
  */
 declare(strict_types=1);
 
-namespace Modules\tests\Workflow\Admin;
+namespace Modules\Workflow\tests\Admin;
 
 /**
  * @internal
