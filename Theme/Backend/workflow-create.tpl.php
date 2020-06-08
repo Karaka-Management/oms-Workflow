@@ -12,9 +12,7 @@
  */
 declare(strict_types=1);
 
-/**
- * @var \phpOMS\Views\View $this
- */
+/** @var \phpOMS\Views\View $this */
 echo $this->getData('nav')->render(); ?>
 
 <section class="box w-50 floatLeft">
