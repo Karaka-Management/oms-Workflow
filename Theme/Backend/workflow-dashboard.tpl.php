@@ -21,9 +21,9 @@ echo $this->getData('nav')->render(); ?>
 
 <div class="row">
     <div class="col-xs-12">
-        <div class="box wf-100">
+        <div class="portlet">
+            <div class="portlet-head"><?= $this->getHtml('Workflow') ?><i class="fa fa-download floatRight download btn"></i></div>
             <table class="default">
-                <caption><?= $this->getHtml('Workflow') ?><i class="fa fa-download floatRight download btn"></i></caption>
                 <thead>
                 <td><?= $this->getHtml('Status') ?>
                 <td><?= $this->getHtml('Next') ?>
