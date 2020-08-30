@@ -27,7 +27,10 @@ use phpOMS\Stdlib\Base\Enum;
 abstract class States extends Enum
 {
     public const DEFAULT   = 0;
+
     public const PENDING   = 1;
+
     public const APPROVED  = 2;
+
     public const DISMISSED = 3;
 }

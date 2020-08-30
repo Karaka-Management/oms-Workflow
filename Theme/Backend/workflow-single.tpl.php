@@ -43,7 +43,7 @@ foreach ($elements as $key => $element) : ++$c;
     elseif ($element->getStatus() === \Modules\Tasks\Models\TaskStatus::CANCELED) { $color = 'red'; }
     elseif ($element->getStatus() === \Modules\Tasks\Models\TaskStatus::SUSPENDED) { $color = 'yellow'; } ?>
     <section class="box w-50">
-        <div class="floatRight"><span class="tag <?= $this->printHtml($color); ?>"><?= $this->getHtml('S' . $element->getStatus()) ?></span></div>
+        <div class="floatRight"><span class="tag <?= $this->printHtml($color); ?>"><?= $this->getHtml('S' . $element->getStatus()); ?></span></div>
         <div><?= $this->printHtml($element->getCreatedBy()->getId()); ?> - <?= $this->printHtml($element->getCreatedAt()->format('Y-m-d H:i')); ?></div>
     </section>
     <?php if ($element->getDescription() !== '') : ?>
@@ -72,15 +72,15 @@ foreach ($elements as $key => $element) : ++$c;
     <div class="inner">
         <form>
             <table class="layout wf-100">
-                <tr><td><label for="iMessage"><?= $this->getHtml('Message') ?></label>
+                <tr><td><label for="iMessage"><?= $this->getHtml('Message'); ?></label>
                 <tr><td><textarea></textarea>
-                <tr><td><label for="iDue"><?= $this->getHtml('Due') ?></label>
+                <tr><td><label for="iDue"><?= $this->getHtml('Due'); ?></label>
                 <tr><td><input type="datetime-local">
-                <tr><td><label for="iReceiver"><?= $this->getHtml('Status') ?></label>
+                <tr><td><label for="iReceiver"><?= $this->getHtml('Status'); ?></label>
                 <tr><td><select>
                             <option>
                         </select>
-                <tr><td><label for="iReceiver"><?= $this->getHtml('To') ?></label>
+                <tr><td><label for="iReceiver"><?= $this->getHtml('To'); ?></label>
                 <tr><td><input type="text" id="iReceiver" placeholder="&#xf007; Guest">
                 <tr><td><input type="submit" value="<?= $this->getHtml('Create', '0', '0'); ?>"><input type="hidden" name="type" value="1">
             </table>
