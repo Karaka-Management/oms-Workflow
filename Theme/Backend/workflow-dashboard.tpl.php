@@ -32,13 +32,13 @@ echo $this->getData('nav')->render(); ?>
                 <td><?= $this->getHtml('Created'); ?>
                 <tfoot>
                 <tbody>
-                <?php $c = 0; foreach ($workflows as $key => $workflow) : ++$c;
-                $url = \phpOMS\Uri\UriFactory::build('{/prefix}task/single?{?}&id=' . $workflow->getId());
-                $color = 'darkred';
-                if ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::DONE) { $color = 'green'; }
-                elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::OPEN) { $color = 'darkblue'; }
-                elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::WORKING) { $color = 'purple'; }
-                elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::CANCELED) { $color = 'red'; }
+                <?php $c                                                                                        = 0; foreach ($workflows as $key => $workflow) : ++$c;
+                $url                                                                                            = \phpOMS\Uri\UriFactory::build('{/prefix}task/single?{?}&id=' . $workflow->getId());
+                $color                                                                                          = 'darkred';
+                if ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::DONE) { $color          = 'green'; }
+                elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::OPEN) { $color      = 'darkblue'; }
+                elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::WORKING) { $color   = 'purple'; }
+                elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::CANCELED) { $color  = 'red'; }
                 elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::SUSPENDED) { $color = 'yellow'; } ?>
                 <tr>
                     <td data-label="<?= $this->getHtml('Status'); ?>"><a href="<?= $url; ?>"><span class="tag <?= $this->printHtml($color); ?>"><?= $this->getHtml('S' . $workflow->getStatus()); ?></span></a>
