@@ -27,11 +27,11 @@ use phpOMS\DataStorage\Database\Connection\ConnectionAbstract;
  */
 class Workflow implements WorkflowInterface
 {
-    private $id    = 0;
+    private $id = 0;
 
     private $state = 0;
 
-    private $con   = null;
+    private $con = null;
 
     /**
      * Constructor.
