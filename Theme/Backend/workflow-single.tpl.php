@@ -26,11 +26,11 @@ echo $this->getData('nav')->render(); ?>
     <header><h1><?= $this->printHtml($task->getTitle()); ?></h1></header>
     <div class="inner">
         <div class="floatRight">Due <?= $this->printHtml($task->getDue()->format('Y-m-d H:i')); ?></div>
-        <div>Created <?= $this->printHtml($task->getCreatedAt()->format('Y-m-d H:i')); ?></div>
+        <div>Created <?= $this->printHtml($task->createdAt->format('Y-m-d H:i')); ?></div>
         <blockquote>
-            <?= $this->printHtml($task->getDescription()); ?>
+            <?= $this->printHtml($task->description); ?>
         </blockquote>
-        <div>Created <?= $this->printHtml($task->getCreatedBy()->getId()); ?></div>
+        <div>Created <?= $this->printHtml($task->createdBy->getId()); ?></div>
         <div>Status <?= $this->printHtml($task->getStatus()); ?></div>
     </div>
 </section>
@@ -44,13 +44,13 @@ foreach ($elements as $key => $element) : ++$c;
     elseif ($element->getStatus() === \Modules\Tasks\Models\TaskStatus::SUSPENDED) { $color = 'yellow'; } ?>
     <section class="box w-50">
         <div class="floatRight"><span class="tag <?= $this->printHtml($color); ?>"><?= $this->getHtml('S' . $element->getStatus()); ?></span></div>
-        <div><?= $this->printHtml($element->getCreatedBy()->getId()); ?> - <?= $this->printHtml($element->getCreatedAt()->format('Y-m-d H:i')); ?></div>
+        <div><?= $this->printHtml($element->createdBy->getId()); ?> - <?= $this->printHtml($element->createdAt->format('Y-m-d H:i')); ?></div>
     </section>
-    <?php if ($element->getDescription() !== '') : ?>
+    <?php if ($element->description !== '') : ?>
         <section class="box w-50">
             <div class="inner">
                 <blockquote>
-                    <?= $this->printHtml($element->getDescription()); ?>
+                    <?= $this->printHtml($element->description); ?>
                 </blockquote>
             </div>
         </section>
