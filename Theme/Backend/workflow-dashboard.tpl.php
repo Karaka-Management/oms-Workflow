@@ -12,6 +12,8 @@
  */
 declare(strict_types=1);
 
+use Modules\Workflow\Models\WorkflowStatus;
+
 /**
  * @var \phpOMS\Views\View $this
  */
@@ -32,14 +34,17 @@ echo $this->getData('nav')->render(); ?>
                 <td><?= $this->getHtml('Created'); ?>
                 <tfoot>
                 <tbody>
-                <?php $c                                                                                        = 0; foreach ($workflows as $key => $workflow) : ++$c;
-                $url                                                                                            = \phpOMS\Uri\UriFactory::build('{/prefix}task/single?{?}&id=' . $workflow->getId());
-                $color                                                                                          = 'darkred';
-                if ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::DONE) { $color          = 'green'; }
-                elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::OPEN) { $color      = 'darkblue'; }
-                elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::WORKING) { $color   = 'purple'; }
-                elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::CANCELED) { $color  = 'red'; }
-                elseif ($workflow->getStatus() === \Modules\Workflow\Models\WorkflowStatus::SUSPENDED) { $color = 'yellow'; } ?>
+                <?php $c = 0;
+                foreach ($workflows as $key => $workflow) : ++$c;
+
+                $url   = \phpOMS\Uri\UriFactory::build('{/prefix}task/single?{?}&id=' . $workflow->getId());
+                $color = 'darkred';
+
+                if ($workflow->getStatus() === WorkflowStatus::DONE) { $color          = 'green'; }
+                elseif ($workflow->getStatus() === WorkflowStatus::OPEN) { $color      = 'darkblue'; }
+                elseif ($workflow->getStatus() === WorkflowStatus::WORKING) { $color   = 'purple'; }
+                elseif ($workflow->getStatus() === WorkflowStatus::CANCELED) { $color  = 'red'; }
+                elseif ($workflow->getStatus() === WorkflowStatus::SUSPENDED) { $color = 'yellow'; } ?>
                 <tr>
                     <td data-label="<?= $this->getHtml('Status'); ?>"><a href="<?= $url; ?>"><span class="tag <?= $this->printHtml($color); ?>"><?= $this->getHtml('S' . $workflow->getStatus()); ?></span></a>
                     <td data-label="<?= $this->getHtml('Next'); ?>"><a href="<?= $url; ?>"><?= $this->printHtml($workflow->getDue()->format('Y-m-d H:i')); ?></a>
