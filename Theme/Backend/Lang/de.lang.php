@@ -12,13 +12,13 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'Created' => 'Created',
-    'Creator' => 'Creator',
-    'Next' => 'Next',
-    'Status' => 'Status',
-    'Title' => 'Title',
-    'Workflow' => 'Workflow',
-    'Workflows' => 'Workflows',
+    'Created' => '',
+    'Creator' => '',
+    'Next' => '',
+    'Status' => '',
+    'Title' => '',
+    'Workflow' => '',
+    'Workflows' => '',
     'Task' => '',
     'To' => '',
     'CC' => '',
