@@ -12,19 +12,19 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
+    'CC'        => '',
     'Created'   => 'Created',
     'Creator'   => 'Creator',
+    'Due'       => '',
+    'Media'     => '',
+    'Message'   => '',
     'Next'      => 'Next',
+    'Select'    => '',
     'Status'    => 'Status',
+    'Task'      => '',
     'Title'     => 'Title',
+    'To'        => '',
+    'Upload'    => '',
     'Workflow'  => 'Workflow',
     'Workflows' => 'Workflows',
-    'Task'      => '',
-    'To'        => '',
-    'CC'        => '',
-    'Due'       => '',
-    'Message'   => '',
-    'Media'     => '',
-    'Select'    => '',
-    'Upload'    => '',
 ]];
