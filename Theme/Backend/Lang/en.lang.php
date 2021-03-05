@@ -4,6 +4,7 @@
  *
  * PHP Version 8.0
  *
+ * @package   Modules\Localization
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
@@ -12,19 +13,19 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => '',
+    'CC'        => 'CC',
     'Created'   => 'Created',
     'Creator'   => 'Creator',
-    'Due'       => '',
-    'Media'     => '',
-    'Message'   => '',
+    'Due'       => 'Due',
+    'Media'     => 'Media',
+    'Message'   => 'Message',
     'Next'      => 'Next',
-    'Select'    => '',
+    'Select'    => 'Select',
     'Status'    => 'Status',
-    'Task'      => '',
+    'Task'      => 'Task',
     'Title'     => 'Title',
-    'To'        => '',
-    'Upload'    => '',
+    'To'        => 'To',
+    'Upload'    => 'Upload',
     'Workflow'  => 'Workflow',
     'Workflows' => 'Workflows',
 ]];
