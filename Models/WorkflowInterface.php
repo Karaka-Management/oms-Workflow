@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Modules\Workflow\Models;
 
 /**
- * Task status enum.
+ * Workflow interface.
  *
  * @package Modules\Workflow\Models
  * @license OMS License 1.0

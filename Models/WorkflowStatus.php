@@ -17,7 +17,7 @@ namespace Modules\Workflow\Models;
 use phpOMS\Stdlib\Base\Enum;
 
 /**
- * Task status enum.
+ * Workflow status enum.
  *
  * @package Modules\Workflow\Models
  * @license OMS License 1.0

@@ -17,7 +17,7 @@ namespace Modules\Workflow\Templates\Permission;
 use phpOMS\Stdlib\Base\Enum;
 
 /**
- * Task status enum.
+ * Permission status enum.
  *
  * @package Modules\Workflow\Templates\Permission
  * @license OMS License 1.0
