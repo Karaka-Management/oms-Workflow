@@ -19,7 +19,7 @@ namespace Modules\Workflow\tests\Admin;
  */
 class AdminTest extends \PHPUnit\Framework\TestCase
 {
-    protected const MODULE_NAME = 'Workflow';
+    protected const NAME = 'Workflow';
 
     protected const URI_LOAD = '';
 

@@ -23,7 +23,7 @@ return [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowTemplates',
             'verb'       => RouteVerb::GET,
             'permission' => [
-                'module' => BackendController::MODULE_NAME,
+                'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
                 'state'  => PermissionState::TEMPLATE,
             ],
@@ -34,7 +34,7 @@ return [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowTemplate',
             'verb'       => RouteVerb::GET,
             'permission' => [
-                'module' => BackendController::MODULE_NAME,
+                'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
                 'state'  => PermissionState::TEMPLATE,
             ],
@@ -45,7 +45,7 @@ return [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowTemplateCreate',
             'verb'       => RouteVerb::GET,
             'permission' => [
-                'module' => BackendController::MODULE_NAME,
+                'module' => BackendController::NAME,
                 'type'   => PermissionType::CREATE,
                 'state'  => PermissionState::TEMPLATE,
             ],
@@ -56,7 +56,7 @@ return [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowDashboard',
             'verb'       => RouteVerb::GET,
             'permission' => [
-                'module' => BackendController::MODULE_NAME,
+                'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
                 'state'  => PermissionState::WORKFLOW,
             ],
@@ -67,7 +67,7 @@ return [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowSingle',
             'verb'       => RouteVerb::GET,
             'permission' => [
-                'module' => BackendController::MODULE_NAME,
+                'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
                 'state'  => PermissionState::WORKFLOW,
             ],
