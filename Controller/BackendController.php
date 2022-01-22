@@ -43,14 +43,6 @@ use phpOMS\Views\View;
  *  Instead of actually doing changes this can be extended further to only request something.
  *  E.g. a user could request a unlocking of a customer for invoicing by a simple button click and a credit manager only has to approve it.
  *  The workflow module now knows that the approval means to unlock the customer (maybe for only one invoice, limited time, value etc).
- *
- * @todo Orange-Management/Modules#23
- *  Request/approval workflow
- *  For many things a request/approval workflow should be implemented.
- *  Users should be able to request permission changes which then have to be approved by group/department managers or the IT.
- *  Upon approval the workflow automatically grants these permissions and informs the user.
- *  This should be a selectable workflow from the template list but also get integrated into the modules.
- *  Modules should inform the user that he doesn't have sufficient permissions to perform certain tasks upon which he gets provided with a direct link for requesting these permissions.
  */
 final class BackendController extends Controller
 {
