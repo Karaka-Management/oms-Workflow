@@ -13,10 +13,10 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => 'CC',
+    'CC'        => 'Cc',
     'Created'   => 'Skapad',
     'Creator'   => 'Skapare',
-    'Due'       => 'Till följd av',
+    'Due'       => 'På grund av',
     'Media'     => 'Media',
     'Message'   => 'Meddelande',
     'Next'      => 'Nästa',
@@ -26,6 +26,6 @@ return ['Workflow' => [
     'Title'     => 'Titel',
     'To'        => 'Till',
     'Upload'    => 'Ladda upp',
-    'Workflow'  => 'Workflow',
-    'Workflows' => 'Arbetsflöden',
+    'Workflow'  => 'Arbetsflöde',
+    'Workflows' => 'Arbetsflöde',
 ]];

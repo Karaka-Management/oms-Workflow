@@ -13,15 +13,15 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => 'CC',
-    'Created'   => '创建',
+    'CC'        => 'CC.',
+    'Created'   => '创造了',
     'Creator'   => '创造者',
     'Due'       => '到期的',
     'Media'     => '媒体',
     'Message'   => '信息',
     'Next'      => '下一个',
     'Select'    => '选择',
-    'Status'    => '状态',
+    'Status'    => '地位',
     'Task'      => '任务',
     'Title'     => '标题',
     'To'        => '到',

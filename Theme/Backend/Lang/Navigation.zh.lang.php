@@ -13,9 +13,9 @@
 declare(strict_types=1);
 
 return ['Navigation' => [
-    'Create'    => 'Create',
-    'Dashboard' => 'Dashboard',
-    'Templates' => 'Templates',
-    'Workflow'  => 'Workflow',
-    'Workflows' => 'Workflows',
+    'Create'    => '创建',
+    'Dashboard' => '仪表板',
+    'Templates' => '模板',
+    'Workflow'  => '工作流程',
+    'Workflows' => '工作流程',
 ]];

@@ -13,8 +13,8 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => 'CC',
-    'Created'   => 'δημιουργήθηκε',
+    'CC'        => 'Cc',
+    'Created'   => 'Δημιουργήθηκε',
     'Creator'   => 'Δημιουργός',
     'Due'       => 'Λόγω',
     'Media'     => 'Μεσο ΜΑΖΙΚΗΣ ΕΝΗΜΕΡΩΣΗΣ',
@@ -24,8 +24,8 @@ return ['Workflow' => [
     'Status'    => 'Κατάσταση',
     'Task'      => 'Εργο',
     'Title'     => 'Τίτλος',
-    'To'        => 'Προς την',
-    'Upload'    => 'Μεταφόρτωση',
-    'Workflow'  => 'Workflow',
-    'Workflows' => 'ροές εργασίας',
+    'To'        => 'Προς το',
+    'Upload'    => 'Μεταφόρτω',
+    'Workflow'  => 'Ροή εργασίας',
+    'Workflows' => 'Ροές εργασίας',
 ]];

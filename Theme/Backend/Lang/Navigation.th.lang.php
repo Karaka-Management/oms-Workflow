@@ -13,9 +13,9 @@
 declare(strict_types=1);
 
 return ['Navigation' => [
-    'Create'    => 'Create',
-    'Dashboard' => 'Dashboard',
-    'Templates' => 'Templates',
-    'Workflow'  => 'Workflow',
-    'Workflows' => 'Workflows',
+    'Create'    => 'สร้าง',
+    'Dashboard' => 'แผงควบคุม',
+    'Templates' => 'แม่แบบ',
+    'Workflow'  => 'เวิร์กโฟลว์',
+    'Workflows' => 'เวิร์กโฟลว์',
 ]];

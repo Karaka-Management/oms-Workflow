@@ -13,19 +13,19 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => 'CC',
-    'Created'   => 'Alkotó',
+    'CC'        => 'Kb',
+    'Created'   => 'Létrehozott',
     'Creator'   => 'Teremtő',
     'Due'       => 'Esedékes',
     'Media'     => 'Média',
     'Message'   => 'Üzenet',
     'Next'      => 'Következő',
-    'Select'    => 'választ',
+    'Select'    => 'Kiválaszt',
     'Status'    => 'Állapot',
     'Task'      => 'Feladat',
     'Title'     => 'Cím',
     'To'        => 'Nak nek',
     'Upload'    => 'Feltöltés',
-    'Workflow'  => 'munkafolyamat',
-    'Workflows' => 'munkafolyamatok',
+    'Workflow'  => 'Munkafolyamat',
+    'Workflows' => 'Munkafolyamatok',
 ]];

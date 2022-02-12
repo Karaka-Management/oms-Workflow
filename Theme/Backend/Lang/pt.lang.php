@@ -13,19 +13,19 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => 'CC',
+    'CC'        => 'Cc.',
     'Created'   => 'Criado',
     'Creator'   => 'O Criador',
-    'Due'       => 'Devido',
+    'Due'       => 'Vencimento',
     'Media'     => 'meios de comunicação',
     'Message'   => 'Mensagem',
     'Next'      => 'Próximo',
-    'Select'    => 'selecionar',
+    'Select'    => 'Selecione.',
     'Status'    => 'Status',
     'Task'      => 'Tarefa',
     'Title'     => 'Título',
     'To'        => 'Para',
     'Upload'    => 'Envio',
-    'Workflow'  => 'Fluxo de Trabalho',
-    'Workflows' => 'Os fluxos de trabalho',
+    'Workflow'  => 'Fluxo de trabalho',
+    'Workflows' => 'Fluxos de trabalho',
 ]];

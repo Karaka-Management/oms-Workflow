@@ -13,12 +13,12 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => 'CC',
-    'Created'   => 'Créé',
+    'CC'        => 'Cc',
+    'Created'   => 'Établi',
     'Creator'   => 'Créateur',
-    'Due'       => 'Payable',
+    'Due'       => 'Dû',
     'Media'     => 'Médias',
-    'Message'   => 'Un message',
+    'Message'   => 'Message',
     'Next'      => 'Suivant',
     'Select'    => 'Sélectionner',
     'Status'    => 'Statut',
@@ -26,6 +26,6 @@ return ['Workflow' => [
     'Title'     => 'Titre',
     'To'        => 'À',
     'Upload'    => 'Télécharger',
-    'Workflow'  => 'flux de travail',
+    'Workflow'  => 'Flux de travail',
     'Workflows' => 'Flux de travail',
 ]];

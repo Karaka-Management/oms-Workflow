@@ -13,9 +13,9 @@
 declare(strict_types=1);
 
 return ['Navigation' => [
-    'Create'    => 'Create',
-    'Dashboard' => 'Dashboard',
-    'Templates' => 'Templates',
+    'Create'    => 'skab',
+    'Dashboard' => 'Dashboard.',
+    'Templates' => 'Skabeloner',
     'Workflow'  => 'Workflow',
-    'Workflows' => 'Workflows',
+    'Workflows' => 'Arbejdsgange.',
 ]];

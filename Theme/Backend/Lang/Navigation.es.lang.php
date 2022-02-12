@@ -13,9 +13,9 @@
 declare(strict_types=1);
 
 return ['Navigation' => [
-    'Create'    => 'Create',
-    'Dashboard' => 'Dashboard',
-    'Templates' => 'Templates',
-    'Workflow'  => 'Workflow',
-    'Workflows' => 'Workflows',
+    'Create'    => 'Crear',
+    'Dashboard' => 'Tablero de mandos',
+    'Templates' => 'Plantillas',
+    'Workflow'  => 'Flujo de trabajo',
+    'Workflows' => 'Flujos de trabajo',
 ]];

@@ -13,19 +13,19 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => 'CC',
-    'Created'   => 'ที่สร้างไว้',
+    'CC'        => 'cc',
+    'Created'   => 'สร้าง',
     'Creator'   => 'ผู้สร้าง',
-    'Due'       => 'ครบกำหนด',
+    'Due'       => 'เนื่องจาก',
     'Media'     => 'สื่อ',
-    'Message'   => 'ข่าวสาร',
-    'Next'      => 'ต่อไป',
+    'Message'   => 'ข้อความ',
+    'Next'      => 'ถัดไป',
     'Select'    => 'เลือก',
     'Status'    => 'สถานะ',
     'Task'      => 'งาน',
-    'Title'     => 'หัวข้อ',
+    'Title'     => 'ชื่อ',
     'To'        => 'ถึง',
     'Upload'    => 'ที่อัพโหลด',
-    'Workflow'  => 'ขั้นตอนการทำงาน',
+    'Workflow'  => 'เวิร์กโฟลว์',
     'Workflows' => 'เวิร์กโฟลว์',
 ]];

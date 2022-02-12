@@ -13,19 +13,19 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => 'CC',
+    'CC'        => 'CC.',
     'Created'   => '만들어진',
     'Creator'   => '창조자',
-    'Due'       => '정당한',
+    'Due'       => '로 인한',
     'Media'     => '미디어',
-    'Message'   => '메시지',
+    'Message'   => '메세지',
     'Next'      => '다음',
-    'Select'    => '고르다',
+    'Select'    => '선택하다',
     'Status'    => '상태',
-    'Task'      => '직무',
-    'Title'     => '표제',
-    'To'        => '에',
+    'Task'      => '일',
+    'Title'     => '제목',
+    'To'        => '에게',
     'Upload'    => '업로드',
     'Workflow'  => '워크 플로우',
-    'Workflows' => '워크 플로우',
+    'Workflows' => '워크 플로',
 ]];

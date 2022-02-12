@@ -13,11 +13,11 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => 'CC',
-    'Created'   => 'Vytvořeno',
+    'CC'        => 'Cc.',
+    'Created'   => 'Vytvořený',
     'Creator'   => 'Tvůrce',
-    'Due'       => 'Z důvodu',
-    'Media'     => 'Media',
+    'Due'       => 'Způsoben',
+    'Media'     => 'Mediální',
     'Message'   => 'Zpráva',
     'Next'      => 'další',
     'Select'    => 'Vybrat',

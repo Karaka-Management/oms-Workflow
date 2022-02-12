@@ -13,19 +13,19 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'CC'        => 'CC',
+    'CC'        => 'Cc',
     'Created'   => 'Luotu',
     'Creator'   => 'Luoja',
-    'Due'       => 'maksettava',
-    'Media'     => 'tiedotusvälineet',
+    'Due'       => 'Takia',
+    'Media'     => 'Media',
     'Message'   => 'Viesti',
     'Next'      => 'Seuraava',
-    'Select'    => 'valita',
+    'Select'    => 'Valitse',
     'Status'    => 'Tila',
     'Task'      => 'Tehtävä',
-    'Title'     => 'otsikko',
-    'To'        => 'jotta',
-    'Upload'    => 'upload',
+    'Title'     => 'Otsikko',
+    'To'        => 'Jllek',
+    'Upload'    => 'Ladata',
     'Workflow'  => 'Työnkulku',
-    'Workflows' => 'työnkulkuja',
+    'Workflows' => 'Työnkulut',
 ]];
