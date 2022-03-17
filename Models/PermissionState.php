@@ -29,4 +29,6 @@ abstract class PermissionState extends Enum
     public const WORKFLOW = 1;
 
     public const TEMPLATE = 2;
+
+    public const EXPORT = 3;
 }
