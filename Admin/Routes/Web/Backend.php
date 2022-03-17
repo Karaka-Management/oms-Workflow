@@ -13,7 +13,7 @@
 declare(strict_types=1);
 
 use Modules\Workflow\Controller\BackendController;
-use Modules\Workflow\Models\PermissionState;
+use Modules\Workflow\Models\PermissionCategory;
 use phpOMS\Account\PermissionType;
 use phpOMS\Router\RouteVerb;
 
@@ -25,7 +25,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
-                'state'  => PermissionState::TEMPLATE,
+                'state'  => PermissionCategory::TEMPLATE,
             ],
         ],
     ],
@@ -36,7 +36,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
-                'state'  => PermissionState::TEMPLATE,
+                'state'  => PermissionCategory::TEMPLATE,
             ],
         ],
     ],
@@ -47,7 +47,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::CREATE,
-                'state'  => PermissionState::TEMPLATE,
+                'state'  => PermissionCategory::TEMPLATE,
             ],
         ],
     ],
@@ -58,7 +58,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
-                'state'  => PermissionState::WORKFLOW,
+                'state'  => PermissionCategory::WORKFLOW,
             ],
         ],
     ],
@@ -69,7 +69,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
-                'state'  => PermissionState::WORKFLOW,
+                'state'  => PermissionCategory::WORKFLOW,
             ],
         ],
     ],

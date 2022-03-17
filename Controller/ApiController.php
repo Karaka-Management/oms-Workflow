@@ -19,7 +19,7 @@ use Modules\Admin\Models\NullAccount;
 use Modules\Media\Models\CollectionMapper;
 use Modules\Media\Models\NullCollection;
 use Modules\Media\Models\NullMedia;
-use Modules\Workflow\Models\PermissionState;
+use Modules\Workflow\Models\PermissionCategory;
 use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Account\PermissionType;
@@ -81,8 +81,8 @@ final class ApiController extends Controller
         $isExport  = \in_array($request->getData('type'), ['xlsx', 'pdf', 'docx', 'pptx', 'csv', 'json']);
 
         // is allowed to read
-        if (!$this->app->accountManager->get($accountId)->hasPermission(PermissionType::READ, $this->app->orgId, null, self::NAME, PermissionState::REPORT, $template->getId())
-            || ($isExport && !$this->app->accountManager->get($accountId)->hasPermission(PermissionType::READ, $this->app->orgId, $this->app->appName, self::NAME, PermissionState::EXPORT))
+        if (!$this->app->accountManager->get($accountId)->hasPermission(PermissionType::READ, $this->app->orgId, null, self::NAME, PermissionCategory::REPORT, $template->getId())
+            || ($isExport && !$this->app->accountManager->get($accountId)->hasPermission(PermissionType::READ, $this->app->orgId, $this->app->appName, self::NAME, PermissionCategory::EXPORT))
         ) {
             $response->header->status = RequestStatusCode::R_403;
 
@@ -343,7 +343,7 @@ final class ApiController extends Controller
         }
 
         // is allowed to create
-        if (!$this->app->accountManager->get($request->header->account)->hasPermission(PermissionType::CREATE, $this->app->orgId, null, self::NAME, PermissionState::TEMPLATE)) {
+        if (!$this->app->accountManager->get($request->header->account)->hasPermission(PermissionType::CREATE, $this->app->orgId, null, self::NAME, PermissionCategory::TEMPLATE)) {
             $response->header->status = RequestStatusCode::R_403;
 
             return;
@@ -394,7 +394,7 @@ final class ApiController extends Controller
                 $this->app->appName,
                 self::NAME,
                 self::NAME,
-                PermissionState::TEMPLATE,
+                PermissionCategory::TEMPLATE,
                 $template->getId(),
                 null,
                 PermissionType::READ | PermissionType::MODIFY | PermissionType::DELETE | PermissionType::PERMISSION,
