@@ -1,5 +1,5 @@
 {
-    "workflow": {
+    "workflow_template": {
         "name": "workflow_template",
         "fields": {
             "workflow_template_id": {
@@ -26,8 +26,21 @@
                 "default": null,
                 "null": true
             },
-            "workflow_template_created": {
-                "name": "workflow_template_created",
+            "workflow_template_descRaw": {
+                "name": "workflow_template_descRaw",
+                "type": "TEXT",
+                "default": null,
+                "null": true
+            },
+            "workflow_template_media": {
+                "name": "workflow_template_media",
+                "type": "INT",
+                "null": false,
+                "foreignTable": "media",
+                "foreignKey": "media_id"
+            },
+            "workflow_template_created_at": {
+                "name": "workflow_template_created_at",
                 "type": "DATETIME",
                 "null": false
             },
@@ -40,34 +53,34 @@
             }
         }
     },
-    "workflow_template_media": {
-        "name": "workflow_template_media",
+    "workflow_instance": {
+        "name": "workflow_instance",
         "fields": {
-            "workflow_template_media_id": {
-                "name": "workflow_template_media_id",
+            "workflow_instance_id": {
+                "name": "workflow_instance_id",
                 "type": "INT",
                 "null": false,
                 "primary": true,
                 "autoincrement": true
             },
-            "workflow_template_media_media": {
-                "name": "workflow_template_media_media",
-                "type": "INT",
-                "null": false,
-                "foreignTable": "media",
-                "foreignKey": "media_id"
-            },
-            "workflow_template_media_workflow": {
-                "name": "workflow_template_media_workflow",
+            "workflow_instance_template": {
+                "name": "workflow_instance_template",
                 "type": "INT",
                 "null": false,
                 "foreignTable": "workflow_template",
                 "foreignKey": "workflow_template_id"
             },
-            "workflow_template_media_type": {
-                "name": "workflow_template_media_type",
-                "type": "TINYINT",
+            "workflow_instance_created_at": {
+                "name": "workflow_instance_created_at",
+                "type": "DATETIME",
                 "null": false
+            },
+            "workflow_instance_created_by": {
+                "name": "workflow_instance_created_by",
+                "type": "INT",
+                "null": false,
+                "foreignTable": "account",
+                "foreignKey": "account_id"
             }
         }
     }

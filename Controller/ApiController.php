@@ -20,6 +20,8 @@ use Modules\Media\Models\CollectionMapper;
 use Modules\Media\Models\NullCollection;
 use Modules\Media\Models\NullMedia;
 use Modules\Workflow\Models\PermissionCategory;
+use Modules\Workflow\Models\WorkflowInstance;
+use Modules\Workflow\Models\WorkflowInstanceMapper;
 use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Account\PermissionType;
@@ -33,6 +35,9 @@ use phpOMS\Message\ResponseAbstract;
 use phpOMS\Model\Message\FormValidation;
 use phpOMS\System\MimeType;
 use phpOMS\System\SystemUtils;
+use phpOMS\Utils\Parser\Markdown\Markdown;
+use phpOMS\Utils\StringUtils;
+use phpOMS\Views\View;
 
 /**
  * Workflow controller class.
@@ -66,13 +71,11 @@ final class ApiController extends Controller
             return;
         }
 
-        /** @var Template $template */
-        $template = WorkflowTemplateMapper::get()
-            ->with('source')
-            ->with('source/sources')
-            ->with('reports')
-            ->with('reports/source')
-            ->with('reports/source/sources')
+        /** @var WorkflowInstance $instance */
+        $instance = WorkflowInstanceMapper::get()
+            ->with('template')
+            ->with('template/source')
+            ->with('template/source/sources')
             ->with('createdBy')
             ->where('id', (int) $request->getData('id'))
             ->execute();
@@ -81,7 +84,7 @@ final class ApiController extends Controller
         $isExport  = \in_array($request->getData('type'), ['xlsx', 'pdf', 'docx', 'pptx', 'csv', 'json']);
 
         // is allowed to read
-        if (!$this->app->accountManager->get($accountId)->hasPermission(PermissionType::READ, $this->app->orgId, null, self::NAME, PermissionCategory::REPORT, $template->getId())
+        if (!$this->app->accountManager->get($accountId)->hasPermission(PermissionType::READ, $this->app->orgId, null, self::NAME, PermissionCategory::INSTANCE, $instance->getId())
             || ($isExport && !$this->app->accountManager->get($accountId)->hasPermission(PermissionType::READ, $this->app->orgId, $this->app->appName, self::NAME, PermissionCategory::EXPORT))
         ) {
             $response->header->status = RequestStatusCode::R_403;
@@ -91,11 +94,11 @@ final class ApiController extends Controller
 
         if ($isExport) {
             Autoloader::addPath(__DIR__ . '/../../../Resources/');
-            $response->header->setDownloadable($template->name, (string) $request->getData('type'));
+            $response->header->setDownloadable($instance->template->name, (string) $request->getData('type'));
         }
 
-        $view = $this->createView($template, $request, $response);
-        $this->setHelperResponseHeader($view, $template->name, $request, $response);
+        $view = $this->createView($instance, $request, $response);
+        $this->setHelperResponseHeader($view, $instance->template->name, $request, $response);
         $view->setData('path', __DIR__ . '/../../../');
 
         $response->set('export', $view);
@@ -203,7 +206,7 @@ final class ApiController extends Controller
     /**
      * Create view from template
      *
-     * @param Template         $template Template to create view from
+     * @param WorkflowInstance         $instance Instance to create view from
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
      *
@@ -213,11 +216,11 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    private function createView(Template $template, RequestAbstract $request, ResponseAbstract $response) : View
+    private function createView(WorkflowInstance $instance, RequestAbstract $request, ResponseAbstract $response) : View
     {
         /** @var array<string, \Modules\Media\Models\Media|\Modules\Media\Models\Media[]> $tcoll */
         $tcoll = [];
-        $files = $template->source->getSources();
+        $files = $instance->source->getSources();
 
         /** @var \Modules\Media\Models\Media $tMedia */
         foreach ($files as $tMedia) {
@@ -282,35 +285,11 @@ final class ApiController extends Controller
         }
 
         $view = new View($this->app->l11nManager, $request, $response);
-        if (!$template->isStandalone) {
-            /** @var Report $report */
-            $report = ReportMapper::get()
-                ->with('template')
-                ->with('source')
-                ->with('source/sources')
-                ->where('template', $template->getId())
-                ->sort('id', OrderType::DESC)
-                ->limit(1)
-                ->execute();
-
-            $rcoll  = [];
-            $report = $report === false ? new NullReport() : $report;
-
-            if (!($report instanceof NullReport)) {
-                $files = $report->source->getSources();
-
-                foreach ($files as $media) {
-                    $rcoll[$media->name . '.' . $media->extension] = $media;
-                }
-            }
-
-            $view->addData('report', $report);
-            $view->addData('rcoll', $rcoll);
-        }
 
         $view->addData('tcoll', $tcoll);
         $view->addData('lang', $request->getData('lang') ?? $request->getLanguage());
-        $view->addData('template', $template);
+        $view->addData('instance', $instance);
+        $view->addData('template', $instance->template);
         $view->addData('basepath', __DIR__ . '/../../../');
 
         return $view;
@@ -387,23 +366,7 @@ final class ApiController extends Controller
 
         $template = $this->createTemplateFromRequest($request, $collection->getId());
 
-        $this->app->moduleManager->get('Admin')->createAccountModelPermission(
-            new AccountPermission(
-                $request->header->account,
-                $this->app->orgId,
-                $this->app->appName,
-                self::NAME,
-                self::NAME,
-                PermissionCategory::TEMPLATE,
-                $template->getId(),
-                null,
-                PermissionType::READ | PermissionType::MODIFY | PermissionType::DELETE | PermissionType::PERMISSION,
-            ),
-            $request->header->account,
-            $request->getOrigin()
-        );
-
-        $this->createModel($request->header->account, $template, TemplateMapper::class, 'template', $request->getOrigin());
+        $this->createModel($request->header->account, $template, WorkflowTemplateMapper::class, 'template', $request->getOrigin());
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
     }
 
@@ -439,10 +402,8 @@ final class ApiController extends Controller
      */
     private function createTemplateFromRequest(RequestAbstract $request, int $collectionId) : WorkflowTemplate
     {
-        $expected = $request->getData('expected');
-
         $workflowTemplate                 = new WorkflowTemplate();
-        $workflowTemplate->name           = $request->getData('name') ?? 'Empty';
+        $workflowTemplate->name           = $request->getData('name') ?? '';
         $workflowTemplate->description    = Markdown::parse((string) ($request->getData('description') ?? ''));
         $workflowTemplate->descriptionRaw = (string) ($request->getData('description') ?? '');
 
@@ -450,10 +411,7 @@ final class ApiController extends Controller
             $workflowTemplate->source = new NullCollection($collectionId);
         }
 
-        $workflowTemplate->isStandalone = (bool) ($request->getData('standalone') ?? false);
-        $workflowTemplate->setExpected(!empty($expected) ? \json_decode($expected, true) : []);
         $workflowTemplate->createdBy = new NullAccount($request->header->account);
-        $workflowTemplate->setDatatype((int) ($request->getData('datatype') ?? TemplateDataType::OTHER));
         $workflowTemplate->virtualPath = (string) ($request->getData('virtualpath') ?? '/');
 
         return $workflowTemplate;

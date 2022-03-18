@@ -17,18 +17,16 @@ namespace Modules\Workflow\Models;
 use phpOMS\Stdlib\Base\Enum;
 
 /**
- * Permision state enum.
+ * Bill status enum.
  *
  * @package Modules\Workflow\Models
  * @license OMS License 1.0
  * @link    https://karaka.app
  * @since   1.0.0
  */
-abstract class PermissionCategory extends Enum
+abstract class WorkflowTemplateStatus extends Enum
 {
-    public const INSTANCE = 1;
+    public const ACTIVE = 1;
 
-    public const TEMPLATE = 2;
-
-    public const EXPORT = 3;
+    public const INACTIVE = 2;
 }

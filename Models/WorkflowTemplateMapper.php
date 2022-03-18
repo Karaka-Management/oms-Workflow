@@ -15,13 +15,8 @@ declare(strict_types=1);
 namespace Modules\Workflow\Models;
 
 use Modules\Admin\Models\AccountMapper;
-use Modules\Calendar\Models\ScheduleMapper;
-use Modules\Media\Models\MediaMapper;
-use Modules\Tag\Models\TagMapper;
+use Modules\Media\Models\CollectionMapper;
 use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
-use phpOMS\DataStorage\Database\Mapper\ReadMapper;
-use phpOMS\DataStorage\Database\Query\Builder;
-use phpOMS\DataStorage\Database\Query\Where;
 
 /**
  * Mapper class.
@@ -41,7 +36,39 @@ final class WorkflowTemplateMapper extends DataMapperFactory
      */
     public const COLUMNS = [
         'workflow_template_id'                => ['name' => 'workflow_template_id',         'type' => 'int',      'internal' => 'id'],
+        'workflow_template_status'        => ['name' => 'workflow_template_status',      'type' => 'int',      'internal' => 'status'],
+        'workflow_template_name'         => ['name' => 'workflow_template_name',       'type' => 'string',   'internal' => 'name'],
+        'workflow_template_desc'         => ['name' => 'workflow_template_desc',       'type' => 'string',   'internal' => 'description'],
+        'workflow_template_descRaw'         => ['name' => 'workflow_template_descRaw',       'type' => 'string',   'internal' => 'descriptionRaw'],
+        'workflow_template_media'         => ['name' => 'workflow_template_media',       'type' => 'string',   'internal' => 'source'],
         'workflow_template_created_at'        => ['name' => 'workflow_template_created_at', 'type' => 'DateTimeImmutable', 'internal' => 'createdAt', 'readonly' => true],
+        'workflow_template_created_by'        => ['name' => 'workflow_template_created_by', 'type' => 'int', 'internal' => 'createdBy', 'readonly' => true],
+    ];
+
+    /**
+     * Has one relation.
+     *
+     * @var array<string, array{mapper:string, external:string, by?:string, column?:string, conditional?:bool}>
+     * @since 1.0.0
+     */
+    public const OWNS_ONE = [
+        'source' => [
+            'mapper'     => CollectionMapper::class,
+            'external'   => 'workflow_template_media',
+        ],
+    ];
+
+    /**
+     * Belongs to.
+     *
+     * @var array<string, array{mapper:string, external:string}>
+     * @since 1.0.0
+     */
+    public const BELONGS_TO = [
+        'createdBy' => [
+            'mapper'     => AccountMapper::class,
+            'external'   => 'workflow_template_created_by',
+        ],
     ];
 
     /**

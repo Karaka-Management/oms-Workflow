@@ -16,18 +16,16 @@ namespace Modules\Workflow\Models;
 
 use Modules\Admin\Models\Account;
 use Modules\Admin\Models\NullAccount;
-use Modules\Media\Models\Collection;
-use Modules\Media\Models\NullCollection;
 
 /**
- * Workflow template class.
+ * Workflow instance class.
  *
  * @package Modules\Workflow\Models
  * @license OMS License 1.0
  * @link    https://karaka.app
  * @since   1.0.0
  */
-class WorkflowTemplate
+class WorkflowInstance
 {
     /**
      * ID.
@@ -38,36 +36,12 @@ class WorkflowTemplate
     protected int $id = 0;
 
     /**
-     * Name.
+     * Template.
      *
-     * @var string
+     * @var WorkflowTemplate
      * @since 1.0.0
      */
-    public string $name = '';
-
-    /**
-     * Description.
-     *
-     * @var string
-     * @since 1.0.0
-     */
-    public string $description = '';
-
-    /**
-     * Description.
-     *
-     * @var string
-     * @since 1.0.0
-     */
-    public string $descriptionRaw = '';
-
-    /**
-     * Status.
-     *
-     * @var string
-     * @since 1.0.0
-     */
-    public int $status = WorkflowTemplateStatus::ACTIVE;
+    public WorkflowTemplate $template;
 
     /**
      * Creator.
@@ -86,23 +60,15 @@ class WorkflowTemplate
     public \DateTimeImmutable $createdAt;
 
     /**
-     * Template source.
-     *
-     * @var Collection
-     * @since 1.0.0
-     */
-    public Collection $source;
-
-    /**
      * Constructor.
      *
      * @since 1.0.0
      */
     public function __construct()
     {
+        $this->template = new NullWorkflowTemplate();
         $this->createdBy = new NullAccount();
         $this->createdAt = new \DateTimeImmutable('now');
-        $this->source    = new NullCollection();
     }
 
     /**
