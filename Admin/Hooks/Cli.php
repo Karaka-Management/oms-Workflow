@@ -17,4 +17,3 @@ return [
         'callback' => ['\Modules\Workflow\Controller\CliController:findWorkflow'],
     ],
 ];
-
