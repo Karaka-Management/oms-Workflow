@@ -98,7 +98,7 @@ final class ApiController extends Controller
         }
 
         $view = $this->createView($instance, $request, $response);
-        $this->setHelperResponseHeader($view, $instance->template->name, $request, $response);
+        $this->setWorkflowResponseHeader($view, $instance->template->name, $request, $response);
         $view->setData('path', __DIR__ . '/../../../');
 
         $response->set('export', $view);
@@ -137,7 +137,7 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    private function setHelperResponseHeader(View $view, string $name, RequestAbstract $request, ResponseAbstract $response) : void
+    private function setWorkflowResponseHeader(View $view, string $name, RequestAbstract $request, ResponseAbstract $response) : void
     {
         switch ($request->getData('type')) {
             case 'pdf':
@@ -370,6 +370,13 @@ final class ApiController extends Controller
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
     }
 
+    private function createTemplateDir(WorkflowTemplate $template) : string
+    {
+        return '/Modules/Workflow/'
+            . $template->getId() . ' '
+            . $template->name;
+    }
+
     /**
      * Validate template create request
      *
@@ -470,6 +477,7 @@ final class ApiController extends Controller
         $count = \count($data);
 
         // @todo: if no Cli is available do it in the web app (maybe first web request and if this is also not allowed run it in here)
+        /*
         SystemUtils::runProc(
             'php',
             __DIR__ . '/../../../cli.php' . ' '
@@ -479,5 +487,6 @@ final class ApiController extends Controller
                 . '-d ' . \escapeshellarg(\json_encode($data)),
             true
         );
+        */
     }
 }

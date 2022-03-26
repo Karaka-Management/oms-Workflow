@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Modules\Workflow\Controller;
 
+use Modules\Media\Models\CollectionMapper;
+use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Contract\RenderableInterface;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
@@ -46,6 +48,23 @@ final class BackendController extends Controller
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-template-list');
         $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+
+        $path      = \str_replace('+', ' ', (string) ($request->getData('path') ?? '/'));
+        $templates = WorkflowTemplateMapper::getAll()
+            ->with('createdBy')
+            ->with('tags')
+            ->with('tags/title')
+            ->where('virtualPath', $path)
+            ->where('tags/title/language', $response->getLanguage())
+            ->execute();
+
+        list($collection, $parent) = CollectionMapper::getCollectionsByPath($path);
+
+        $view->addData('parent', $parent);
+        $view->addData('collections', $collection);
+        $view->addData('path', $path);
+        $view->addData('reports', $templates);
+        $view->addData('account', $this->app->accountManager->get($request->header->account));
 
         return $view;
     }

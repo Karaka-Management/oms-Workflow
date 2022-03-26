@@ -31,4 +31,6 @@ abstract class PermissionCategory extends Enum
     public const TEMPLATE = 2;
 
     public const EXPORT = 3;
+
+    public const WORKFLOW = 4;
 }
