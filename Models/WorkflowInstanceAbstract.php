@@ -25,7 +25,7 @@ use Modules\Admin\Models\NullAccount;
  * @link    https://karaka.app
  * @since   1.0.0
  */
-class WorkflowInstance
+class WorkflowInstanceAbstract
 {
     /**
      * ID.
@@ -34,6 +34,14 @@ class WorkflowInstance
      * @since 1.0.0
      */
     protected int $id = 0;
+
+    /**
+     * Title.
+     *
+     * @var string
+     * @since 1.0.0
+     */
+    public string $title = '';
 
     /**
      * Template.

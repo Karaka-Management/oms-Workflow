@@ -20,7 +20,7 @@ use phpOMS\Router\RouteVerb;
 return [
     '^.*/workflow/template/list.*$' => [
         [
-            'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowTemplates',
+            'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowTemplateList',
             'verb'       => RouteVerb::GET,
             'permission' => [
                 'module' => BackendController::NAME,
@@ -29,7 +29,7 @@ return [
             ],
         ],
     ],
-    '^.*/workflow/template/single.*$' => [
+    '^.*/workflow/template/profile.*$' => [
         [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowTemplate',
             'verb'       => RouteVerb::GET,
@@ -53,7 +53,18 @@ return [
     ],
     '^.*/workflow/dashboard.*$' => [
         [
-            'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowDashboard',
+            'dest'       => '\Modules\Workflow\Controller\BackendController:viewDashboard',
+            'verb'       => RouteVerb::GET,
+            'permission' => [
+                'module' => BackendController::NAME,
+                'type'   => PermissionType::CREATE,
+                'state'  => PermissionCategory::WORKFLOW,
+            ],
+        ],
+    ],
+    '^.*/workflow/instance/list.*$' => [
+        [
+            'dest'       => '\Modules\Workflow\Controller\BackendController:viewInstanceList',
             'verb'       => RouteVerb::GET,
             'permission' => [
                 'module' => BackendController::NAME,
@@ -62,9 +73,9 @@ return [
             ],
         ],
     ],
-    '^.*/workflow/single.*$' => [
+    '^.*/workflow/instance/profile.*$' => [
         [
-            'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowSingle',
+            'dest'       => '\Modules\Workflow\Controller\BackendController:viewInstance',
             'verb'       => RouteVerb::GET,
             'permission' => [
                 'module' => BackendController::NAME,

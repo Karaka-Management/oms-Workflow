@@ -21,6 +21,7 @@ use Modules\Media\Models\NullCollection;
 use Modules\Media\Models\NullMedia;
 use Modules\Workflow\Models\PermissionCategory;
 use Modules\Workflow\Models\WorkflowInstance;
+use Modules\Workflow\Models\WorkflowInstanceAbstract;
 use Modules\Workflow\Models\WorkflowInstanceMapper;
 use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
@@ -34,10 +35,10 @@ use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Model\Message\FormValidation;
 use phpOMS\System\MimeType;
-use phpOMS\System\SystemUtils;
 use phpOMS\Utils\Parser\Markdown\Markdown;
 use phpOMS\Utils\StringUtils;
 use phpOMS\Views\View;
+use phpOMS\DataStorage\Database\Schema\Builder as SchemaBuilder;
 
 /**
  * Workflow controller class.
@@ -71,7 +72,7 @@ final class ApiController extends Controller
             return;
         }
 
-        /** @var WorkflowInstance $instance */
+        /** @var WorkflowInstanceAbstract $instance */
         $instance = WorkflowInstanceMapper::get()
             ->with('template')
             ->with('template/source')
@@ -206,7 +207,7 @@ final class ApiController extends Controller
     /**
      * Create view from template
      *
-     * @param WorkflowInstance         $instance Instance to create view from
+     * @param WorkflowInstanceAbstract         $instance Instance to create view from
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
      *
@@ -216,7 +217,7 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    private function createView(WorkflowInstance $instance, RequestAbstract $request, ResponseAbstract $response) : View
+    private function createView(WorkflowInstanceAbstract $instance, RequestAbstract $request, ResponseAbstract $response) : View
     {
         /** @var array<string, \Modules\Media\Models\Media|\Modules\Media\Models\Media[]> $tcoll */
         $tcoll = [];
@@ -308,9 +309,8 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    public function apiTemplateCreate(RequestAbstract $request, ResponseAbstract $response, $data = null) : void
+    public function apiWorkflowTemplateCreate(RequestAbstract $request, ResponseAbstract $response, $data = null) : void
     {
-        $dbFiles       = $request->getDataJson('media-list') ?? [];
         $uploadedFiles = $request->getFiles() ?? [];
         $files         = [];
 
@@ -328,6 +328,7 @@ final class ApiController extends Controller
             return;
         }
 
+        /** @var \Modules\Media\Models\Media[] $uploaded */
         $uploaded = $this->app->moduleManager->get('Media')->uploadFiles(
             $request->getDataList('names') ?? [],
             $request->getDataList('filenames') ?? [],
@@ -337,11 +338,11 @@ final class ApiController extends Controller
         );
 
         foreach ($uploaded as $upload) {
-            $files[] = new NullMedia($upload->getId());
-        }
+            if ($upload instanceof NullMedia) {
+                continue;
+            }
 
-        foreach ($dbFiles as $db) {
-            $files[] = new NullMedia($db);
+            $files[] = $upload;
         }
 
         /** @var Collection $collection */
@@ -365,8 +366,22 @@ final class ApiController extends Controller
         CollectionMapper::create()->execute($collection);
 
         $template = $this->createTemplateFromRequest($request, $collection->getId());
+        $this->createDatabaseForTemplate($template);
 
         $this->createModel($request->header->account, $template, WorkflowTemplateMapper::class, 'template', $request->getOrigin());
+
+        // replace placeholders
+        foreach ($uploaded as $upload) {
+            if ($upload instanceof NullMedia) {
+                continue;
+            }
+
+            $path = $upload->getAbsolutePath();
+            $content = \file_get_contents($path);
+            $content = \str_replace('{workflow_id}', (string) $template->getId(), $content);
+            \file_put_contents($path, $content);
+        }
+
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
     }
 
@@ -403,7 +418,7 @@ final class ApiController extends Controller
      *
      * @param RequestAbstract $request Request
      *
-     * @return Template
+     * @return WorkflowTemplate
      *
      * @since 1.0.0
      */
@@ -425,7 +440,46 @@ final class ApiController extends Controller
     }
 
     /**
-     * Routing end-point for application behaviour.
+     * Method to create database for template.
+     *
+     * @param WorkflowTemplate $template Workflow template
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
+    private function createDatabaseForTemplate(WorkflowTemplate $template) : void
+    {
+        /** @var \Modules\Media\Models\Collection $collection */
+        $collection = CollectionMapper::get()
+            ->with('sources')
+            ->where('id', $template->source->getId())
+            ->execute();
+
+        $files = $collection->getSources();
+        foreach ($files as $file) {
+            if (!StringUtils::endsWith($file->getPath(), 'db.json')) {
+                continue;
+            }
+
+            if (!\is_file($file->getPath())) {
+                return;
+            }
+
+            $content = \file_get_contents($file->getPath());
+            if ($content === false) {
+                return; // @codeCoverageIgnore
+            }
+
+            $definitions = \json_decode($content, true);
+            foreach ($definitions as $definition) {
+                SchemaBuilder::createFromSchema($definition, $this->app->dbPool->get('schema'))->execute();
+            }
+        }
+    }
+
+    /**
+     * Method which creates a workflow instance
      *
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
@@ -433,12 +487,75 @@ final class ApiController extends Controller
      *
      * @return void
      *
-     * @api
-     *
      * @since 1.0.0
      */
     public function apiWorkflowInstanceCreate(RequestAbstract $request, ResponseAbstract $response, $data = null) : void
     {
+        if (!empty($val = $this->validateInstanceCreate($request))) {
+            $response->set('instance_create', new FormValidation($val));
+            $response->header->status = RequestStatusCode::R_400;
+
+            return;
+        }
+
+        $instance = $this->createInstanceFromRequest($request);
+
+        $this->createModel($request->header->account, $instance, WorkflowInstanceMapper::class, 'instance', $request->getOrigin());
+        $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Instance', 'Instance successfully created', $instance);
+    }
+
+    /**
+     * Validate template create request
+     *
+     * @param RequestAbstract $request Request
+     *
+     * @return array<string, bool>
+     *
+     * @since 1.0.0
+     */
+    private function validateInstanceCreate(RequestAbstract $request) : array
+    {
+        $val = [];
+        if (($val['j'] = empty($request->getData('j')))) {
+            return $val;
+        }
+
+        return [];
+    }
+
+    /**
+     * Method to create interface from request.
+     *
+     * @param RequestAbstract $request Request
+     *
+     * @return WorkflowInstanceAbstract
+     *
+     * @since 1.0.0
+     */
+    private function createInstanceFromRequest(RequestAbstract $request) : WorkflowInstanceAbstract
+    {
+        $template = WorkflowTemplateMapper::get()
+            ->where('id', (int) $request->getData('j'))
+            ->execute();
+
+        $controller = null;
+
+        $files = $template->source->getSources();
+        foreach ($files as $tMedia) {
+            $lowerPath = \strtolower($tMedia->getPath());
+
+            switch (true) {
+                case StringUtils::endsWith($lowerPath, 'WorkflowController.php'):
+                    require_once $lowerPath;
+
+                    $controller = new WorkflowController($this->app, $template);
+                    break;
+            }
+        }
+
+        $instance = $controller->createInstanceFromRequest($request);
+
+        return $instance;
     }
 
     /**
@@ -458,35 +575,5 @@ final class ApiController extends Controller
      */
     public function apiWorkflowImport(HttpRequest $request, HttpResponse $response, $data = null) : void
     {
-    }
-
-    /**
-     * Api method to make a call to the cli app
-     *
-     * @param mixed $data Generic data
-     *
-     * @return void
-     *
-     * @api
-     *
-     * @since 1.0.0
-     * @todo maybe this needs to be moved to the admin module if there every is another hook which uses .* regex-match and is forwarded to the cli application
-     */
-    public function cliEventCall(...$data) : void
-    {
-        $count = \count($data);
-
-        // @todo: if no Cli is available do it in the web app (maybe first web request and if this is also not allowed run it in here)
-        /*
-        SystemUtils::runProc(
-            'php',
-            __DIR__ . '/../../../cli.php' . ' '
-                . 'post:/admin/event' . ' '
-                . '-g ' . \escapeshellarg($data[$count - 2]) . ' '
-                . '-i ' . \escapeshellarg($data[$count - 1]) . ' '
-                . '-d ' . \escapeshellarg(\json_encode($data)),
-            true
-        );
-        */
     }
 }

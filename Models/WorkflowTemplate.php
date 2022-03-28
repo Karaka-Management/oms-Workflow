@@ -17,7 +17,10 @@ namespace Modules\Workflow\Models;
 use Modules\Admin\Models\Account;
 use Modules\Admin\Models\NullAccount;
 use Modules\Media\Models\Collection;
+use Modules\Media\Models\Media;
 use Modules\Media\Models\NullCollection;
+use Modules\Media\Models\NullMedia;
+use phpOMS\Utils\StringUtils;
 
 /**
  * Workflow template class.
@@ -115,5 +118,17 @@ class WorkflowTemplate
     public function getId() : int
     {
         return $this->id;
+    }
+
+    public function findFile(string $name) : Media
+    {
+        $files = $this->source->getSources();
+        foreach ($files as $file) {
+            if (StringUtils::endsWith($file->getPath(), $name)) {
+                return $file;
+            }
+        }
+
+        return new NullMedia();
     }
 }

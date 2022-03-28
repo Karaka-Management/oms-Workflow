@@ -15,6 +15,9 @@ declare(strict_types=1);
 namespace Modules\Workflow\Controller;
 
 use Modules\Media\Models\CollectionMapper;
+use Modules\Media\Models\NullMedia;
+use Modules\Workflow\Models\WorkflowInstanceMapper;
+use Modules\Workflow\Models\WorkflowStatus;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Contract\RenderableInterface;
 use phpOMS\Message\RequestAbstract;
@@ -32,6 +35,60 @@ use phpOMS\Views\View;
 final class BackendController extends Controller
 {
     /**
+     * Api method to make a call to the cli app
+     *
+     * @param mixed $data Generic data
+     *
+     * @return void
+     *
+     * @api
+     *
+     * @since 1.0.0
+     */
+    public function runWorkflowFromHook(...$data) : void
+    {
+        $workflows = WorkflowTemplateMapper::getAll()->where('status', WorkflowStatus::ACTIVE)->execute();
+        foreach ($workflows as $workflow) {
+            $hooks = $workflow->getHooks();
+
+            foreach ($hooks as $hook) {
+                $triggerIsRegex = \stripos($data[':triggerGroup'], '/') === 0;
+                $matched = false;
+
+                if ($triggerIsRegex) {
+                    $matched = \preg_match($data[':triggerGroup'], $hook) === 1;
+                } else {
+                    $matched = $data[':triggerGroup'] === $hook;
+                }
+
+                if (!$matched && \stripos($hook, '/') === 0) {
+                    $matched = \preg_match($hook, $data[':triggerGroup']) === 1;
+                }
+
+                if ($matched) {
+                    $this->runWorkflow($workflow, $hook, $data);
+                }
+            }
+        }
+    }
+
+    /**
+     * Api method to make a call to the cli app
+     *
+     * @param mixed $data Generic data
+     *
+     * @return void
+     *
+     * @api
+     *
+     * @since 1.0.0
+     */
+    public function runWorkflow(WorkflowTemplate $workflow, string $hook, array $data) : void
+    {
+        include $workflow->media->getAbsolutePath();
+    }
+
+    /**
      * Routing end-point for application behaviour.
      *
      * @param RequestAbstract  $request  Request
@@ -43,7 +100,7 @@ final class BackendController extends Controller
      * @since 1.0.0
      * @codeCoverageIgnore
      */
-    public function viewWorkflowTemplates(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
+    public function viewWorkflowTemplateList(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-template-list');
@@ -84,29 +141,25 @@ final class BackendController extends Controller
     public function viewWorkflowTemplate(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
-        $view->setTemplate('/Modules/Workflow/Theme/Backend/task-single');
         $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
 
-        return $view;
-    }
+        $template = WorkflowTemplateMapper::get()
+            ->with('createdBy')
+            ->where('id', (int) $request->getData('id'))
+            ->execute();
 
-    /**
-     * Routing end-point for application behaviour.
-     *
-     * @param RequestAbstract  $request  Request
-     * @param ResponseAbstract $response Response
-     * @param mixed            $data     Generic data
-     *
-     * @return RenderableInterface
-     *
-     * @since 1.0.0
-     * @codeCoverageIgnore
-     */
-    public function viewWorkflowSingle(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
-    {
-        $view = new View($this->app->l11nManager, $request, $response);
-        $view->setTemplate('/Modules/Workflow/Theme/Backend/task-create');
-        $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+        require_once $template->findFile('WorkflowController.php')->getPath();
+
+        /** @var WorkflowControllerInterface $controller */
+        $controller = new WorkflowController($this->app, $template);
+
+        // @todo load template specific data and pass it to the view
+
+        if (!(($list = $template->findFile('template-profile.tpl.php')) instanceof NullMedia)) {
+            $view->setTemplate('/' . \substr($list->getPath(), 0, -8));
+        } else {
+            $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-profile');
+        }
 
         return $view;
     }
@@ -144,11 +197,86 @@ final class BackendController extends Controller
      * @since 1.0.0
      * @codeCoverageIgnore
      */
-    public function viewWorkflowDashboard(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
+    public function viewDashboard(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-dashboard');
         $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+
+        return $view;
+    }
+
+    /**
+     * Routing end-point for application behaviour.
+     *
+     * @param RequestAbstract  $request  Request
+     * @param ResponseAbstract $response Response
+     * @param mixed            $data     Generic data
+     *
+     * @return RenderableInterface
+     *
+     * @since 1.0.0
+     * @codeCoverageIgnore
+     */
+    public function viewInstanceList(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
+    {
+        $view = new View($this->app->l11nManager, $request, $response);
+        $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+
+        $template = WorkflowTemplateMapper::get()
+            ->with('createdBy')
+            ->where('id', (int) $request->getData('id'))
+            ->execute();
+
+        require_once $template->findFile('WorkflowController.php')->getPath();
+
+        /** @var WorkflowControllerInterface $controller */
+        $controller = new WorkflowController($this->app, $template);
+
+        $view->addData('instances', $controller->getInstanceListFromRequest($request));
+
+        if (!(($list = $template->findFile('instance-list.tpl.php')) instanceof NullMedia)) {
+            $view->setTemplate('/' . \substr($list->getPath(), 0, -8));
+        } else {
+            $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-instance-list');
+        }
+
+        return $view;
+    }
+
+    /**
+     * Routing end-point for application behaviour.
+     *
+     * @param RequestAbstract  $request  Request
+     * @param ResponseAbstract $response Response
+     * @param mixed            $data     Generic data
+     *
+     * @return RenderableInterface
+     *
+     * @since 1.0.0
+     * @codeCoverageIgnore
+     */
+    public function viewInstance(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
+    {
+        $view = new View($this->app->l11nManager, $request, $response);
+        $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+
+        $template = WorkflowTemplateMapper::get()
+            ->where('template', (int) $request->getData('template'))
+            ->execute();
+
+        require_once $template->findFile('WorkflowController.php')->getPath();
+
+        /** @var WorkflowControllerInterface $controller */
+        $controller = new WorkflowController($this->app, $template);
+
+        $view->addData('instance', $controller->getInstanceFromRequest($request));
+
+        if (!(($instance = $template->findFile('instance-profile.tpl.php')) instanceof NullMedia)) {
+            $view->setTemplate('/' . \substr($instance->getPath(), 0, -8));
+        } else {
+            $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-instance');
+        }
 
         return $view;
     }

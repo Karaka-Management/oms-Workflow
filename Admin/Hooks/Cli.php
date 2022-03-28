@@ -14,6 +14,6 @@ declare(strict_types=1);
 
 return [
     '/.*/' => [
-        'callback' => ['\Modules\Workflow\Controller\CliController:findWorkflow'],
+        'callback' => ['\Modules\Workflow\Controller\CliController:runWorkflowFromHook'],
     ],
 ];

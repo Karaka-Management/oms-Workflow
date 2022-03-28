@@ -12,8 +12,5 @@
  */
 declare(strict_types=1);
 
-return [
-    '/.*/' => [
-        'callback' => ['\Modules\Workflow\Controller\ApiController:cliEventCall'],
-    ],
-];
+/** @var \phpOMS\Views\View $this */
+echo $this->getData('nav')->render();
