@@ -39,7 +39,7 @@ final class CliController extends Controller
     /**
      * Api method to make a call to the cli app
      *
-     * @param mixed $data Generic data
+     * @param mixed ...$data Generic data
      *
      * @return void
      *
@@ -55,7 +55,7 @@ final class CliController extends Controller
 
             foreach ($hooks as $hook) {
                 $triggerIsRegex = \stripos($data[':triggerGroup'], '/') === 0;
-                $matched = false;
+                $matched        = false;
 
                 if ($triggerIsRegex) {
                     $matched = \preg_match($data[':triggerGroup'], $hook) === 1;
@@ -77,7 +77,9 @@ final class CliController extends Controller
     /**
      * Api method to make a call to the cli app
      *
-     * @param mixed $data Generic data
+     * @param WorkflowTemplate $workflow Workflow template
+     * @param string           $hook     Event hook
+     * @param array            $data     Event data
      *
      * @return void
      *
@@ -87,7 +89,7 @@ final class CliController extends Controller
      */
     public function runWorkflow(WorkflowTemplate $workflow, string $hook, array $data) : void
     {
-        include $workflow->media->getAbsolutePath();
+        include $workflow->source->getAbsolutePath();
     }
 
     /**
@@ -153,7 +155,6 @@ final class CliController extends Controller
             ->execute();
 
         $controller = null;
-        $mapper = null;
 
         $files = $template->source->getSources();
         foreach ($files as $tMedia) {
@@ -168,6 +169,7 @@ final class CliController extends Controller
             }
         }
 
+        /** @var \Modules\Workflow\Models\WorkflowControllerInterface $controller */
         $instance = $controller->createInstanceFromRequest($request);
         $controller->createInstanceDbModel($instance);
 

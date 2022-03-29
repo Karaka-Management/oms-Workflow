@@ -16,9 +16,11 @@ namespace Modules\Workflow\Controller;
 
 use Modules\Media\Models\CollectionMapper;
 use Modules\Media\Models\NullMedia;
+use Modules\Workflow\Models\WorkflowControllerInterface;
 use Modules\Workflow\Models\WorkflowInstanceMapper;
 use Modules\Workflow\Models\WorkflowStatus;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
+use Modules\Workflow\Models\WorkflowTemplateStatus;
 use phpOMS\Contract\RenderableInterface;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
@@ -34,60 +36,6 @@ use phpOMS\Views\View;
  */
 final class BackendController extends Controller
 {
-    /**
-     * Api method to make a call to the cli app
-     *
-     * @param mixed $data Generic data
-     *
-     * @return void
-     *
-     * @api
-     *
-     * @since 1.0.0
-     */
-    public function runWorkflowFromHook(...$data) : void
-    {
-        $workflows = WorkflowTemplateMapper::getAll()->where('status', WorkflowStatus::ACTIVE)->execute();
-        foreach ($workflows as $workflow) {
-            $hooks = $workflow->getHooks();
-
-            foreach ($hooks as $hook) {
-                $triggerIsRegex = \stripos($data[':triggerGroup'], '/') === 0;
-                $matched = false;
-
-                if ($triggerIsRegex) {
-                    $matched = \preg_match($data[':triggerGroup'], $hook) === 1;
-                } else {
-                    $matched = $data[':triggerGroup'] === $hook;
-                }
-
-                if (!$matched && \stripos($hook, '/') === 0) {
-                    $matched = \preg_match($hook, $data[':triggerGroup']) === 1;
-                }
-
-                if ($matched) {
-                    $this->runWorkflow($workflow, $hook, $data);
-                }
-            }
-        }
-    }
-
-    /**
-     * Api method to make a call to the cli app
-     *
-     * @param mixed $data Generic data
-     *
-     * @return void
-     *
-     * @api
-     *
-     * @since 1.0.0
-     */
-    public function runWorkflow(WorkflowTemplate $workflow, string $hook, array $data) : void
-    {
-        include $workflow->media->getAbsolutePath();
-    }
-
     /**
      * Routing end-point for application behaviour.
      *
@@ -270,7 +218,7 @@ final class BackendController extends Controller
         /** @var WorkflowControllerInterface $controller */
         $controller = new WorkflowController($this->app, $template);
 
-        $view->addData('instance', $controller->getInstanceFromRequest($request));
+        $view->addData('instance', $controller->createInstanceFromRequest($request));
 
         if (!(($instance = $template->findFile('instance-profile.tpl.php')) instanceof NullMedia)) {
             $view->setTemplate('/' . \substr($instance->getPath(), 0, -8));

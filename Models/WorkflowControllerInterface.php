@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Modules\Workflow\Models;
 
-use phpOMS\Contract\RenderableInterface;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 
@@ -53,9 +52,11 @@ interface WorkflowControllerInterface
     /**
      * Change workflow instance state
      *
-     * @param RequestAbstract $request Request
+     * @param RequestAbstract  $request  Request
+     * @param ResponseAbstract $response Response
+     * @param null|mixed       $data     Data
      *
-     * @return WorkflowInstanceAbstract
+     * @return void
      *
      * @since 1.0.0
      */

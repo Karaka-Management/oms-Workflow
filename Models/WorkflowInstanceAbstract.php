@@ -25,7 +25,7 @@ use Modules\Admin\Models\NullAccount;
  * @link    https://karaka.app
  * @since   1.0.0
  */
-class WorkflowInstanceAbstract
+abstract class WorkflowInstanceAbstract
 {
     /**
      * ID.
@@ -74,7 +74,7 @@ class WorkflowInstanceAbstract
      */
     public function __construct()
     {
-        $this->template = new NullWorkflowTemplate();
+        $this->template  = new NullWorkflowTemplate();
         $this->createdBy = new NullAccount();
         $this->createdAt = new \DateTimeImmutable('now');
     }

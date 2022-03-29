@@ -74,12 +74,12 @@ final class Installer extends InstallerAbstract
             protected string $appName = 'Api';
         };
 
-        $apiApp->dbPool = $app->dbPool;
-        $apiApp->orgId = $app->orgId;
+        $apiApp->dbPool         = $app->dbPool;
+        $apiApp->orgId          = $app->orgId;
         $apiApp->accountManager = $app->accountManager;
-        $apiApp->appSettings = $app->appSettings;
-        $apiApp->moduleManager = $app->moduleManager;
-        $apiApp->eventManager = $app->eventManager;
+        $apiApp->appSettings    = $app->appSettings;
+        $apiApp->moduleManager  = $app->moduleManager;
+        $apiApp->eventManager   = $app->eventManager;
 
         foreach ($workflowData as $workflow) {
             self::installWorkflow($apiApp, $workflow);
@@ -112,6 +112,10 @@ final class Installer extends InstallerAbstract
         $tempPath = __DIR__ . '/../../../temp/';
 
         $workflowFiles = \scandir(__DIR__ . '/../../..' . $data['path']);
+        if ($workflowFiles === false) {
+            return;
+        }
+
         foreach ($workflowFiles as $filePath) {
             if (!\is_file(__DIR__ . '/../../..' . $data['path'] . '/' . $filePath) || $filePath === '..' || $filePath === '.') {
                 continue;
@@ -131,6 +135,6 @@ final class Installer extends InstallerAbstract
             ]);
         }
 
-        $module->apiTemplateCreate($request, $response);
+        $module->apiWorkflowTemplateCreate($request, $response);
     }
 }

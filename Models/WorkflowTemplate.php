@@ -67,7 +67,7 @@ class WorkflowTemplate
     /**
      * Status.
      *
-     * @var string
+     * @var int
      * @since 1.0.0
      */
     public int $status = WorkflowTemplateStatus::ACTIVE;
@@ -120,6 +120,15 @@ class WorkflowTemplate
         return $this->id;
     }
 
+    /**
+     * Find file by file name
+     *
+     * @param string $name File name
+     *
+     * @return Media
+     *
+     * @since 1.0.0
+     */
     public function findFile(string $name) : Media
     {
         $files = $this->source->getSources();

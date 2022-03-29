@@ -23,6 +23,7 @@ use Modules\Workflow\Models\PermissionCategory;
 use Modules\Workflow\Models\WorkflowInstance;
 use Modules\Workflow\Models\WorkflowInstanceAbstract;
 use Modules\Workflow\Models\WorkflowInstanceMapper;
+use Modules\Workflow\Models\WorkflowStatus;
 use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Account\PermissionType;
@@ -50,6 +51,62 @@ use phpOMS\DataStorage\Database\Schema\Builder as SchemaBuilder;
  */
 final class ApiController extends Controller
 {
+    /**
+     * Api method to make a call to the cli app
+     *
+     * @param mixed ...$data Generic data
+     *
+     * @return void
+     *
+     * @api
+     *
+     * @since 1.0.0
+     */
+    public function runWorkflowFromHook(...$data) : void
+    {
+        $workflows = WorkflowTemplateMapper::getAll()->where('status', WorkflowStatus::ACTIVE)->execute();
+        foreach ($workflows as $workflow) {
+            $hooks = $workflow->getHooks();
+
+            foreach ($hooks as $hook) {
+                $triggerIsRegex = \stripos($data[':triggerGroup'], '/') === 0;
+                $matched        = false;
+
+                if ($triggerIsRegex) {
+                    $matched = \preg_match($data[':triggerGroup'], $hook) === 1;
+                } else {
+                    $matched = $data[':triggerGroup'] === $hook;
+                }
+
+                if (!$matched && \stripos($hook, '/') === 0) {
+                    $matched = \preg_match($hook, $data[':triggerGroup']) === 1;
+                }
+
+                if ($matched) {
+                    $this->runWorkflow($workflow, $hook, $data);
+                }
+            }
+        }
+    }
+
+    /**
+     * Api method to make a call to the cli app
+     *
+     * @param WorkflowTemplate $workflow Workflow template
+     * @param string           $hook     Event hook
+     * @param array            $data     Event data
+     *
+     * @return void
+     *
+     * @api
+     *
+     * @since 1.0.0
+     */
+    public function runWorkflow(WorkflowTemplate $workflow, string $hook, array $data) : void
+    {
+        include $workflow->source->getAbsolutePath();
+    }
+
     /**
      * Routing end-point for application behaviour.
      *
@@ -205,11 +262,11 @@ final class ApiController extends Controller
     }
 
     /**
-     * Create view from template
+     * Create view from template/instance
      *
-     * @param WorkflowInstanceAbstract         $instance Instance to create view from
-     * @param RequestAbstract  $request  Request
-     * @param ResponseAbstract $response Response
+     * @param WorkflowInstanceAbstract $instance Instance to create view from
+     * @param RequestAbstract          $request  Request
+     * @param ResponseAbstract         $response Response
      *
      * @return View
      *
@@ -217,11 +274,13 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    private function createView(WorkflowInstanceAbstract $instance, RequestAbstract $request, ResponseAbstract $response) : View
-    {
-        /** @var array<string, \Modules\Media\Models\Media|\Modules\Media\Models\Media[]> $tcoll */
+    private function createView(
+        WorkflowInstanceAbstract $instance,
+        RequestAbstract $request,
+        ResponseAbstract $response
+    ) : View {
         $tcoll = [];
-        $files = $instance->source->getSources();
+        $files = $instance->template->source->getSources();
 
         /** @var \Modules\Media\Models\Media $tMedia */
         foreach ($files as $tMedia) {
@@ -345,7 +404,7 @@ final class ApiController extends Controller
             $files[] = $upload;
         }
 
-        /** @var Collection $collection */
+        /** @var \Modules\Media\Models\Collection $collection */
         $collection = $this->app->moduleManager->get('Media')->createMediaCollectionFromMedia(
             (string) ($request->getData('name') ?? ''),
             (string) ($request->getData('description') ?? ''),
@@ -376,8 +435,12 @@ final class ApiController extends Controller
                 continue;
             }
 
-            $path = $upload->getAbsolutePath();
+            $path    = $upload->getAbsolutePath();
             $content = \file_get_contents($path);
+            if ($content === false) {
+                $content = '';
+            }
+
             $content = \str_replace('{workflow_id}', (string) $template->getId(), $content);
             \file_put_contents($path, $content);
         }
@@ -385,6 +448,15 @@ final class ApiController extends Controller
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
     }
 
+    /**
+     * Create media directory path
+     *
+     * @param WorkflowTemplate $template Workflow template
+     *
+     * @return string
+     *
+     * @since 1.0.0
+     */
     private function createTemplateDir(WorkflowTemplate $template) : string
     {
         return '/Modules/Workflow/'
@@ -434,7 +506,6 @@ final class ApiController extends Controller
         }
 
         $workflowTemplate->createdBy = new NullAccount($request->header->account);
-        $workflowTemplate->virtualPath = (string) ($request->getData('virtualpath') ?? '/');
 
         return $workflowTemplate;
     }
@@ -475,6 +546,8 @@ final class ApiController extends Controller
             foreach ($definitions as $definition) {
                 SchemaBuilder::createFromSchema($definition, $this->app->dbPool->get('schema'))->execute();
             }
+
+            return;
         }
     }
 
@@ -553,6 +626,7 @@ final class ApiController extends Controller
             }
         }
 
+        /** @var \Modules\Workflow\Models\WorkflowControllerInterface $controller */
         $instance = $controller->createInstanceFromRequest($request);
 
         return $instance;
