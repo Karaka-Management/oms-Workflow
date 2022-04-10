@@ -8,5 +8,5 @@ return [
             'dest' => '\Modules\Workflow\Controller\CliController:cliWorkflowInstanceCreate',
             'verb' => RouteVerb::PUT,
         ],
-    ]
+    ],
 ];

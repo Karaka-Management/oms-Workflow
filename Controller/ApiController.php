@@ -14,13 +14,11 @@ declare(strict_types=1);
 
 namespace Modules\Workflow\Controller;
 
-use Modules\Admin\Models\AccountPermission;
 use Modules\Admin\Models\NullAccount;
 use Modules\Media\Models\CollectionMapper;
 use Modules\Media\Models\NullCollection;
 use Modules\Media\Models\NullMedia;
 use Modules\Workflow\Models\PermissionCategory;
-use Modules\Workflow\Models\WorkflowInstance;
 use Modules\Workflow\Models\WorkflowInstanceAbstract;
 use Modules\Workflow\Models\WorkflowInstanceMapper;
 use Modules\Workflow\Models\WorkflowStatus;
@@ -28,6 +26,7 @@ use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Account\PermissionType;
 use phpOMS\Autoloader;
+use phpOMS\DataStorage\Database\Schema\Builder as SchemaBuilder;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Message\Http\RequestStatusCode;
@@ -39,7 +38,6 @@ use phpOMS\System\MimeType;
 use phpOMS\Utils\Parser\Markdown\Markdown;
 use phpOMS\Utils\StringUtils;
 use phpOMS\Views\View;
-use phpOMS\DataStorage\Database\Schema\Builder as SchemaBuilder;
 
 /**
  * Workflow controller class.

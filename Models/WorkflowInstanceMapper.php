@@ -15,13 +15,7 @@ declare(strict_types=1);
 namespace Modules\Workflow\Models;
 
 use Modules\Admin\Models\AccountMapper;
-use Modules\Calendar\Models\ScheduleMapper;
-use Modules\Media\Models\MediaMapper;
-use Modules\Tag\Models\TagMapper;
 use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
-use phpOMS\DataStorage\Database\Mapper\ReadMapper;
-use phpOMS\DataStorage\Database\Query\Builder;
-use phpOMS\DataStorage\Database\Query\Where;
 
 /**
  * Mapper class.
@@ -41,7 +35,7 @@ final class WorkflowInstanceMapper extends DataMapperFactory
      */
     public const COLUMNS = [
         'workflow_instance_id'                => ['name' => 'workflow_instance_id',         'type' => 'int',      'internal' => 'id'],
-        'workflow_instance_template'         => ['name' => 'workflow_instance_template',         'type' => 'int',               'internal' => 'template'],
+        'workflow_instance_template'          => ['name' => 'workflow_instance_template',         'type' => 'int',               'internal' => 'template'],
         'workflow_instance_created_at'        => ['name' => 'workflow_instance_created_at', 'type' => 'DateTimeImmutable', 'internal' => 'createdAt', 'readonly' => true],
         'workflow_instance_created_by'        => ['name' => 'workflow_instance_created_by', 'type' => 'int', 'internal' => 'createdBy', 'readonly' => true],
     ];
