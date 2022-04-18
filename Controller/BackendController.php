@@ -17,6 +17,7 @@ namespace Modules\Workflow\Controller;
 use Modules\Media\Models\CollectionMapper;
 use Modules\Media\Models\NullMedia;
 use Modules\Workflow\Models\WorkflowControllerInterface;
+use Modules\Workflow\Models\WorkflowInstanceMapper;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Contract\RenderableInterface;
 use phpOMS\Message\RequestAbstract;
@@ -89,19 +90,20 @@ final class BackendController extends Controller
         $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
 
         $template = WorkflowTemplateMapper::get()
+            ->with('source')
+            ->with('source/sources')
             ->with('createdBy')
             ->where('id', (int) $request->getData('id'))
             ->execute();
 
-        require_once $template->findFile('WorkflowController.php')->getPath();
+        $view->setData('template', $template);
 
-        /** @var WorkflowControllerInterface $controller */
-        $controller = new WorkflowController($this->app, $template);
+        if (!(($template->source->findFile('template-profile.tpl.php')) instanceof NullMedia)) {
+            require_once $template->source->findFile('WorkflowController.php')->getPath();
 
-        // @todo load template specific data and pass it to the view
-
-        if (!(($list = $template->findFile('template-profile.tpl.php')) instanceof NullMedia)) {
-            $view->setTemplate('/' . \substr($list->getPath(), 0, -8));
+            /** @var WorkflowControllerInterface $controller */
+            $controller = new \Modules\Workflow\Controller\WorkflowController($this->app, $template);
+            $controller->createTemplateViewFromRequest($view, $request, $response);
         } else {
             $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-profile');
         }
@@ -166,25 +168,13 @@ final class BackendController extends Controller
     public function viewInstanceList(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
+        $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-instance-list');
         $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
 
-        $template = WorkflowTemplateMapper::get()
-            ->with('createdBy')
-            ->where('id', (int) $request->getData('id'))
+        $instances = WorkflowInstanceMapper::getAll()
             ->execute();
 
-        require_once $template->findFile('WorkflowController.php')->getPath();
-
-        /** @var WorkflowControllerInterface $controller */
-        $controller = new WorkflowController($this->app, $template);
-
-        $view->addData('instances', $controller->getInstanceListFromRequest($request));
-
-        if (!(($list = $template->findFile('instance-list.tpl.php')) instanceof NullMedia)) {
-            $view->setTemplate('/' . \substr($list->getPath(), 0, -8));
-        } else {
-            $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-instance-list');
-        }
+        $view->setData('instances', $instances);
 
         return $view;
     }
@@ -207,18 +197,17 @@ final class BackendController extends Controller
         $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
 
         $template = WorkflowTemplateMapper::get()
+            ->with('source')
+            ->with('source/sources')
             ->where('template', (int) $request->getData('template'))
             ->execute();
 
-        require_once $template->findFile('WorkflowController.php')->getPath();
+        if (!(($template->source->findFile('instance-profile.tpl.php')) instanceof NullMedia)) {
+            require_once $template->source->findFile('WorkflowController.php')->getPath();
 
-        /** @var WorkflowControllerInterface $controller */
-        $controller = new WorkflowController($this->app, $template);
-
-        $view->addData('instance', $controller->createInstanceFromRequest($request));
-
-        if (!(($instance = $template->findFile('instance-profile.tpl.php')) instanceof NullMedia)) {
-            $view->setTemplate('/' . \substr($instance->getPath(), 0, -8));
+            /** @var WorkflowControllerInterface $controller */
+            $controller = new \Modules\Workflow\Controller\WorkflowController($this->app, $template);
+            $controller->createInstanceViewFromRequest($view, $request, $response);
         } else {
             $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-instance');
         }

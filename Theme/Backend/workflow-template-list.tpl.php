@@ -139,7 +139,7 @@ echo $this->getData('nav')->render(); ?>
                         <td><a href="<?= $url; ?>"><?= $this->printHtml($value->createdAt->format('Y-m-d')); ?></a>
                 <?php endforeach; ?>
                         <?php foreach ($templates as $key => $template) : ++$count;
-                        $url = UriFactory::build('{/prefix}workflow/template/view?{?}&id=' . $template->getId()); ?>
+                        $url = UriFactory::build('{/prefix}workflow/template/profile?{?}&id=' . $template->getId()); ?>
                 <tr tabindex="0" data-href="<?= $url; ?>">
                     <td><label class="checkbox" for="workflowTemplateList-<?= $key; ?>">
                                     <input type="checkbox" id="workflowTemplateList-<?= $key; ?>" name="templateselect">

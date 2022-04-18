@@ -119,25 +119,4 @@ class WorkflowTemplate
     {
         return $this->id;
     }
-
-    /**
-     * Find file by file name
-     *
-     * @param string $name File name
-     *
-     * @return Media
-     *
-     * @since 1.0.0
-     */
-    public function findFile(string $name) : Media
-    {
-        $files = $this->source->getSources();
-        foreach ($files as $file) {
-            if (StringUtils::endsWith($file->getPath(), $name)) {
-                return $file;
-            }
-        }
-
-        return new NullMedia();
-    }
 }
