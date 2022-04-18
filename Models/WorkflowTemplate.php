@@ -17,10 +17,7 @@ namespace Modules\Workflow\Models;
 use Modules\Admin\Models\Account;
 use Modules\Admin\Models\NullAccount;
 use Modules\Media\Models\Collection;
-use Modules\Media\Models\Media;
 use Modules\Media\Models\NullCollection;
-use Modules\Media\Models\NullMedia;
-use phpOMS\Utils\StringUtils;
 
 /**
  * Workflow template class.
