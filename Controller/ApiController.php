@@ -630,7 +630,7 @@ final class ApiController extends Controller
      * Method to create interface from request.
      *
      * @param WorkflowTemplate $template Workflow template
-     * @param RequestAbstract  $request Request
+     * @param RequestAbstract  $request  Request
      *
      * @return WorkflowInstanceAbstract
      *
