@@ -2,7 +2,7 @@
 /**
  * Karaka
  *
- * PHP Version 8.0
+ * PHP Version 8.1
  *
  * @package   Modules\Workflow
  * @copyright Dennis Eichhorn
@@ -70,7 +70,7 @@ final class ApiController extends Controller
             ->execute();
 
         foreach ($workflows as $workflow) {
-            $hooksFile  = $workflow->source->findFile('Hooks.php');
+            $hooksFile = $workflow->source->findFile('Hooks.php');
 
             if ($hooksFile instanceof NullMedia) {
                 continue;
@@ -629,7 +629,8 @@ final class ApiController extends Controller
     /**
      * Method to create interface from request.
      *
-     * @param RequestAbstract $request Request
+     * @param WorkflowTemplate $template Workflow template
+     * @param RequestAbstract  $request Request
      *
      * @return WorkflowInstanceAbstract
      *
