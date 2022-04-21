@@ -61,7 +61,7 @@ final class Installer extends InstallerAbstract
         }
 
         $workflowData = \json_decode($workflowFile, true) ?? [];
-        if ($workflowData === false) {
+        if (!\is_array($workflowData)) {
             throw new \Exception(); // @codeCoverageIgnore
         }
 

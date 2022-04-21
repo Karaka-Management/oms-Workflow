@@ -84,6 +84,7 @@ final class ApiController extends Controller
             }
 
             foreach ($hooks as $hook) {
+                 /** @var array{:triggerGroup?:string} $data */
                 $triggerIsRegex = \stripos($data[':triggerGroup'], '/') === 0;
                 $matched        = false;
 
@@ -135,7 +136,7 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    public function apiWorkflowExport(HttpRequest $request, HttpResponse $response, $data = null) : void
+    public function apiWorkflowExport(HttpRequest $request, HttpResponse $response, mixed $data = null) : void
     {
         if (!empty($val = $this->validateExport($request))) {
             $response->set('export', new FormValidation($val));
@@ -383,7 +384,7 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    public function apiWorkflowTemplateCreate(RequestAbstract $request, ResponseAbstract $response, $data = null) : void
+    public function apiWorkflowTemplateCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
     {
         $uploadedFiles = $request->getFiles();
         $files         = [];
@@ -586,7 +587,7 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    public function apiWorkflowInstanceCreate(RequestAbstract $request, ResponseAbstract $response, $data = null) : void
+    public function apiWorkflowInstanceCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
     {
         if (!empty($val = $this->validateInstanceCreate($request))) {
             $response->set('instance_create', new FormValidation($val));
@@ -630,7 +631,7 @@ final class ApiController extends Controller
      * Method to create interface from request.
      *
      * @param WorkflowTemplate $template Workflow template
-     * @param RequestAbstract  $request Request
+     * @param RequestAbstract  $request  Request
      *
      * @return WorkflowInstanceAbstract
      *
@@ -666,7 +667,7 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    public function apiWorkflowImport(HttpRequest $request, HttpResponse $response, $data = null) : void
+    public function apiWorkflowImport(HttpRequest $request, HttpResponse $response, mixed $data = null) : void
     {
     }
 }

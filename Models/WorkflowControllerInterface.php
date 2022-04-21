@@ -16,6 +16,7 @@ namespace Modules\Workflow\Models;
 
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
+use phpOMS\Views\View;
 
 /**
  * Controller interface.
@@ -72,4 +73,30 @@ interface WorkflowControllerInterface
      * @since 1.0.0
      */
     public function createInstanceDbModel(WorkflowInstanceAbstract $instance) : void;
+
+    /**
+     * Create view for instance
+     *
+     * @param View             $view     View to populate
+     * @param RequestAbstract  $request  Request
+     * @param ResponseAbstract $response Response
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
+    public function createInstanceViewFromRequest(View $view, RequestAbstract $request, ResponseAbstract $response) : void;
+
+    /**
+     * Create view for template
+     *
+     * @param View             $view     View to populate
+     * @param RequestAbstract  $request  Request
+     * @param ResponseAbstract $response Response
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
+    public function createTemplateViewFromRequest(View $view, RequestAbstract $request, ResponseAbstract $response) : void;
 }

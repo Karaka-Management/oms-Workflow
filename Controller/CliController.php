@@ -49,11 +49,13 @@ final class CliController extends Controller
      */
     public function runWorkflowFromHook(...$data) : void
     {
+        /** @var \Modules\Workflow\Models\WorkflowTemplate[] $workflows */
         $workflows = WorkflowTemplateMapper::getAll()->where('status', WorkflowStatus::ACTIVE)->execute();
         foreach ($workflows as $workflow) {
             $hooks = $workflow->getHooks();
 
             foreach ($hooks as $hook) {
+                /** @var array{\\:triggerGroup?:string} $data */
                 $triggerIsRegex = \stripos($data[':triggerGroup'], '/') === 0;
                 $matched        = false;
 
@@ -104,7 +106,7 @@ final class CliController extends Controller
      * @since 1.0.0
      * @codeCoverageIgnore
      */
-    public function cliWorkflowInstanceCreate(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
+    public function cliWorkflowInstanceCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
 
@@ -150,6 +152,7 @@ final class CliController extends Controller
      */
     private function createInstanceFromRequest(RequestAbstract $request) : WorkflowInstanceAbstract
     {
+        /** @var \Modules\Workflow\Models\WorkflowTemplate $template */
         $template = WorkflowTemplateMapper::get()
             ->where('id', (int) $request->getData('j'))
             ->execute();
