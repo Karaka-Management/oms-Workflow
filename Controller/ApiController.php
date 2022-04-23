@@ -158,8 +158,12 @@ final class ApiController extends Controller
         $isExport  = \in_array($request->getData('type'), ['xlsx', 'pdf', 'docx', 'pptx', 'csv', 'json']);
 
         // is allowed to read
-        if (!$this->app->accountManager->get($accountId)->hasPermission(PermissionType::READ, $this->app->orgId, null, self::NAME, PermissionCategory::INSTANCE, $instance->getId())
-            || ($isExport && !$this->app->accountManager->get($accountId)->hasPermission(PermissionType::READ, $this->app->orgId, $this->app->appName, self::NAME, PermissionCategory::EXPORT))
+        if (!$this->app->accountManager->get($accountId)->hasPermission(
+                PermissionType::READ, $this->app->orgId, null, self::NAME, PermissionCategory::INSTANCE, $instance->getId()
+            )
+            || ($isExport && !$this->app->accountManager->get($accountId)->hasPermission(
+                    PermissionType::READ, $this->app->orgId, $this->app->appName, self::NAME, PermissionCategory::EXPORT
+            ))
         ) {
             $response->header->status = RequestStatusCode::R_403;
 
@@ -397,7 +401,9 @@ final class ApiController extends Controller
         }
 
         // is allowed to create
-        if (!$this->app->accountManager->get($request->header->account)->hasPermission(PermissionType::CREATE, $this->app->orgId, null, self::NAME, PermissionCategory::TEMPLATE)) {
+        if (!$this->app->accountManager->get($request->header->account)->hasPermission(
+                PermissionType::CREATE, $this->app->orgId, null, self::NAME, PermissionCategory::TEMPLATE)
+        ) {
             $response->header->status = RequestStatusCode::R_403;
 
             return;
@@ -604,7 +610,13 @@ final class ApiController extends Controller
 
         require_once $template->findFile('WorkflowInstanceMapper.php')->getPath();
 
-        $this->createModel($request->header->account, $instance, \Modules\Workflow\Models\WorkflowInstanceMapper::class, 'instance', $request->getOrigin());
+        $this->createModel(
+            $request->header->account,
+            $instance,
+            \Modules\Workflow\Models\WorkflowInstanceMapper::class,
+            'instance',
+            $request->getOrigin()
+        );
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Instance', 'Instance successfully created', $instance);
     }
 
