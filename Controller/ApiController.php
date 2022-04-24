@@ -85,7 +85,7 @@ final class ApiController extends Controller
             }
 
             foreach ($hooks as $hook) {
-                 /** @var array{:triggerGroup?:string} $data */
+                /** @var array{:triggerGroup?:string} $data */
                 $triggerIsRegex = \stripos($data[':triggerGroup'], '/') === 0;
                 $matched        = false;
 

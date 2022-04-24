@@ -18,7 +18,6 @@ use Modules\Media\Models\CollectionMapper;
 use Modules\Media\Models\NullMedia;
 use Modules\Workflow\Models\WorkflowControllerInterface;
 use Modules\Workflow\Models\WorkflowInstanceAbstractMapper;
-use Modules\Workflow\Models\WorkflowInstanceMapper;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Asset\AssetType;
 use phpOMS\Contract\RenderableInterface;
