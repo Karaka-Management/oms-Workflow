@@ -25,7 +25,7 @@ use Modules\Admin\Models\NullAccount;
  * @link    https://karaka.app
  * @since   1.0.0
  */
-abstract class WorkflowInstanceAbstract
+class WorkflowInstanceAbstract
 {
     /**
      * ID.
@@ -42,6 +42,14 @@ abstract class WorkflowInstanceAbstract
      * @since 1.0.0
      */
     public string $title = '';
+
+    /**
+     * Instance status.
+     *
+     * @var int
+     * @since 1.0.0
+     */
+    private int $status = WorkflowInstanceStatus::WORKING;
 
     /**
      * Template.
@@ -89,5 +97,31 @@ abstract class WorkflowInstanceAbstract
     public function getId() : int
     {
         return $this->id;
+    }
+
+    /**
+     * Set status
+     *
+     * @param int $status Status
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
+    public function setStatus(int $status) : void
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * Get status
+     *
+     * @return int
+     *
+     * @since 1.0.0
+     */
+    public function getStatus() : int
+    {
+        return $this->status;
     }
 }

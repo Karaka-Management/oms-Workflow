@@ -63,6 +63,17 @@
                 "primary": true,
                 "autoincrement": true
             },
+            "workflow_instance_title": {
+                "name": "workflow_instance_title",
+                "type": "VARCHAR(255)",
+                "default": null,
+                "null": true
+            },
+            "workflow_instance_status": {
+                "name": "workflow_instance_status",
+                "type": "INT",
+                "null": false
+            },
             "workflow_instance_template": {
                 "name": "workflow_instance_template",
                 "type": "INT",

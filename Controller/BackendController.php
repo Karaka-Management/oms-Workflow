@@ -17,8 +17,10 @@ namespace Modules\Workflow\Controller;
 use Modules\Media\Models\CollectionMapper;
 use Modules\Media\Models\NullMedia;
 use Modules\Workflow\Models\WorkflowControllerInterface;
+use Modules\Workflow\Models\WorkflowInstanceAbstractMapper;
 use Modules\Workflow\Models\WorkflowInstanceMapper;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
+use phpOMS\Asset\AssetType;
 use phpOMS\Contract\RenderableInterface;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
@@ -108,6 +110,10 @@ final class BackendController extends Controller
             $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-profile');
         }
 
+        $head = $response->get('Content')->getData('head');
+        $head->addAsset(AssetType::JSLATE, 'Resources/mermaid/mermaid.min.js');
+        $head->addAsset(AssetType::JSLATE, 'Modules/Workflow/Controller.js', ['type' => 'module']);
+
         return $view;
     }
 
@@ -150,6 +156,11 @@ final class BackendController extends Controller
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-dashboard');
         $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
 
+        $instances = WorkflowInstanceAbstractMapper::getAll()
+            ->execute();
+
+        $view->setData('instances', $instances);
+
         return $view;
     }
 
@@ -171,7 +182,8 @@ final class BackendController extends Controller
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-instance-list');
         $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
 
-        $instances = WorkflowInstanceMapper::getAll()
+        /** @var \Modules\Workflow\Models\WorkflowInstanceAbstract $instances */
+        $instances = WorkflowInstanceAbstractMapper::getAll()
             ->execute();
 
         $view->setData('instances', $instances);
@@ -196,12 +208,20 @@ final class BackendController extends Controller
         $view = new View($this->app->l11nManager, $request, $response);
         $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
 
+        /** @var \Modules\Workflow\Models\WorkflowInstanceAbstract $instance */
+        $instance = WorkflowInstanceAbstractMapper::get()
+            ->where('id', (int) $request->getData('id'))
+            ->execute();
+
         /** @var \Modules\Workflow\Models\WorkflowTemplate $template */
         $template = WorkflowTemplateMapper::get()
             ->with('source')
             ->with('source/sources')
-            ->where('template', (int) $request->getData('template'))
+            ->where('id',  $instance->template->getId())
+            ->limit()
             ->execute();
+
+        $view->addData('template', $template);
 
         if (!(($template->source->findFile('instance-profile.tpl.php')) instanceof NullMedia)) {
             require_once $template->source->findFile('WorkflowController.php')->getPath();

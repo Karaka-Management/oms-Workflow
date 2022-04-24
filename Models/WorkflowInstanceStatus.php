@@ -14,25 +14,23 @@ declare(strict_types=1);
 
 namespace Modules\Workflow\Models;
 
+use phpOMS\Stdlib\Base\Enum;
+
 /**
- * Null model
+ * Workflow status enum.
  *
  * @package Modules\Workflow\Models
  * @license OMS License 1.0
  * @link    https://karaka.app
  * @since   1.0.0
  */
-final class NullWorkflowInstance extends WorkflowInstanceAbstract
+abstract class WorkflowInstanceStatus extends Enum
 {
-    /**
-     * Constructor
-     *
-     * @param int $id Model id
-     *
-     * @since 1.0.0
-     */
-    public function __construct(int $id = 0)
-    {
-        $this->id = $id;
-    }
+    public const WORKING = 1;
+
+    public const SUSPENDED = 2;
+
+    public const CANCELED = 3;
+
+    public const DONE = 4;
 }

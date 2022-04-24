@@ -31,13 +31,14 @@ interface WorkflowControllerInterface
     /**
      * Create instance from request
      *
-     * @param RequestAbstract $request Request
+     * @param RequestAbstract  $request  Request
+     * @param WorkflowTemplate $template Workflow template
      *
      * @return WorkflowInstanceAbstract
      *
      * @since 1.0.0
      */
-    public function createInstanceFromRequest(RequestAbstract $request) : WorkflowInstanceAbstract;
+    public function createInstanceFromRequest(RequestAbstract $request, WorkflowTemplate $template) : WorkflowInstanceAbstract;
 
     /**
      * Create list of all instances for this workflow from a request

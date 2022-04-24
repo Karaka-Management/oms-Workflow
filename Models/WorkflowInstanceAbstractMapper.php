@@ -25,7 +25,7 @@ use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
  * @link    https://karaka.app
  * @since   1.0.0
  */
-final class WorkflowInstanceMapper extends DataMapperFactory
+final class WorkflowInstanceAbstractMapper extends DataMapperFactory
 {
     /**
      * Columns.
@@ -35,6 +35,8 @@ final class WorkflowInstanceMapper extends DataMapperFactory
      */
     public const COLUMNS = [
         'workflow_instance_id'                => ['name' => 'workflow_instance_id',         'type' => 'int',      'internal' => 'id'],
+        'workflow_instance_title'              => ['name' => 'workflow_instance_title',       'type' => 'string',   'internal' => 'title'],
+        'workflow_instance_status'            => ['name' => 'workflow_instance_status',      'type' => 'int',      'internal' => 'status'],
         'workflow_instance_template'          => ['name' => 'workflow_instance_template',         'type' => 'int',               'internal' => 'template'],
         'workflow_instance_created_at'        => ['name' => 'workflow_instance_created_at', 'type' => 'DateTimeImmutable', 'internal' => 'createdAt', 'readonly' => true],
         'workflow_instance_created_by'        => ['name' => 'workflow_instance_created_by', 'type' => 'int', 'internal' => 'createdBy', 'readonly' => true],

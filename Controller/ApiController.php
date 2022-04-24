@@ -21,6 +21,7 @@ use Modules\Media\Models\NullMedia;
 use Modules\Media\Models\PathSettings;
 use Modules\Workflow\Models\PermissionCategory;
 use Modules\Workflow\Models\WorkflowInstanceAbstract;
+use Modules\Workflow\Models\WorkflowInstanceAbstractMapper;
 use Modules\Workflow\Models\WorkflowStatus;
 use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
@@ -146,7 +147,7 @@ final class ApiController extends Controller
         }
 
         /** @var WorkflowInstanceAbstract $instance */
-        $instance = WorkflowInstanceMapper::get()
+        $instance = WorkflowInstanceAbstractMapper::get()
             ->with('template')
             ->with('template/source')
             ->with('template/source/sources')
@@ -602,18 +603,19 @@ final class ApiController extends Controller
             return;
         }
 
+        /** @var \Modules\Workflow\Models\WorkflowTemplate $template */
         $template = WorkflowTemplateMapper::get()
-            ->where('id', (int) $request->getData('id'))
+            ->with('source')
+            ->with('source/sources')
+            ->where('id', (int) $request->getData('template'))
             ->execute();
 
-        $instance = $this->createInstanceFromRequest($template, $request);
-
-        require_once $template->findFile('WorkflowInstanceMapper.php')->getPath();
+        $instance = $this->createInstanceFromRequest($request, $template);
 
         $this->createModel(
             $request->header->account,
             $instance,
-            \Modules\Workflow\Models\WorkflowInstanceMapper::class,
+            WorkflowInstanceAbstractMapper::class,
             'instance',
             $request->getOrigin()
         );
@@ -632,7 +634,7 @@ final class ApiController extends Controller
     private function validateInstanceCreate(RequestAbstract $request) : array
     {
         $val = [];
-        if (($val['j'] = empty($request->getData('j')))) {
+        if (($val['template'] = empty($request->getData('template')))) {
             return $val;
         }
 
@@ -642,24 +644,24 @@ final class ApiController extends Controller
     /**
      * Method to create interface from request.
      *
-     * @param WorkflowTemplate $template Workflow template
      * @param RequestAbstract  $request  Request
+     * @param WorkflowTemplate $template Workflow template
      *
      * @return WorkflowInstanceAbstract
      *
      * @since 1.0.0
      */
-    private function createInstanceFromRequest(WorkflowTemplate $template, RequestAbstract $request) : WorkflowInstanceAbstract
+    private function createInstanceFromRequest(RequestAbstract $request, WorkflowTemplate $template) : WorkflowInstanceAbstract
     {
         $controller = null;
 
         $file = $template->source->findFile('WorkflowController.php');
-        require_once $file->getPath();
-
-        $controller = new \Modules\Workflow\Controller\WorkflowController($this->app, $template);
+        require_once $file->getAbsolutePath();
 
         /** @var \Modules\Workflow\Models\WorkflowControllerInterface $controller */
-        $instance = $controller->createInstanceFromRequest($request);
+        $controller = new \Modules\Workflow\Controller\WorkflowController($this->app, $template);
+
+        $instance = $controller->createInstanceFromRequest($request, $template);
 
         return $instance;
     }
