@@ -110,8 +110,8 @@ final class BackendController extends Controller
         }
 
         $head = $response->get('Content')->getData('head');
-        $head->addAsset(AssetType::JSLATE, 'Resources/mermaid/mermaid.min.js');
-        $head->addAsset(AssetType::JSLATE, 'Modules/Workflow/Controller.js', ['type' => 'module']);
+        $head->addAsset(AssetType::JSLATE, 'Resources/mermaid/mermaid.min.js?v=1.0.0');
+        $head->addAsset(AssetType::JSLATE, 'Modules/Workflow/Controller.js?v=1.0.0', ['type' => 'module']);
 
         return $view;
     }
