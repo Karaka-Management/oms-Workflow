@@ -61,7 +61,7 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    public function runWorkflowFromHook(...$data) : void
+    public function runWorkflowFromHook(mixed ...$data) : void
     {
         /** @var WorkflowTemplate[] $workflows */
         $workflows = WorkflowTemplateMapper::getAll()
@@ -86,17 +86,17 @@ final class ApiController extends Controller
 
             foreach ($hooks as $hook) {
                 /** @var array{:triggerGroup?:string} $data */
-                $triggerIsRegex = \stripos($data[':triggerGroup'], '/') === 0;
+                $triggerIsRegex = \stripos($data['@triggerGroup'], '/') === 0;
                 $matched        = false;
 
                 if ($triggerIsRegex) {
-                    $matched = \preg_match($data[':triggerGroup'], $hook) === 1;
+                    $matched = \preg_match($data['@triggerGroup'], $hook) === 1;
                 } else {
-                    $matched = $data[':triggerGroup'] === $hook;
+                    $matched = $data['@triggerGroup'] === $hook;
                 }
 
                 if (!$matched && \stripos($hook, '/') === 0) {
-                    $matched = \preg_match($hook, $data[':triggerGroup']) === 1;
+                    $matched = \preg_match($hook, $data['@triggerGroup']) === 1;
                 }
 
                 if ($matched) {

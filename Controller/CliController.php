@@ -47,7 +47,7 @@ final class CliController extends Controller
      *
      * @since 1.0.0
      */
-    public function runWorkflowFromHook(...$data) : void
+    public function runWorkflowFromHook(mixed ...$data) : void
     {
         /** @var \Modules\Workflow\Models\WorkflowTemplate[] $workflows */
         $workflows = WorkflowTemplateMapper::getAll()->where('status', WorkflowStatus::ACTIVE)->execute();
@@ -56,17 +56,17 @@ final class CliController extends Controller
 
             foreach ($hooks as $hook) {
                 /** @var array{\\:triggerGroup?:string} $data */
-                $triggerIsRegex = \stripos($data[':triggerGroup'], '/') === 0;
+                $triggerIsRegex = \stripos($data['@triggerGroup'], '/') === 0;
                 $matched        = false;
 
                 if ($triggerIsRegex) {
-                    $matched = \preg_match($data[':triggerGroup'], $hook) === 1;
+                    $matched = \preg_match($data['@triggerGroup'], $hook) === 1;
                 } else {
-                    $matched = $data[':triggerGroup'] === $hook;
+                    $matched = $data['@triggerGroup'] === $hook;
                 }
 
                 if (!$matched && \stripos($hook, '/') === 0) {
-                    $matched = \preg_match($hook, $data[':triggerGroup']) === 1;
+                    $matched = \preg_match($hook, $data['@triggerGroup']) === 1;
                 }
 
                 if ($matched) {
