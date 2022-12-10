@@ -31,7 +31,7 @@ echo $this->getData('nav')->render(); ?>
                 <?php
                     $c = 0;
                     foreach ($instances as $key => $instance) : ++$c;
-                        $url = \phpOMS\Uri\UriFactory::build('admin/instance/single?{?}&id=' . $instance->getId());
+                        $url = \phpOMS\Uri\UriFactory::build('{/lang}/{/app}/admin/instance/single?{?}&id=' . $instance->getId());
                 ?>
                 <tr data-href="<?= $url; ?>">
                     <td><a href="<?= $url; ?>"><?= $this->printHtml((string) $instance->getStatus()); ?></a>

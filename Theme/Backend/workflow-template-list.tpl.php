@@ -29,16 +29,16 @@ $accountDir = $account->getId() . ' ' . $account->login;
 $collections = $this->getData('collections');
 $mediaPath   = \urldecode($this->getData('path') ?? '/');
 
-$previous = empty($templates) ? 'workflow/template/list' : 'workflow/template/list?{?}&id=' . \reset($templates)->getId() . '&ptype=p';
-$next     = empty($templates) ? 'workflow/template/list' : 'workflow/template/list?{?}&id=' . \end($templates)->getId() . '&ptype=n';
+$previous = empty($templates) ? 'workflow/template/list' : '{/lang}/{/app}/workflow/template/list?{?}&id=' . \reset($templates)->getId() . '&ptype=p';
+$next     = empty($templates) ? 'workflow/template/list' : '{/lang}/{/app}/workflow/template/list?{?}&id=' . \end($templates)->getId() . '&ptype=n';
 
 echo $this->getData('nav')->render(); ?>
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
             <ul class="crumbs-2">
-                <li data-href="<?= UriFactory::build('workflow/template/list?path=/Accounts/' . $accountDir); ?>"><a href="<?= UriFactory::build('workflow/template/list?path=/Accounts/' . $accountDir); ?>"><i class="fa fa-home"></i></a>
-                <li data-href="<?= UriFactory::build('workflow/template/list?path=/'); ?>"><a href="<?= UriFactory::build('workflow/template/list?path=/'); ?>">/</a></li>
+                <li data-href="<?= UriFactory::build('{/lang}/{/app}/workflow/template/list?path=/Accounts/' . $accountDir); ?>"><a href="<?= UriFactory::build('{/lang}/{/app}/workflow/template/list?path=/Accounts/' . $accountDir); ?>"><i class="fa fa-home"></i></a>
+                <li data-href="<?= UriFactory::build('{/lang}/{/app}/workflow/template/list?path=/'); ?>"><a href="<?= UriFactory::build('{/lang}/{/app}/workflow/template/list?path=/'); ?>">/</a></li>
                 <?php
                     $subPath    = '';
                     $paths      = \explode('/', \ltrim($mediaPath, '/'));
@@ -56,7 +56,7 @@ echo $this->getData('nav')->render(); ?>
 
                         $subPath .= '/' . $paths[$i];
 
-                        $url = UriFactory::build('workflow/template/list?path=' . $subPath);
+                        $url = UriFactory::build('{/lang}/{/app}/workflow/template/list?path=' . $subPath);
                 ?>
                     <li data-href="<?= $url; ?>"<?= $i === $length - 1 ? 'class="active"' : ''; ?>><a href="<?= $url; ?>"><?= $this->printHtml($paths[$i]); ?></a></li>
                 <?php endfor; ?>
@@ -115,7 +115,7 @@ echo $this->getData('nav')->render(); ?>
                             <i class="filter fa fa-filter"></i>
                         </label>
                 <tbody>
-                <?php if (!empty($parentPath)) : $url = UriFactory::build('workflow/template/list?path=' . $parentPath); ?>
+                <?php if (!empty($parentPath)) : $url = UriFactory::build('{/lang}/{/app}/workflow/template/list?path=' . $parentPath); ?>
                         <tr tabindex="0" data-href="<?= $url; ?>">
                             <td>
                             <td data-label="<?= $this->getHtml('Type'); ?>"><a href="<?= $url; ?>"><i class="fa fa-folder-open-o"></i></a>
@@ -126,7 +126,7 @@ echo $this->getData('nav')->render(); ?>
                             <td>
                     <?php endif; ?>
                 <?php $count = 0; foreach ($collections as $key => $value) : ++$count;
-                    $url     = UriFactory::build('workflow/template/list?path=' . \rtrim($value->getVirtualPath(), '/') . '/' . $value->name);
+                    $url     = UriFactory::build('{/lang}/{/app}/workflow/template/list?path=' . \rtrim($value->getVirtualPath(), '/') . '/' . $value->name);
                 ?>
                     <tr data-href="<?= $url; ?>">
                         <td><label class="checkbox" for="workflowTemplateList-<?= $key; ?>">
@@ -135,11 +135,11 @@ echo $this->getData('nav')->render(); ?>
                                 </label>
                         <td><a href="<?= $url; ?>"><i class="fa fa-folder-open-o"></i></a>
                         <td><a href="<?= $url; ?>"><?= $this->printHtml($value->name); ?></a>
-                        <td><a class="content" href="<?= UriFactory::build('profile/single?{?}&for=' . $value->createdBy->getId()); ?>"><?= $this->printHtml($this->renderUserName('%3$s %2$s %1$s', [$value->createdBy->name1, $value->createdBy->name2, $value->createdBy->name3, $value->createdBy->login ?? ''])); ?></a>
+                        <td><a class="content" href="<?= UriFactory::build('{/lang}/{/app}/profile/single?{?}&for=' . $value->createdBy->getId()); ?>"><?= $this->printHtml($this->renderUserName('%3$s %2$s %1$s', [$value->createdBy->name1, $value->createdBy->name2, $value->createdBy->name3, $value->createdBy->login ?? ''])); ?></a>
                         <td><a href="<?= $url; ?>"><?= $this->printHtml($value->createdAt->format('Y-m-d')); ?></a>
                 <?php endforeach; ?>
                         <?php foreach ($templates as $key => $template) : ++$count;
-                        $url = UriFactory::build('workflow/template/profile?{?}&id=' . $template->getId()); ?>
+                        $url = UriFactory::build('{/lang}/{/app}/workflow/template/profile?{?}&id=' . $template->getId()); ?>
                 <tr tabindex="0" data-href="<?= $url; ?>">
                     <td><label class="checkbox" for="workflowTemplateList-<?= $key; ?>">
                                     <input type="checkbox" id="workflowTemplateList-<?= $key; ?>" name="templateselect">
@@ -147,7 +147,7 @@ echo $this->getData('nav')->render(); ?>
                                 </label>
                     <td>
                     <td data-label="<?= $this->getHtml('Name'); ?>"><a href="<?= $url; ?>"><?= $this->printHtml($template->name); ?></a>
-                    <td data-label="<?= $this->getHtml('Creator'); ?>"><a class="content" href="<?= UriFactory::build('profile/single?{?}&for=' . $template->createdBy->getId()); ?>"><?= $this->printHtml($this->renderUserName('%3$s %2$s %1$s', [$template->createdBy->name1, $template->createdBy->name2, $template->createdBy->name3, $template->createdBy->login ?? ''])); ?></a>
+                    <td data-label="<?= $this->getHtml('Creator'); ?>"><a class="content" href="<?= UriFactory::build('{/lang}/{/app}/profile/single?{?}&for=' . $template->createdBy->getId()); ?>"><?= $this->printHtml($this->renderUserName('%3$s %2$s %1$s', [$template->createdBy->name1, $template->createdBy->name2, $template->createdBy->name3, $template->createdBy->login ?? ''])); ?></a>
                     <td data-label="<?= $this->getHtml('Updated'); ?>"><a href="<?= $url; ?>"><?= $this->printHtml($template->createdAt->format('Y-m-d')); ?></a>
                         <?php endforeach; ?>
                         <?php if ($count === 0) : ?>
