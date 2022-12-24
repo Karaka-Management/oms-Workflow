@@ -55,7 +55,7 @@ final class CliController extends Controller
             $hooks = $workflow->getHooks();
 
             foreach ($hooks as $hook) {
-                /** @var array{\\:triggerGroup?:string} $data */
+                /** @var array{':triggerGroup'?:string} $data */
                 $triggerIsRegex = \stripos($data['@triggerGroup'], '/') === 0;
                 $matched        = false;
 
@@ -173,7 +173,7 @@ final class CliController extends Controller
         }
 
         /** @var \Modules\Workflow\Models\WorkflowControllerInterface $controller */
-        $instance = $controller->createInstanceFromRequest($request);
+        $instance = $controller->createInstanceFromRequest($request, $template);
         $controller->createInstanceDbModel($instance);
 
         return $instance;

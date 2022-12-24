@@ -72,20 +72,22 @@ final class ApiController extends Controller
 
         foreach ($workflows as $workflow) {
             $hooksFile = $workflow->source->findFile('Hooks.php');
-
             if ($hooksFile instanceof NullMedia) {
                 continue;
             }
 
             $hooksContent = \file_get_contents($hooksFile->getAbsolutePath());
-            $hooks        = \json_decode($hooksContent);
+            if ($hooksContent === false) {
+                continue;
+            }
 
+            $hooks = \json_decode($hooksContent);
             if ($hooks === false || $hooks === null) {
                 continue;
             }
 
             foreach ($hooks as $hook) {
-                /** @var array{:triggerGroup?:string} $data */
+                /** @var array{':triggerGroup'?:string} $data */
                 $triggerIsRegex = \stripos($data['@triggerGroup'], '/') === 0;
                 $matched        = false;
 
@@ -300,7 +302,10 @@ final class ApiController extends Controller
         RequestAbstract $request,
         ResponseAbstract $response
     ) : View {
+        /** @var array{lang?:\Modules\Media\Models\Media, cfg?:\Modules\Media\Models\Media, excel?:\Modules\Media\Models\Media, word?:\Modules\Media\Models\Media, powerpoint?:\Modules\Media\Models\Media, pdf?:\Modules\Media\Models\Media, csv?:\Modules\Media\Models\Media, json?:\Modules\Media\Models\Media, template?:\Modules\Media\Models\Media, css?:array<string, \Modules\Media\Models\Media>, js?:array<string, \Modules\Media\Models\Media>, db?:array<string, \Modules\Media\Models\Media>, other?:array<string, \Modules\Media\Models\Media>} $tcoll */
         $tcoll = [];
+
+        /** @var \Modules\Media\Models\Media[] $files */
         $files = $instance->template->source->getSources();
 
         /** @var \Modules\Media\Models\Media $tMedia */
@@ -346,6 +351,10 @@ final class ApiController extends Controller
                     $tcoll['css'][$tMedia->name] = $tMedia;
                     break;
                 case StringUtils::endsWith($lowerPath, '.js'):
+                    if (!isset($tcoll['js'])) {
+                        $tcoll['js'] = [];
+                    }
+
                     $tcoll['js'][$tMedia->name] = $tMedia;
                     break;
                 case StringUtils::endsWith($lowerPath, '.sqlite'):
@@ -474,22 +483,6 @@ final class ApiController extends Controller
         $this->createDatabaseForTemplate($template);
 
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
-    }
-
-    /**
-     * Create media directory path
-     *
-     * @param WorkflowTemplate $template Workflow template
-     *
-     * @return string
-     *
-     * @since 1.0.0
-     */
-    private function createTemplateDir(WorkflowTemplate $template) : string
-    {
-        return '/Modules/Workflow/'
-            . $template->getId() . ' '
-            . $template->name;
     }
 
     /**

@@ -116,4 +116,15 @@ class WorkflowTemplate
     {
         return $this->id;
     }
+
+    /**
+     * Get hooks
+     *
+     * @return array
+     * @since 1.0.0
+     */
+    public function getHooks() : array
+    {
+        return [];
+    }
 }
