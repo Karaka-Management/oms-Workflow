@@ -81,13 +81,14 @@ final class ApiController extends Controller
                 continue;
             }
 
-            $hooks = \json_decode($hooksContent);
+            $hooks = \json_decode($hooksContent, true);
             if ($hooks === false || $hooks === null) {
                 continue;
             }
 
+            /** @var array $hooks */
             foreach ($hooks as $hook) {
-                /** @var array{':triggerGroup'?:string} $data */
+                /** @var array{'@triggerGroup'?:string} $data */
                 $triggerIsRegex = \stripos($data['@triggerGroup'], '/') === 0;
                 $matched        = false;
 
@@ -220,6 +221,9 @@ final class ApiController extends Controller
      */
     private function setWorkflowResponseHeader(View $view, string $name, RequestAbstract $request, ResponseAbstract $response) : void
     {
+        /** @var array{lang?:\Modules\Media\Models\Media, cfg?:\Modules\Media\Models\Media, excel?:\Modules\Media\Models\Media, word?:\Modules\Media\Models\Media, powerpoint?:\Modules\Media\Models\Media, pdf?:\Modules\Media\Models\Media, csv?:\Modules\Media\Models\Media, json?:\Modules\Media\Models\Media, template?:\Modules\Media\Models\Media, css?:array<string, \Modules\Media\Models\Media>, js?:array<string, \Modules\Media\Models\Media>, db?:array<string, \Modules\Media\Models\Media>, other?:array<string, \Modules\Media\Models\Media>} $tcoll */
+        $tcoll = $view->getData('tcoll') ?? [];
+
         switch ($request->getData('type')) {
             case 'pdf':
                 $response->header->set(
@@ -229,7 +233,7 @@ final class ApiController extends Controller
                     . '"'
                 , true);
                 $response->header->set('Content-Type', MimeType::M_PDF, true);
-                $view->setTemplate('/' . \substr($view->getData('tcoll')['pdf']?->getPath(), 0, -8), 'pdf.php');
+                $view->setTemplate('/' . \substr($tcoll['pdf']->getPath(), 0, -8), 'pdf.php');
                 break;
             case 'csv':
                 $response->header->set(
@@ -239,7 +243,7 @@ final class ApiController extends Controller
                     . '"'
                 , true);
                 $response->header->set('Content-Type', MimeType::M_CONF, true);
-                $view->setTemplate('/' . \substr($view->getData('tcoll')['csv']?->getPath(), 0, -8), 'csv.php');
+                $view->setTemplate('/' . \substr($tcoll['csv']->getPath(), 0, -8), 'csv.php');
                 break;
             case 'xls':
             case 'xlsx':
@@ -250,7 +254,7 @@ final class ApiController extends Controller
                     . '"'
                 , true);
                 $response->header->set('Content-Type', MimeType::M_XLSX, true);
-                $view->setTemplate('/' . \substr($view->getData('tcoll')['excel']?->getPath(), 0, -8), 'xls.php');
+                $view->setTemplate('/' . \substr($tcoll['excel']->getPath(), 0, -8), 'xls.php');
                 break;
             case 'doc':
             case 'docx':
@@ -261,7 +265,7 @@ final class ApiController extends Controller
                     . '"'
                 , true);
                 $response->header->set('Content-Type', MimeType::M_XLSX, true);
-                $view->setTemplate('/' . \substr($view->getData('tcoll')['word']?->getPath(), 0, -8), 'doc.php');
+                $view->setTemplate('/' . \substr($tcoll['word']->getPath(), 0, -8), 'doc.php');
                 break;
             case 'ppt':
             case 'pptx':
@@ -272,15 +276,15 @@ final class ApiController extends Controller
                     . '"'
                 , true);
                 $response->header->set('Content-Type', MimeType::M_XLSX, true);
-                $view->setTemplate('/' . \substr($view->getData('tcoll')['powerpoint']?->getPath(), 0, -8), 'ppt.php');
+                $view->setTemplate('/' . \substr($tcoll['powerpoint']->getPath(), 0, -8), 'ppt.php');
                 break;
             case 'json':
                 $response->header->set('Content-Type', MimeType::M_JSON, true);
-                $view->setTemplate('/' . \substr($view->getData('tcoll')['json']?->getPath(), 0, -9), 'json.php');
+                $view->setTemplate('/' . \substr($tcoll['json']->getPath(), 0, -9), 'json.php');
                 break;
             default:
                 $response->header->set('Content-Type', 'text/html; charset=utf-8');
-                $view->setTemplate('/' . \substr($view->getData('tcoll')['template']?->getPath(), 0, -8));
+                $view->setTemplate('/' . \substr($tcoll['template']->getPath(), 0, -8));
         }
     }
 
@@ -518,7 +522,7 @@ final class ApiController extends Controller
     private function createTemplateFromRequest(RequestAbstract $request, int $collectionId) : WorkflowTemplate
     {
         $workflowTemplate                 = new WorkflowTemplate();
-        $workflowTemplate->name           = $request->getData('name') ?? '';
+        $workflowTemplate->name           = (string) ($request->getData('name') ?? '');
         $workflowTemplate->description    = Markdown::parse((string) ($request->getData('description') ?? ''));
         $workflowTemplate->descriptionRaw = (string) ($request->getData('description') ?? '');
 
@@ -568,6 +572,7 @@ final class ApiController extends Controller
                 return; // @codeCoverageIgnore
             }
 
+            /** @var array $definitions */
             foreach ($definitions as $definition) {
                 SchemaBuilder::createFromSchema($definition, $this->app->dbPool->get('schema'))->execute();
             }
