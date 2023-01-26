@@ -74,6 +74,11 @@
                 "type": "INT",
                 "null": false
             },
+            "workflow_instance_data": {
+                "name": "workflow_instance_data",
+                "type": "TEXT",
+                "null": false
+            },
             "workflow_instance_template": {
                 "name": "workflow_instance_template",
                 "type": "INT",

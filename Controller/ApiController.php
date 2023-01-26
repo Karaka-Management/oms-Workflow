@@ -163,10 +163,10 @@ final class ApiController extends Controller
 
         // is allowed to read
         if (!$this->app->accountManager->get($accountId)->hasPermission(
-                PermissionType::READ, $this->app->orgId, null, self::NAME, PermissionCategory::INSTANCE, $instance->getId()
+                PermissionType::READ, $this->app->unitId, null, self::NAME, PermissionCategory::INSTANCE, $instance->getId()
             )
             || ($isExport && !$this->app->accountManager->get($accountId)->hasPermission(
-                    PermissionType::READ, $this->app->orgId, $this->app->appName, self::NAME, PermissionCategory::EXPORT
+                    PermissionType::READ, $this->app->unitId, $this->app->appName, self::NAME, PermissionCategory::EXPORT
             ))
         ) {
             $response->header->status = RequestStatusCode::R_403;
@@ -416,7 +416,7 @@ final class ApiController extends Controller
 
         // is allowed to create
         if (!$this->app->accountManager->get($request->header->account)->hasPermission(
-                PermissionType::CREATE, $this->app->orgId, null, self::NAME, PermissionCategory::TEMPLATE)
+                PermissionType::CREATE, $this->app->unitId, null, self::NAME, PermissionCategory::TEMPLATE)
         ) {
             $response->header->status = RequestStatusCode::R_403;
 
@@ -466,7 +466,7 @@ final class ApiController extends Controller
 
         $template = $this->createTemplateFromRequest($request, $collection->getId());
 
-        $this->createModel($request->header->account, $template, WorkflowTemplateMapper::class, 'template', $request->getOrigin());
+        $this->createModel($request->header->account, $template, WorkflowTemplateMapper::class, 'workflow_template', $request->getOrigin());
 
         // replace placeholders
         foreach ($uploaded as $upload) {
