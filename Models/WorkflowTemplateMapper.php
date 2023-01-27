@@ -48,7 +48,7 @@ final class WorkflowTemplateMapper extends DataMapperFactory
     /**
      * Has one relation.
      *
-     * @var array<string, array{mapper:string, external:string, by?:string, column?:string, conditional?:bool}>
+     * @var array<string, array{mapper:class-string, external:string, by?:string, column?:string, conditional?:bool}>
      * @since 1.0.0
      */
     public const OWNS_ONE = [
@@ -61,7 +61,7 @@ final class WorkflowTemplateMapper extends DataMapperFactory
     /**
      * Belongs to.
      *
-     * @var array<string, array{mapper:string, external:string, column?:string, by?:string}>
+     * @var array<string, array{mapper:class-string, external:string, column?:string, by?:string}>
      * @since 1.0.0
      */
     public const BELONGS_TO = [

@@ -75,7 +75,7 @@ final class Installer extends InstallerAbstract
         };
 
         $apiApp->dbPool         = $app->dbPool;
-        $apiApp->unitId          = $app->unitId;
+        $apiApp->unitId         = $app->unitId;
         $apiApp->accountManager = $app->accountManager;
         $apiApp->appSettings    = $app->appSettings;
         $apiApp->moduleManager  = $app->moduleManager;
