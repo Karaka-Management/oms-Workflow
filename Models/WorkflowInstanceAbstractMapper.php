@@ -37,6 +37,7 @@ final class WorkflowInstanceAbstractMapper extends DataMapperFactory
         'workflow_instance_id'                 => ['name' => 'workflow_instance_id',         'type' => 'int',      'internal' => 'id'],
         'workflow_instance_title'              => ['name' => 'workflow_instance_title',       'type' => 'string',   'internal' => 'title'],
         'workflow_instance_status'             => ['name' => 'workflow_instance_status',      'type' => 'int',      'internal' => 'status'],
+        'workflow_instance_data'             => ['name' => 'workflow_instance_data',      'type' => 'string',      'internal' => 'data'],
         'workflow_instance_template'           => ['name' => 'workflow_instance_template',         'type' => 'int',               'internal' => 'template'],
         'workflow_instance_created_at'         => ['name' => 'workflow_instance_created_at', 'type' => 'DateTimeImmutable', 'internal' => 'createdAt', 'readonly' => true],
         'workflow_instance_created_by'         => ['name' => 'workflow_instance_created_by', 'type' => 'int', 'internal' => 'createdBy', 'readonly' => true],

@@ -93,6 +93,8 @@ class WorkflowTemplate
      */
     public Collection $source;
 
+    public array $schema = [];
+
     /**
      * Constructor.
      *

@@ -107,7 +107,7 @@ final class BackendController extends Controller
             $controller = new \Modules\Workflow\Controller\WorkflowController($this->app, $template);
             $controller->createTemplateViewFromRequest($view, $request, $response);
         } else {
-            $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-profile');
+            $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-template');
         }
 
         $head = $response->get('Content')->getData('head');

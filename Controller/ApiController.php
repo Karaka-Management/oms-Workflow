@@ -423,70 +423,90 @@ final class ApiController extends Controller
             return;
         }
 
-        $path = '/Modules/Workflow/' . $request->getData('name');
+        $collectionId = 0;
+        $uploaded     = [];
 
-        /** @var \Modules\Media\Models\Media[] $uploaded */
-        $uploaded = $this->app->moduleManager->get('Media')->uploadFiles(
-            $request->getDataList('names'),
-            $request->getDataList('filenames'),
-            $uploadedFiles,
-            $request->header->account,
-            __DIR__ . '/../../../Modules/Media/Files' . $path,
-            $path,
-            pathSettings: PathSettings::FILE_PATH
-        );
+        if ($request->hasFiles()) {
+            $path = '/Modules/Workflow/' . $request->getData('name');
 
-        foreach ($uploaded as $upload) {
-            if ($upload instanceof NullMedia) {
-                continue;
+            /** @var \Modules\Media\Models\Media[] $uploaded */
+            $uploaded = $this->app->moduleManager->get('Media')->uploadFiles(
+                names: $request->getDataList('names'),
+                fileNames: $request->getDataList('filenames'),
+                files: $uploadedFiles,
+                account: $request->header->account,
+                basePath: __DIR__ . '/../../../Modules/Media/Files' . $path,
+                virtualPath: $path,
+                pathSettings: PathSettings::FILE_PATH
+            );
+
+            foreach ($uploaded as $upload) {
+                if ($upload instanceof NullMedia) {
+                    continue;
+                }
+
+                $files[] = $upload;
             }
 
-            $files[] = $upload;
+            /** @var \Modules\Media\Models\Collection $collection */
+            $collection = $this->app->moduleManager->get('Media')->createMediaCollectionFromMedia(
+                (string) ($request->getData('name') ?? ''),
+                (string) ($request->getData('description') ?? ''),
+                $files,
+                $request->header->account
+            );
+
+            if ($collection instanceof NullCollection) {
+                $response->header->status = RequestStatusCode::R_403;
+                $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Couldn\'t create collection for template', null);
+
+                return;
+            }
+
+            $collection->setPath('/Modules/Media/Files/Modules/Workflow/' . ((string) ($request->getData('name') ?? '')));
+            $collection->setVirtualPath('/Modules/Workflow');
+
+            $this->createModel($request->header->account, $collection, CollectionMapper::class, 'collection', $request->getOrigin());
+
+            $collectionId = $collection->getId();
         }
 
-        /** @var \Modules\Media\Models\Collection $collection */
-        $collection = $this->app->moduleManager->get('Media')->createMediaCollectionFromMedia(
-            (string) ($request->getData('name') ?? ''),
-            (string) ($request->getData('description') ?? ''),
-            $files,
-            $request->header->account
-        );
-
-        if ($collection instanceof NullCollection) {
-            $response->header->status = RequestStatusCode::R_403;
-            $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Couldn\'t create collection for template', null);
-
-            return;
-        }
-
-        $collection->setPath('/Modules/Media/Files/Modules/Workflow/' . ((string) ($request->getData('name') ?? '')));
-        $collection->setVirtualPath('/Modules/Workflow');
-
-        CollectionMapper::create()->execute($collection);
-
-        $template = $this->createTemplateFromRequest($request, $collection->getId());
+        $template = $this->createTemplateFromRequest($request, $collectionId);
 
         $this->createModel($request->header->account, $template, WorkflowTemplateMapper::class, 'workflow_template', $request->getOrigin());
 
         // replace placeholders
-        foreach ($uploaded as $upload) {
-            if ($upload instanceof NullMedia) {
-                continue;
+        if ($collectionId > 0) {
+            foreach ($uploaded as $upload) {
+                if ($upload instanceof NullMedia) {
+                    continue;
+                }
+
+                $path    = $upload->getAbsolutePath();
+                $content = \file_get_contents($path);
+                if ($content === false) {
+                    $content = '';
+                }
+
+                $content = $this->parseKeys($content, $template);
+                \file_put_contents($path, $content);
             }
 
-            $path    = $upload->getAbsolutePath();
-            $content = \file_get_contents($path);
-            if ($content === false) {
-                $content = '';
-            }
-
-            $content = \str_replace('{workflow_id}', (string) $template->getId(), $content);
-            \file_put_contents($path, $content);
+            $this->createDatabaseForTemplate($template);
         }
 
-        $this->createDatabaseForTemplate($template);
-
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
+    }
+
+    private function parseKeys(string $content, WorkflowTemplate $template) : string
+    {
+        if ($content === '') {
+            return '';
+        }
+
+        $content = \str_replace('{workflow_id}', (string) $template->getId(), $content);
+
+        return $content;
     }
 
     /**
@@ -501,9 +521,7 @@ final class ApiController extends Controller
     private function validateTemplateCreate(RequestAbstract $request) : array
     {
         $val = [];
-        if (($val['name'] = empty($request->getData('name')))
-            || ($val['files'] = empty($request->getFiles()))
-        ) {
+        if (($val['name'] = empty($request->getData('name')))) {
             return $val;
         }
 
@@ -525,6 +543,7 @@ final class ApiController extends Controller
         $workflowTemplate->name           = (string) ($request->getData('name') ?? '');
         $workflowTemplate->description    = Markdown::parse((string) ($request->getData('description') ?? ''));
         $workflowTemplate->descriptionRaw = (string) ($request->getData('description') ?? '');
+        $workflowTemplate->schema         = $request->getDataJson('schema');
 
         if ($collectionId > 0) {
             $workflowTemplate->source = new NullCollection($collectionId);
@@ -554,15 +573,15 @@ final class ApiController extends Controller
 
         $files = $collection->getSources();
         foreach ($files as $file) {
-            if (!StringUtils::endsWith($file->getPath(), 'db.json')) {
+            if (!StringUtils::endsWith($file->getAbsolutePath(), 'db.json')) {
                 continue;
             }
 
-            if (!\is_file($file->getPath())) {
+            if (!\is_file($file->getAbsolutePath())) {
                 return;
             }
 
-            $content = \file_get_contents($file->getPath());
+            $content = \file_get_contents($file->getAbsolutePath());
             if ($content === false) {
                 return; // @codeCoverageIgnore
             }
@@ -652,6 +671,8 @@ final class ApiController extends Controller
     private function createInstanceFromRequest(RequestAbstract $request, WorkflowTemplate $template) : WorkflowInstanceAbstract
     {
         $controller = null;
+
+        // @todo: implement default workflow instance;
 
         $file = $template->source->findFile('WorkflowController.php');
         require_once $file->getAbsolutePath();

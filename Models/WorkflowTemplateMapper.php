@@ -40,6 +40,7 @@ final class WorkflowTemplateMapper extends DataMapperFactory
         'workflow_template_name'              => ['name' => 'workflow_template_name',       'type' => 'string',   'internal' => 'name'],
         'workflow_template_desc'              => ['name' => 'workflow_template_desc',       'type' => 'string',   'internal' => 'description'],
         'workflow_template_descRaw'           => ['name' => 'workflow_template_descRaw',    'type' => 'string',   'internal' => 'descriptionRaw'],
+        'workflow_template_schema'           => ['name' => 'workflow_template_schema',    'type' => 'Json',   'internal' => 'schema'],
         'workflow_template_media'             => ['name' => 'workflow_template_media',      'type' => 'int',   'internal' => 'source'],
         'workflow_template_created_at'        => ['name' => 'workflow_template_created_at', 'type' => 'DateTimeImmutable', 'internal' => 'createdAt', 'readonly' => true],
         'workflow_template_created_by'        => ['name' => 'workflow_template_created_by', 'type' => 'int', 'internal' => 'createdBy', 'readonly' => true],

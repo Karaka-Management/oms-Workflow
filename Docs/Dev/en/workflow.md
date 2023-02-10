@@ -6,15 +6,16 @@ Creating:
 ```mermaid
 graph TD;
     CREATE_TEMPLATE((Create))-->REGISTER_TRIGGER[Register template trigger]
-    REGISTER_TRIGGER-->HAS_OTHER_TRIGGER{Has other trigger}
-    HAS_OTHER_TRIGGER--YES-->REGISTER_TRIGGER_2[Register existing trigger]
+    REGISTER_TRIGGER-->CHECK_TYPE{Check type}
+    CHECK_TYPE--LISTENER-->REGISTER_TRIGGER_2[Register existing trigger]
+    CHECK_TYPE--TIMED-->REGISTER_CRON[Register cron job]
 ```
 
 Running:
 
 ```mermaid
 graph TD;
-    MAIN_TRIGGER((Trigger))-->CREATE_INSTANCE[Create Instance in DB]
+    MAIN_TRIGGER((Trigger\nAction, Manual, Time))-->CREATE_INSTANCE[Create Instance in DB]
     MAIN_TRIGGER-->HAS_SUB_TRIGGERS{Has Sub Triggers}
     HAS_SUB_TRIGGERS--YES-->REGISTER_TRIGGER[Register sub triggers]
     MAIN_TRIGGER-->RUN_CODE_1[Run Code]
@@ -43,5 +44,3 @@ Billing:
 3. Is successful
    1. yes: send email
    2. no: inform sales person + deactivate benefits
-
-

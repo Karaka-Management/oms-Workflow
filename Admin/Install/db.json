@@ -32,10 +32,17 @@
                 "default": null,
                 "null": true
             },
+            "workflow_template_schema": {
+                "name": "workflow_template_schema",
+                "type": "TEXT",
+                "default": null,
+                "null": true
+            },
             "workflow_template_media": {
                 "name": "workflow_template_media",
                 "type": "INT",
-                "null": false,
+                "null": true,
+                "default": null,
                 "foreignTable": "media",
                 "foreignKey": "media_id"
             },

@@ -8,7 +8,7 @@
         "uri": "{/lang}/{/app}/workflow/instance/list?{?}",
         "target": "self",
         "icon": null,
-        "order": 40,
+        "order": 90,
         "from": "Workflow",
         "permission": { "permission": 2, "category": null, "element": null },
         "parent": 1003301001,

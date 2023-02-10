@@ -173,189 +173,274 @@
                         }
                     ]
                 }
+            }
+        },
+        "1005500002": {
+            "name": "Adapter",
+            "description": {
+                "en": "Takes input data and forwards the data to another action. Check the outputs and inputs of the actions to create the correct mapping.",
+                "de": "Übernimmt Eingangsdaten und leitet diese an eine andere Aktion weiter. Überprüfe die Ausgaben und Eingaben der jeweiligen Aktionen um die korrekten Verknüpfungen zu erstellen."
             },
-            "1005500002": {
-                "name": "Adapter",
-                "description": {
-                    "en": "Takes input data and forwards the data to another action. Check the outputs and inputs of the actions to create the correct mapping.",
-                    "de": "Übernimmt Eingangsdaten und leitet diese an eine andere Aktion weiter. Überprüfe die Ausgaben und Eingaben der jeweiligen Aktionen um die korrekten Verknüpfungen zu erstellen."
-                },
-                "function_type": "API",
-                "function": "apiAdapter",
-                "inputs": [
-                    "map",
-                    "{*}"
-                ],
-                "outputs": [
-                    "{*}"
-                ],
-                "settings": {
-                    "map": {
-                        "type": "textarea",
-                        "subtype": null,
-                        "default": null,
-                        "pattern": null,
-                        "examples": [
-                            "output1 -> input1\noutput1.name -> input2"
-                        ],
-                        "required": true,
-                        "title": {
-                            "en": "Adapter",
-                            "de": "Adapter"
-                        },
-                        "description": {
-                            "en": "",
-                            "de": ""
-                        }
+            "function_type": "API",
+            "function": "apiAdapter",
+            "inputs": [
+                "map",
+                "{*}"
+            ],
+            "outputs": [
+                "{*}"
+            ],
+            "settings": {
+                "map": {
+                    "type": "textarea",
+                    "subtype": null,
+                    "default": null,
+                    "pattern": null,
+                    "examples": [
+                        "output1 -> input1\noutput1.name -> input2"
+                    ],
+                    "required": true,
+                    "title": {
+                        "en": "Adapter",
+                        "de": "Adapter"
+                    },
+                    "description": {
+                        "en": "",
+                        "de": ""
                     }
                 }
+            }
+        },
+        "1005500003": {
+            "name": "Listen Trigger",
+            "description": {
+                "en": "Listens to trigger",
+                "de": "Wartet auf Trigger"
             },
-            "1005500003": {
-                "name": "Listen Trigger",
-                "description": {
-                    "en": "Listens to trigger",
-                    "de": "Wartet auf Trigger"
-                },
-                "function_type": "API",
-                "function": "apiListenToTrigger",
-                "inputs": [
-                    "type",
-                    "trigger",
-                    "delete",
-                    "{*}"
-                ],
-                "outputs": [
-                    "{*}"
-                ],
-                "settings": {
-                    "type": {
-                        "type": "select",
-                        "subtype": null,
-                        "default": "1",
-                        "pattern": null,
-                        "examples": [],
-                        "required": true,
-                        "title": {
-                            "en": "Type",
-                            "de": "Type"
-                        },
-                        "options": [
-                            {
-                                "value": "1",
-                                "text": {
-                                    "en": "Existing Trigger",
-                                    "de": "Bestehender Trigger"
-                                }
-                            },
-                            {
-                                "value": "2",
-                                "text": {
-                                    "en": "New Trigger",
-                                    "de": "Neuer Trigger"
-                                }
+            "function_type": "API",
+            "function": "apiListenToTrigger",
+            "inputs": [
+                "type",
+                "trigger",
+                "delete",
+                "{*}"
+            ],
+            "outputs": [
+                "{*}"
+            ],
+            "settings": {
+                "type": {
+                    "type": "select",
+                    "subtype": null,
+                    "default": "1",
+                    "pattern": null,
+                    "examples": [],
+                    "required": true,
+                    "title": {
+                        "en": "Type",
+                        "de": "Type"
+                    },
+                    "options": [
+                        {
+                            "value": "1",
+                            "text": {
+                                "en": "Existing Trigger",
+                                "de": "Bestehender Trigger"
                             }
-                        ],
-                        "description": {
-                            "en": "",
-                            "de": ""
-                        }
-                    },
-                    "trigger": {
-                        "type": "input",
-                        "subtype": "text",
-                        "default": null,
-                        "pattern": null,
-                        "examples": [
-                            "PRE:Module:Billing:bill-create",
-                            "PRE:Module:Billing:bill-update.*",
-                            "PRE:Module:Billing:bill-update-{$id}"
-                        ],
-                        "required": true,
-                        "title": {
-                            "en": "Trigger",
-                            "de": "Trigger"
                         },
-                        "description": {
-                            "en": "",
-                            "de": ""
-                        }
-                    },
-                    "delete": {
-                        "type": "select",
-                        "subtype": null,
-                        "default": "1",
-                        "pattern": null,
-                        "examples": [],
-                        "required": true,
-                        "title": {
-                            "en": "Type",
-                            "de": "Type"
-                        },
-                        "options": [
-                            {
-                                "value": "1",
-                                "text": {
-                                    "en": "Never",
-                                    "de": "Niemals"
-                                }
-                            },
-                            {
-                                "value": "2",
-                                "text": {
-                                    "en": "After trigger execution",
-                                    "de": "Nach Triggerausführung"
-                                }
-                            },
-                            {
-                                "value": "3",
-                                "text": {
-                                    "en": "After workflow execution",
-                                    "de": "Nach Workflowausführung"
-                                }
+                        {
+                            "value": "2",
+                            "text": {
+                                "en": "New Trigger",
+                                "de": "Neuer Trigger"
                             }
-                        ],
-                        "description": {
-                            "en": "",
-                            "de": ""
                         }
-                    },
-                }
-            },
-            "1005500004": {
-                "name": "Run Trigger",
-                "description": {
-                    "en": "Takes input data and forwards the data to another action. Check the outputs and inputs of the actions to create the correct mapping.",
-                    "de": "Übernimmt Eingangsdaten und leitet diese an eine andere Aktion weiter. Überprüfe die Ausgaben und Eingaben der jeweiligen Aktionen um die korrekten Verknüpfungen zu erstellen."
+                    ],
+                    "description": {
+                        "en": "",
+                        "de": ""
+                    }
                 },
-                "function_type": "API",
-                "function": "apiAdapter",
-                "inputs": [
-                    "map",
-                    "{*}"
-                ],
-                "outputs": [
-                    "{*}"
-                ],
-                "settings": {
-                    "map": {
-                        "type": "textarea",
-                        "subtype": null,
-                        "default": null,
-                        "pattern": null,
-                        "examples": [
-                            "output1 -> input1\noutput1.name -> input2"
-                        ],
-                        "required": true,
-                        "title": {
-                            "en": "Adapter",
-                            "de": "Adapter"
+                "trigger": {
+                    "type": "input",
+                    "subtype": "text",
+                    "default": null,
+                    "pattern": null,
+                    "examples": [
+                        "PRE:Module:Billing:bill-create",
+                        "PRE:Module:Billing:bill-update.*",
+                        "PRE:Module:Billing:bill-update-{$id}"
+                    ],
+                    "required": true,
+                    "title": {
+                        "en": "Trigger",
+                        "de": "Trigger"
+                    },
+                    "description": {
+                        "en": "",
+                        "de": ""
+                    }
+                },
+                "delete": {
+                    "type": "select",
+                    "subtype": null,
+                    "default": "1",
+                    "pattern": null,
+                    "examples": [],
+                    "required": true,
+                    "title": {
+                        "en": "Type",
+                        "de": "Type"
+                    },
+                    "options": [
+                        {
+                            "value": "1",
+                            "text": {
+                                "en": "Never",
+                                "de": "Niemals"
+                            }
                         },
-                        "description": {
-                            "en": "",
-                            "de": ""
+                        {
+                            "value": "2",
+                            "text": {
+                                "en": "After trigger execution",
+                                "de": "Nach Triggerausführung"
+                            }
+                        },
+                        {
+                            "value": "3",
+                            "text": {
+                                "en": "After workflow execution",
+                                "de": "Nach Workflowausführung"
+                            }
                         }
+                    ],
+                    "description": {
+                        "en": "",
+                        "de": ""
                     }
                 }
+            }
+        },
+        "1005500004": {
+            "name": "Run Trigger",
+            "description": {
+                "en": "Takes input data and forwards the data to another action. Check the outputs and inputs of the actions to create the correct mapping.",
+                "de": "Übernimmt Eingangsdaten und leitet diese an eine andere Aktion weiter. Überprüfe die Ausgaben und Eingaben der jeweiligen Aktionen um die korrekten Verknüpfungen zu erstellen."
+            },
+            "function_type": "API",
+            "function": "apiRun",
+            "inputs": [
+                "map",
+                "{*}"
+            ],
+            "outputs": [
+                "{*}"
+            ],
+            "settings": {
+                "map": {
+                    "type": "textarea",
+                    "subtype": null,
+                    "default": null,
+                    "pattern": null,
+                    "examples": [
+                        "output1 -> input1\noutput1.name -> input2"
+                    ],
+                    "required": true,
+                    "title": {
+                        "en": "Adapter",
+                        "de": "Adapter"
+                    },
+                    "description": {
+                        "en": "",
+                        "de": ""
+                    }
+                }
+            }
+        },
+        "1005500005": {
+            "name": "Timed Trigger",
+            "description": {
+                "en": "Timed trigger",
+                "de": "Wartet auf Trigger"
+            },
+            "function_type": "API",
+            "function": "apiRun",
+            "inputs": [
+                "interval",
+                "{*}"
+            ],
+            "outputs": [
+                "{*}"
+            ],
+            "settings": {
+                "interval": {
+                    "type": "input",
+                    "subtype": "text",
+                    "default": null,
+                    "pattern": null,
+                    "examples": [],
+                    "required": true,
+                    "title": {
+                        "en": "Interval",
+                        "de": "Interval"
+                    },
+                    "description": {
+                        "en": "",
+                        "de": ""
+                    }
+                }
+            }
+        },
+        "1005500006": {
+            "name": "Cli Action",
+            "description": {
+                "en": "Cli action",
+                "de": "Konsolenbefehl"
+            },
+            "function_type": "API",
+            "function": "apiRun",
+            "inputs": [
+                "cmd",
+                "{*}"
+            ],
+            "outputs": [
+                "{*}"
+            ],
+            "settings": {
+                "cmd": {
+                    "type": "input",
+                    "subtype": "text",
+                    "default": null,
+                    "pattern": null,
+                    "examples": [],
+                    "required": true,
+                    "title": {
+                        "en": "Command",
+                        "de": "Befehl"
+                    },
+                    "description": {
+                        "en": "",
+                        "de": ""
+                    }
+                }
+            }
+        },
+        "1005500007": {
+            "name": "Workflow Script",
+            "description": {
+                "en": "Workflow script",
+                "de": "Workflow Script"
+            },
+            "function_type": "API",
+            "function": "apiRun",
+            "inputs": [
+                "{*}"
+            ],
+            "outputs": [
+                "{*}"
+            ],
+            "settings": {
             }
         }
     }

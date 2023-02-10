@@ -69,6 +69,13 @@ final class Installer extends InstallerAbstract
             \mkdir(__DIR__ . '/../../../temp');
         }
 
+        if (!\is_dir(__DIR__ . '/../Definitions')) {
+            \mkdir(__DIR__ . '/../Definitions');
+
+            \file_put_contents(__DIR__ . '/../Definitions/actions.json', '[]');
+            \file_put_contents(__DIR__ . '/../Definitions/triggers.json', '[]');
+        }
+
         $apiApp = new class() extends ApplicationAbstract
         {
             protected string $appName = 'Api';
@@ -81,11 +88,74 @@ final class Installer extends InstallerAbstract
         $apiApp->moduleManager  = $app->moduleManager;
         $apiApp->eventManager   = $app->eventManager;
 
-        foreach ($workflowData as $workflow) {
-            self::installWorkflow($apiApp, $workflow);
-        }
+        self::createTriggers($apiApp, $workflowData['triggers'] ?? []);
+        self::createActions($apiApp, $workflowData['actions'] ?? []);
 
         return [];
+    }
+
+    /**
+     * Install trigger.
+     *
+     * @param ApplicationAbstract $app  Application
+     * @param array               $data Additional data
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
+    private static function createTriggers(ApplicationAbstract $app, array $data) : void
+    {
+        $path = __DIR__ . '/../Definitions/triggers.json';
+        if (!\is_file($path)) {
+            return;
+        }
+
+        $installed = \file_get_contents($path);
+        if ($installed === false) {
+            return;
+        }
+
+        $installedData = \json_decode($installed, true);
+        if ($installedData === false) {
+            return;
+        }
+
+        $new = $installedData + $data;
+
+        \file_put_contents($path, \json_encode($new));
+    }
+
+    /**
+     * Install action.
+     *
+     * @param ApplicationAbstract $app  Application
+     * @param array               $data Additional data
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
+    private static function createActions(ApplicationAbstract $app, array $data) : void
+    {
+        $path = __DIR__ . '/../Definitions/actions.json';
+        if (!\is_file($path)) {
+            return;
+        }
+
+        $installed = \file_get_contents($path);
+        if ($installed === false) {
+            return;
+        }
+
+        $installedData = \json_decode($installed, true);
+        if ($installedData === false) {
+            return;
+        }
+
+        $new = $installedData + $data;
+
+        \file_put_contents($path, \json_encode($new));
     }
 
     /**
