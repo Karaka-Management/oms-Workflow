@@ -82,5 +82,5 @@ final class WorkflowInstanceAbstractMapper extends DataMapperFactory
      * @var string
      * @since 1.0.0
      */
-    public const PRIMARYFIELD ='workflow_instance_id';
+    public const PRIMARYFIELD = 'workflow_instance_id';
 }
