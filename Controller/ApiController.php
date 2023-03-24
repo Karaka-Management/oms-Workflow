@@ -6,7 +6,7 @@
  *
  * @package   Modules\Workflow
  * @copyright Dennis Eichhorn
- * @license   OMS License 1.0
+ * @license   OMS License 2.0
  * @version   1.0.0
  * @link      https://jingga.app
  */
@@ -44,7 +44,7 @@ use phpOMS\Views\View;
  * Workflow controller class.
  *
  * @package Modules\Workflow
- * @license OMS License 1.0
+ * @license OMS License 2.0
  * @link    https://jingga.app
  * @since   1.0.0
  */
@@ -450,8 +450,8 @@ final class ApiController extends Controller
 
             /** @var \Modules\Media\Models\Collection $collection */
             $collection = $this->app->moduleManager->get('Media')->createMediaCollectionFromMedia(
-                (string) ($request->getData('name') ?? ''),
-                (string) ($request->getData('description') ?? ''),
+                $request->getDataString('name') ?? '',
+                $request->getDataString('description') ?? '',
                 $files,
                 $request->header->account
             );
@@ -463,7 +463,7 @@ final class ApiController extends Controller
                 return;
             }
 
-            $collection->setPath('/Modules/Media/Files/Modules/Workflow/' . ((string) ($request->getData('name') ?? '')));
+            $collection->setPath('/Modules/Media/Files/Modules/Workflow/' . ($request->getDataString('name') ?? ''));
             $collection->setVirtualPath('/Modules/Workflow');
 
             $this->createModel($request->header->account, $collection, CollectionMapper::class, 'collection', $request->getOrigin());
@@ -498,6 +498,16 @@ final class ApiController extends Controller
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
     }
 
+    /**
+     * Parse and replace placeholder elements
+     *
+     * @param string           $content  Cotnent to replace
+     * @param WorkflowTemplate $template Tempalate model
+     *
+     * @return string
+     *
+     * @sicne 1.0.0
+     */
     private function parseKeys(string $content, WorkflowTemplate $template) : string
     {
         if ($content === '') {
@@ -540,9 +550,9 @@ final class ApiController extends Controller
     private function createTemplateFromRequest(RequestAbstract $request, int $collectionId) : WorkflowTemplate
     {
         $workflowTemplate                 = new WorkflowTemplate();
-        $workflowTemplate->name           = (string) ($request->getData('name') ?? '');
-        $workflowTemplate->description    = Markdown::parse((string) ($request->getData('description') ?? ''));
-        $workflowTemplate->descriptionRaw = (string) ($request->getData('description') ?? '');
+        $workflowTemplate->name           = $request->getDataString('name') ?? '';
+        $workflowTemplate->description    = Markdown::parse($request->getDataString('description') ?? '');
+        $workflowTemplate->descriptionRaw = $request->getDataString('description') ?? '';
         $workflowTemplate->schema         = $request->getDataJson('schema');
 
         if ($collectionId > 0) {
