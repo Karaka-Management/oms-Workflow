@@ -134,7 +134,7 @@ final class CliController extends Controller
     private function validateInstanceCreate(RequestAbstract $request) : array
     {
         $val = [];
-        if (($val['j'] = empty($request->getData('j')))) {
+        if (($val['j'] = !$request->hasData('j'))) {
             return $val;
         }
 

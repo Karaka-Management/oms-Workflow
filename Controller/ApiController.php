@@ -166,7 +166,7 @@ final class ApiController extends Controller
                 PermissionType::READ, $this->app->unitId, null, self::NAME, PermissionCategory::INSTANCE, $instance->getId()
             )
             || ($isExport && !$this->app->accountManager->get($accountId)->hasPermission(
-                    PermissionType::READ, $this->app->unitId, $this->app->appName, self::NAME, PermissionCategory::EXPORT
+                    PermissionType::READ, $this->app->unitId, $this->app->appId, self::NAME, PermissionCategory::EXPORT
             ))
         ) {
             $response->header->status = RequestStatusCode::R_403;
@@ -198,7 +198,7 @@ final class ApiController extends Controller
     private function validateExport(RequestAbstract $request) : array
     {
         $val = [];
-        if (($val['id'] = empty($request->getData('id')))) {
+        if (($val['id'] = !$request->hasData('id'))) {
             return $val;
         }
 
@@ -531,7 +531,7 @@ final class ApiController extends Controller
     private function validateTemplateCreate(RequestAbstract $request) : array
     {
         $val = [];
-        if (($val['name'] = empty($request->getData('name')))) {
+        if (($val['name'] = !$request->hasData('name'))) {
             return $val;
         }
 
@@ -661,7 +661,7 @@ final class ApiController extends Controller
     private function validateInstanceCreate(RequestAbstract $request) : array
     {
         $val = [];
-        if (($val['template'] = empty($request->getData('template')))) {
+        if (($val['template'] = !$request->hasData('template'))) {
             return $val;
         }
 
