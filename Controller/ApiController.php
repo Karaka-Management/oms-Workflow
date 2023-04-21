@@ -35,9 +35,12 @@ use phpOMS\Message\NotificationLevel;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Model\Message\FormValidation;
+use phpOMS\System\File\FileUtils;
 use phpOMS\System\MimeType;
 use phpOMS\Utils\Parser\Markdown\Markdown;
 use phpOMS\Utils\StringUtils;
+use phpOMS\Utils\TaskSchedule\SchedulerFactory;
+use phpOMS\Utils\TaskSchedule\TaskFactory;
 use phpOMS\Views\View;
 
 /**
@@ -495,7 +498,47 @@ final class ApiController extends Controller
             $this->createDatabaseForTemplate($template);
         }
 
+        // perform other workflow installation actions
+        $actions = \json_decode(\file_get_contents(__DIR__ . '/../Definitions/actions.json'), true);
+        $this->installWorkflowModel($template, $actions);
+
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
+    }
+
+    private function installWorkflowModel(WorkflowTemplate $template, array $actions) : void
+    {
+        $schema = $template->schema;
+        foreach ($schema as $primary) {
+            $id = $primary['id'] ?? '';
+
+            if (!isset($actions[$id]['function_install'])) {
+                continue;
+            }
+
+            $this->app->moduleManager->get($actions[$id]['function_install']['module'])->{$actions[$id]['function_install']['function_install_function']}($template);
+        }
+    }
+
+    public function installTimedTrigger(WorkflowTemplate $template) : void
+    {
+        $id = 'Workflow-' . $template->getId();
+        $scheduler = SchedulerFactory::create();
+
+        if (!empty($scheduler->getAllByName($id))) {
+            return;
+        }
+
+        $job = TaskFactory::create($id);
+
+        $job->interval = $template->schema['settings']['interval'] ?? '';
+        $job->command = 'php ' 
+            . FileUtils::absolute(__DIR__ . '/../../../Cli/cli.php') 
+            . ' /workflow/instance -id ' 
+            . $template->getId()
+            . ' -trigger 1005500005';
+
+        $scheduler->create($job);
+        $scheduler->reload();
     }
 
     /**

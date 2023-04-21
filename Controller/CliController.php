@@ -14,7 +14,9 @@ declare(strict_types=1);
 
 namespace Modules\Workflow\Controller;
 
+use Modules\Workflow\Models\WorkflowInstance;
 use Modules\Workflow\Models\WorkflowInstanceAbstract;
+use Modules\Workflow\Models\WorkflowInstanceAbstractMapper;
 use Modules\Workflow\Models\WorkflowStatus;
 use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
@@ -122,6 +124,21 @@ final class CliController extends Controller
         return $view;
     }
 
+    public function runWorkflowElement(array $actions, WorkflowTemplate $template, WorkflowInstanceAbstract $instance, array $element) : void
+    {
+        if (isset($actions[$element['id']])) {
+            $result = $this->app->moduleManager
+                ->get($actions[$element['id']]['modules'], $actions[$element['id']]['function_type'])
+                ->{$actions[$element['id']]['function']}($template);
+        }
+
+        // @todo: currently all children are executed one after another, maybe consider parallel execution
+        foreach ($element['children'] as $child) {
+            // @todo: pass previous results (probably needs a populator for input variables based on previous output variables)
+            $this->runWorkflowElement($actions, $template, $instance, $child);
+        }
+    }
+
     /**
      * Validate template create request
      *
@@ -134,7 +151,7 @@ final class CliController extends Controller
     private function validateInstanceCreate(RequestAbstract $request) : array
     {
         $val = [];
-        if (($val['j'] = !$request->hasData('j'))) {
+        if (($val['id'] = !$request->hasData('id'))) {
             return $val;
         }
 
@@ -147,6 +164,8 @@ final class CliController extends Controller
      * @param RequestAbstract $request Request
      *
      * @return WorkflowInstanceAbstract
+     * 
+     * @todo: How to handle workflow instances which are not saved in the database and are continued?
      *
      * @since 1.0.0
      */
@@ -154,27 +173,20 @@ final class CliController extends Controller
     {
         /** @var \Modules\Workflow\Models\WorkflowTemplate $template */
         $template = WorkflowTemplateMapper::get()
-            ->where('id', (int) $request->getData('j'))
+            ->where('id', (int) $request->getData('id'))
             ->execute();
 
-        $controller = null;
+        $instance = new WorkflowInstance();
 
-        $files = $template->source->getSources();
-        foreach ($files as $tMedia) {
-            $lowerPath = \strtolower($tMedia->getPath());
+        $actions = \json_decode(\file_get_contents(__DIR__ . '/../Definitions/actions.json'), true);
 
-            switch (true) {
-                case StringUtils::endsWith($lowerPath, 'WorkflowController.php'):
-                    require_once $lowerPath;
+        foreach ($template->schema as $e) {
+            if ($e['id'] === $request->getDataString('trigger')) {
+                $this->runWorkflowElement($actions, $template, $instance, $e);
 
-                    $controller = new WorkflowController($this->app, $template);
-                    break;
+                break;
             }
         }
-
-        /** @var \Modules\Workflow\Models\WorkflowControllerInterface $controller */
-        $instance = $controller->createInstanceFromRequest($request, $template);
-        $controller->createInstanceDbModel($instance);
 
         return $instance;
     }
