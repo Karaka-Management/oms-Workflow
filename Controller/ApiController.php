@@ -505,6 +505,20 @@ final class ApiController extends Controller
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
     }
 
+    /**
+     * Install a new workflow template.
+     *
+     * Some actions have a install function, which must be called when first installing/registering a new action in a template.
+     * An example could be the cron job for a timed trigger, which must be installed when the template is installed.
+     *
+     * @param WorkflowTemplate $template Workflow template
+     * @param array            $actions  Actions
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     * @todo: also implement the delete and update functions
+     */
     private function installWorkflowModel(WorkflowTemplate $template, array $actions) : void
     {
         $schema = $template->schema;
@@ -519,9 +533,18 @@ final class ApiController extends Controller
         }
     }
 
+    /**
+     * Installs a timed trigger for a workflow template.
+     *
+     * @param WorkflowTemplate $template Workflow template
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
     public function installTimedTrigger(WorkflowTemplate $template) : void
     {
-        $id = 'Workflow-' . $template->getId();
+        $id        = 'Workflow-' . $template->getId();
         $scheduler = SchedulerFactory::create();
 
         if (!empty($scheduler->getAllByName($id))) {
@@ -531,9 +554,9 @@ final class ApiController extends Controller
         $job = TaskFactory::create($id);
 
         $job->interval = $template->schema['settings']['interval'] ?? '';
-        $job->command = 'php ' 
-            . FileUtils::absolute(__DIR__ . '/../../../Cli/cli.php') 
-            . ' /workflow/instance -id ' 
+        $job->command   = 'php '
+            . FileUtils::absolute(__DIR__ . '/../../../Cli/cli.php')
+            . ' /workflow/instance -id '
             . $template->getId()
             . ' -trigger 1005500005';
 

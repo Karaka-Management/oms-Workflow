@@ -164,7 +164,7 @@ final class CliController extends Controller
      * @param RequestAbstract $request Request
      *
      * @return WorkflowInstanceAbstract
-     * 
+     *
      * @todo: How to handle workflow instances which are not saved in the database and are continued?
      *
      * @since 1.0.0
@@ -178,7 +178,15 @@ final class CliController extends Controller
 
         $instance = new WorkflowInstance();
 
-        $actions = \json_decode(\file_get_contents(__DIR__ . '/../Definitions/actions.json'), true);
+        $actionString = \file_get_contents(__DIR__ . '/../Definitions/actions.json');
+        if ($actionString === false) {
+            return $instance;
+        }
+
+        $actions = \json_decode($actionString, true);
+        if (!\is_array($actions)) {
+            return $instance;
+        }
 
         foreach ($template->schema as $e) {
             if ($e['id'] === $request->getDataString('trigger')) {
