@@ -100,7 +100,7 @@ final class BackendController extends Controller
 
         $view->setData('template', $template);
 
-        if (!(($template->source->findFile('template-profile.tpl.php')) instanceof NullMedia)) {
+        if ($template->source->findFile('template-profile.tpl.php')->id > 0) {
             require_once $template->source->findFile('WorkflowController.php')->getPath();
 
             /** @var WorkflowControllerInterface $controller */
@@ -217,13 +217,13 @@ final class BackendController extends Controller
         $template = WorkflowTemplateMapper::get()
             ->with('source')
             ->with('source/sources')
-            ->where('id',  $instance->template->getId())
+            ->where('id',  $instance->template->id)
             ->limit()
             ->execute();
 
         $view->addData('template', $template);
 
-        if (!(($template->source->findFile('instance-profile.tpl.php')) instanceof NullMedia)) {
+        if ($template->source->findFile('instance-profile.tpl.php')->id > 0) {
             require_once $template->source->findFile('WorkflowController.php')->getPath();
 
             /** @var WorkflowControllerInterface $controller */

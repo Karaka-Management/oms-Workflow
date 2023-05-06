@@ -98,6 +98,12 @@
                 "type": "DATETIME",
                 "null": false
             },
+            "workflow_instance_end": {
+                "name": "workflow_instance_end",
+                "type": "DATETIME",
+                "null": true,
+                "default": null
+            },
             "workflow_instance_created_by": {
                 "name": "workflow_instance_created_by",
                 "type": "INT",

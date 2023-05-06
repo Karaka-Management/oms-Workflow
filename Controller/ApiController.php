@@ -17,7 +17,6 @@ namespace Modules\Workflow\Controller;
 use Modules\Admin\Models\NullAccount;
 use Modules\Media\Models\CollectionMapper;
 use Modules\Media\Models\NullCollection;
-use Modules\Media\Models\NullMedia;
 use Modules\Media\Models\PathSettings;
 use Modules\Workflow\Models\PermissionCategory;
 use Modules\Workflow\Models\WorkflowInstanceAbstract;
@@ -39,6 +38,7 @@ use phpOMS\System\File\FileUtils;
 use phpOMS\System\MimeType;
 use phpOMS\Utils\Parser\Markdown\Markdown;
 use phpOMS\Utils\StringUtils;
+use phpOMS\Utils\TaskSchedule\SchedulerAbstract;
 use phpOMS\Utils\TaskSchedule\SchedulerFactory;
 use phpOMS\Utils\TaskSchedule\TaskFactory;
 use phpOMS\Views\View;
@@ -53,65 +53,6 @@ use phpOMS\Views\View;
  */
 final class ApiController extends Controller
 {
-    /**
-     * Api method to make a call to the cli app
-     *
-     * @param mixed ...$data Generic data
-     *
-     * @return void
-     *
-     * @api
-     *
-     * @since 1.0.0
-     */
-    public function runWorkflowFromHook(mixed ...$data) : void
-    {
-        /** @var WorkflowTemplate[] $workflows */
-        $workflows = WorkflowTemplateMapper::getAll()
-            ->with('source')
-            ->with('source/sources')
-            ->where('status', WorkflowStatus::ACTIVE)
-            ->execute();
-
-        foreach ($workflows as $workflow) {
-            $hooksFile = $workflow->source->findFile('Hooks.php');
-            if ($hooksFile instanceof NullMedia) {
-                continue;
-            }
-
-            $hooksContent = \file_get_contents($hooksFile->getAbsolutePath());
-            if ($hooksContent === false) {
-                continue;
-            }
-
-            $hooks = \json_decode($hooksContent, true);
-            if ($hooks === false || $hooks === null) {
-                continue;
-            }
-
-            /** @var array $hooks */
-            foreach ($hooks as $hook) {
-                /** @var array{'@triggerGroup'?:string} $data */
-                $triggerIsRegex = \stripos($data['@triggerGroup'], '/') === 0;
-                $matched        = false;
-
-                if ($triggerIsRegex) {
-                    $matched = \preg_match($data['@triggerGroup'], $hook) === 1;
-                } else {
-                    $matched = $data['@triggerGroup'] === $hook;
-                }
-
-                if (!$matched && \stripos($hook, '/') === 0) {
-                    $matched = \preg_match($hook, $data['@triggerGroup']) === 1;
-                }
-
-                if ($matched) {
-                    $this->runWorkflow($workflow, $hook, $data);
-                }
-            }
-        }
-    }
-
     /**
      * Api method to make a call to the cli app
      *
@@ -166,7 +107,7 @@ final class ApiController extends Controller
 
         // is allowed to read
         if (!$this->app->accountManager->get($accountId)->hasPermission(
-                PermissionType::READ, $this->app->unitId, null, self::NAME, PermissionCategory::INSTANCE, $instance->getId()
+                PermissionType::READ, $this->app->unitId, null, self::NAME, PermissionCategory::INSTANCE, $instance->id
             )
             || ($isExport && !$this->app->accountManager->get($accountId)->hasPermission(
                     PermissionType::READ, $this->app->unitId, $this->app->appId, self::NAME, PermissionCategory::EXPORT
@@ -444,7 +385,7 @@ final class ApiController extends Controller
             );
 
             foreach ($uploaded as $upload) {
-                if ($upload instanceof NullMedia) {
+                if ($upload->id === 0) {
                     continue;
                 }
 
@@ -459,7 +400,7 @@ final class ApiController extends Controller
                 $request->header->account
             );
 
-            if ($collection instanceof NullCollection) {
+            if ($collection->id === 0) {
                 $response->header->status = RequestStatusCode::R_403;
                 $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Couldn\'t create collection for template', null);
 
@@ -471,17 +412,16 @@ final class ApiController extends Controller
 
             $this->createModel($request->header->account, $collection, CollectionMapper::class, 'collection', $request->getOrigin());
 
-            $collectionId = $collection->getId();
+            $collectionId = $collection->id;
         }
 
         $template = $this->createTemplateFromRequest($request, $collectionId);
-
         $this->createModel($request->header->account, $template, WorkflowTemplateMapper::class, 'workflow_template', $request->getOrigin());
 
         // replace placeholders
         if ($collectionId > 0) {
             foreach ($uploaded as $upload) {
-                if ($upload instanceof NullMedia) {
+                if ($upload->id === 0) {
                     continue;
                 }
 
@@ -529,7 +469,7 @@ final class ApiController extends Controller
                 continue;
             }
 
-            $this->app->moduleManager->get($actions[$id]['function_install']['module'])->{$actions[$id]['function_install']['function_install_function']}($template);
+            $this->app->moduleManager->get($actions[$id]['function_install']['module'])->{$actions[$id]['function_install']['function']}($template, $primary);
         }
     }
 
@@ -542,9 +482,11 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    public function installTimedTrigger(WorkflowTemplate $template) : void
+    public function installTimedTrigger(WorkflowTemplate $template, array $settings) : void
     {
-        $id        = 'Workflow-' . $template->getId();
+        SchedulerAbstract::guessBin();
+
+        $id        = 'Workflow-' . $template->id;
         $scheduler = SchedulerFactory::create();
 
         if (!empty($scheduler->getAllByName($id))) {
@@ -553,11 +495,11 @@ final class ApiController extends Controller
 
         $job = TaskFactory::create($id);
 
-        $job->interval = $template->schema['settings']['interval'] ?? '';
+        $job->interval = $settings['settings']['interval'] ?? '';
         $job->command   = 'php '
             . FileUtils::absolute(__DIR__ . '/../../../Cli/cli.php')
             . ' /workflow/instance -id '
-            . $template->getId()
+            . $template->id
             . ' -trigger 1005500005';
 
         $scheduler->create($job);
@@ -580,7 +522,7 @@ final class ApiController extends Controller
             return '';
         }
 
-        $content = \str_replace('{workflow_id}', (string) $template->getId(), $content);
+        $content = \str_replace('{workflow_id}', (string) $template->id, $content);
 
         return $content;
     }
@@ -644,7 +586,7 @@ final class ApiController extends Controller
         /** @var \Modules\Media\Models\Collection $collection */
         $collection = CollectionMapper::get()
             ->with('sources')
-            ->where('id', $template->source->getId())
+            ->where('id', $template->source->id)
             ->execute();
 
         $files = $collection->getSources();

@@ -13,8 +13,11 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
+    'Available'        => 'Available',
+    'Active'        => 'Active',
     'CC'        => 'CC',
     'Created'   => 'Created',
+    'Name'   => 'Name',
     'Creator'   => 'Creator',
     'Due'       => 'Due',
     'Media'     => 'Media',
@@ -28,4 +31,5 @@ return ['Workflow' => [
     'Upload'    => 'Upload',
     'Workflow'  => 'Workflow',
     'Workflows' => 'Workflows',
+    'Instances' => 'Instances',
 ]];

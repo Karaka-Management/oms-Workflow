@@ -23,26 +23,49 @@ $template = $this->getData('template');
 
 $actions = \json_decode(\file_get_contents(__DIR__ . '/../../Definitions/actions.json'), true);
 
-function renderLeaf(array $leaf, string $parent = null)
+function renderWorkflow(array $leaf, array $actions)
 {
-    $boxes = [
-        'first' => ['((', '))'],
-        'standard' => ['[', ']'],
-        'if' => ['{', '}']
-    ];
+    foreach ($leaf as $e) {
+        echo <<<NEWDOC
+        <li>
+            <span>
+                <div class="portlet-head">{$actions[(int) $e['id']]['name']}</div>
+                <div class="portlet-body">
+                    <div class="form-group">
+                        <label for="iId">Module</label>
+                        <input type="text" value="{$actions[(int) $e['id']]['module']}" disabled>
+                    </div>
 
-    foreach ($leaf as $key => $e) {
-        $type = $e['id'] === '1005500001'
-            ? 'if'
-            : 'standard';
+                    <div class="form-group">
+                        <label for="iId">Type</label>
+                        <input type="text" value="{$actions[(int) $e['id']]['function_type']}" disabled>
+                    </div>
 
-        if ($parent !== null) {
-            echo '    ' . $parent . '-->' . $parent . ':' . $key . ':' . $e['id'] .  $boxes[$type][0] . $e['id'] .  $boxes[$type][1] . ";\n";
-        } else {
-            echo '    ' . $key . ':' . $e['id'] . $boxes['first'][0] . $e['id'] . $boxes['first'][1] . ";\n";
+                    <div class="form-group">
+                        <label for="iId">Internal Function</label>
+                        <input type="text" value="{$actions[(int) $e['id']]['function']}" disabled>
+                    </div>
+        NEWDOC;
+
+        foreach ($actions[(int) $e['id']]['settings'] ?? [] as $key => $setting) {
+            echo '<div class="form-group">'
+                , '<label for="iId">' , $setting['title']['en'] , '</label>'
+                , '<input name="' , $key , '" type="text" value="' , ($e['settings'][$key] ?? '') , '">'
+                , '</div>';
         }
 
-        renderLeaf($e['children'], ($parent === null ? '' : $parent . ':') . $key . ':' . $e['id']);
+        echo '</div><div class="portlet-foot">'
+            , '<input name="save" type="Submit" value="Save">'
+            , '<input name="delete" class="cancel" type="Submit" value="Delete">'
+            , '</div></span>';
+
+        if (!empty($e['children'])) {
+            echo '<ul>';
+            renderWorkflow($e['children'], $actions);
+            echo '</ul>';
+        }
+
+        echo '</li>';
     }
 }
 
@@ -53,7 +76,7 @@ function renderElements(array $leaf, array $actions)
 
         echo <<<NEWDOC
         <section class="portlet">
-            <div class="portlet-body">{$name}</div>
+            <div class="portlet-head">{$name}</div>
             <div class="portlet-body"></div>
         </section>
         NEWDOC;
@@ -69,29 +92,22 @@ if (!empty($template->schema)) :
     $level = $template->schema;
 ?>
     <div class="row">
-        <div class="col-md-6 col-xs-12">
+        <div class="col-md-9 col-xs-12">
             <section class="portlet sticky">
                 <div class="portlet-head"><?= $this->getHtml('Workflow'); ?></div>
                 <div class="portlet-body">
-                    <div class="mermaid">
-                    graph TD;
-                    <?php renderLeaf($level, null); ?>
-                    </div>
+                    <ul class="tree center">
+                    <?php
+                        renderWorkflow($level, $actions);
+                    ?>
+                    </ul>
                 </div>
             </section>
         </div>
 
         <div class="col-md-3 col-xs-12">
             <section class="portlet">
-                <div class="portlet-head"><?= $this->getHtml('Active'); ?></div>
-            </section>
-
-            <?php renderElements($level, $actions); ?>
-        </div>
-
-        <div class="col-md-3 col-xs-12">
-            <section class="portlet">
-                <div class="portlet-head"><?= $this->getHtml('Available'); ?></div>
+                <div class="portlet-body"><?= $this->getHtml('Available'); ?></div>
             </section>
 
             <?php foreach ($actions as $action) : ?>

@@ -33,7 +33,7 @@ class WorkflowInstanceAbstract
      * @var int
      * @since 1.0.0
      */
-    protected int $id = 0;
+    public int $id = 0;
 
     /**
      * Title.
@@ -49,7 +49,7 @@ class WorkflowInstanceAbstract
      * @var int
      * @since 1.0.0
      */
-    private int $status = WorkflowInstanceStatus::WORKING;
+    public int $status = WorkflowInstanceStatus::WORKING;
 
     /**
      * Template.
@@ -74,6 +74,14 @@ class WorkflowInstanceAbstract
      * @since 1.0.0
      */
     public \DateTimeImmutable $createdAt;
+
+    /**
+     * End.
+     *
+     * @var null|\DateTimeImmutable
+     * @since 1.0.0
+     */
+    public ?\DateTimeImmutable $end = null;
 
     /**
      * Constructor.

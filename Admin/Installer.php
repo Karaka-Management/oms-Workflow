@@ -90,8 +90,26 @@ final class Installer extends InstallerAbstract
 
         self::createTriggers($apiApp, $workflowData['triggers'] ?? []);
         self::createActions($apiApp, $workflowData['actions'] ?? []);
+        self::createWorkflows($apiApp, $workflowData['workflows'] ?? []);
 
         return [];
+    }
+
+    private static function createWorkflows(ApplicationAbstract $app, array $data) : void
+    {
+        /** @var \Modules\Workflow\Controller\ApiController $module */
+        $module = $app->moduleManager->get('Workflow');
+
+        foreach ($data as $name => $workflow) {
+            $response = new HttpResponse();
+            $request  = new HttpRequest(new HttpUri(''));
+
+            $request->header->account = 1;
+            $request->setData('name', $name);
+            $request->setData('schema', \json_encode($workflow));
+
+            $module->apiWorkflowTemplateCreate($request, $response);
+        }
     }
 
     /**

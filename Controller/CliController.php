@@ -16,7 +16,7 @@ namespace Modules\Workflow\Controller;
 
 use Modules\Workflow\Models\WorkflowInstance;
 use Modules\Workflow\Models\WorkflowInstanceAbstract;
-use Modules\Workflow\Models\WorkflowInstanceAbstractMapper;
+use Modules\Workflow\Models\WorkflowInstanceMapper;
 use Modules\Workflow\Models\WorkflowStatus;
 use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
@@ -25,7 +25,6 @@ use phpOMS\Message\Http\RequestStatusCode;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Model\Message\FormValidation;
-use phpOMS\Utils\StringUtils;
 use phpOMS\Views\View;
 
 /**
@@ -117,26 +116,17 @@ final class CliController extends Controller
             $response->header->status = RequestStatusCode::R_400;
         }
 
-        $instance = $this->createInstanceFromRequest($request);
+        $instance = $this->createInstanceFromRequest($request, $response);
+        $this->createModel($request->header->account, $instance, WorkflowInstanceMapper::class, 'instance', $request->getOrigin());
+        $this->startInstance($request, $response, $instance);
+
+        $new = clone $instance;
+        $new->end = new \DateTime('now');
+        $this->updateModel($request->header->account, $instance, $new, WorkflowInstanceMapper::class, 'instance', $request->getOrigin());
 
         $view->setTemplate('/Modules/Workflow/Theme/Cli/empty-command');
 
         return $view;
-    }
-
-    public function runWorkflowElement(array $actions, WorkflowTemplate $template, WorkflowInstanceAbstract $instance, array $element) : void
-    {
-        if (isset($actions[$element['id']])) {
-            $result = $this->app->moduleManager
-                ->get($actions[$element['id']]['modules'], $actions[$element['id']]['function_type'])
-                ->{$actions[$element['id']]['function']}($template);
-        }
-
-        // @todo: currently all children are executed one after another, maybe consider parallel execution
-        foreach ($element['children'] as $child) {
-            // @todo: pass previous results (probably needs a populator for input variables based on previous output variables)
-            $this->runWorkflowElement($actions, $template, $instance, $child);
-        }
     }
 
     /**
@@ -177,7 +167,13 @@ final class CliController extends Controller
             ->execute();
 
         $instance = new WorkflowInstance();
+        $instance->template = $template;
 
+        return $instance;
+    }
+
+    private function startInstance(RequestAbstract $request, ResponseAbstract $response, WorkflowInstanceAbstract $instance)
+    {
         $actionString = \file_get_contents(__DIR__ . '/../Definitions/actions.json');
         if ($actionString === false) {
             return $instance;
@@ -188,14 +184,30 @@ final class CliController extends Controller
             return $instance;
         }
 
-        foreach ($template->schema as $e) {
+        foreach ($instance->template->schema as $e) {
             if ($e['id'] === $request->getDataString('trigger')) {
-                $this->runWorkflowElement($actions, $template, $instance, $e);
+                $this->runWorkflowElement($request, $response, $actions, $instance, $e);
 
                 break;
             }
         }
+    }
 
-        return $instance;
+    public function runWorkflowElement(
+        RequestAbstract $request, ResponseAbstract $response,
+        array $actions, WorkflowInstanceAbstract $instance, array $element
+    ) : void
+    {
+        if (isset($actions[$element['id']])) {
+            $this->app->moduleManager
+                ->get($actions[$element['id']]['modules'], $actions[$element['id']]['function_type'])
+                ->{$actions[$element['id']]['function']}($request, $response, [$element]);
+        }
+
+        // @todo: currently all children are executed one after another, maybe consider parallel execution
+        foreach ($element['children'] as $child) {
+            // @todo: pass previous results (probably needs a populator for input variables based on previous output variables)
+            $this->runWorkflowElement($request, $response, $actions, $instance, $child);
+        }
     }
 }
