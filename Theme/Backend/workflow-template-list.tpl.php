@@ -46,6 +46,7 @@ echo $this->getData('nav')->render(); ?>
                             <span class="checkmark"></span>
                         </label>
                     <td>
+                    <td><?= $this->getHtml('ID', '0', '0'); ?>
                     <td class="wf-100"><?= $this->getHtml('Name'); ?>
                         <label for="workflowTemplateList-sort-1">
                             <input type="radio" name="workflowTemplateList-sort" id="workflowTemplateList-sort-1">
@@ -83,16 +84,6 @@ echo $this->getData('nav')->render(); ?>
                             <i class="filter fa fa-filter"></i>
                         </label>
                 <tbody>
-                <?php if (!empty($parentPath)) : $url = UriFactory::build('{/base}/workflow/template/list?path=' . $parentPath); ?>
-                        <tr tabindex="0" data-href="<?= $url; ?>">
-                            <td>
-                            <td data-label="<?= $this->getHtml('Type'); ?>"><a href="<?= $url; ?>"><i class="fa fa-folder-open-o"></i></a>
-                            <td data-label="<?= $this->getHtml('Name'); ?>"><a href="<?= $url; ?>">..
-                            </a>
-                            <td>
-                            <td>
-                            <td>
-                    <?php endif; ?>
                 <?php $count = 0; foreach ($templates as $key => $template) : ++$count;
                         $url = UriFactory::build('{/base}/workflow/template/profile?{?}&id=' . $template->id); ?>
                 <tr tabindex="0" data-href="<?= $url; ?>">
@@ -101,6 +92,7 @@ echo $this->getData('nav')->render(); ?>
                                     <span class="checkmark"></span>
                                 </label>
                     <td>
+                    <td data-label="<?= $this->getHtml('ID', '0', '0'); ?>"><a href="<?= $url; ?>"><?= $this->printHtml((string) $template->id); ?></a>
                     <td data-label="<?= $this->getHtml('Name'); ?>"><a href="<?= $url; ?>"><?= $this->printHtml($template->name); ?></a>
                     <td data-label="<?= $this->getHtml('Creator'); ?>"><a class="content" href="<?= UriFactory::build('{/base}/profile/single?{?}&for=' . $template->createdBy->id); ?>"><?= $this->printHtml($this->renderUserName('%3$s %2$s %1$s', [$template->createdBy->name1, $template->createdBy->name2, $template->createdBy->name3, $template->createdBy->login ?? ''])); ?></a>
                     <td data-label="<?= $this->getHtml('Updated'); ?>"><a href="<?= $url; ?>"><?= $this->printHtml($template->createdAt->format('Y-m-d')); ?></a>

@@ -7,7 +7,7 @@ return [
     '^.*/workflow/instance.*$' => [
         [
             'dest' => '\Modules\Workflow\Controller\CliController:cliWorkflowInstanceCreate',
-            'verb' => RouteVerb::PUT,
+            'verb' => RouteVerb::ANY,
         ],
     ],
 ];

@@ -16,7 +16,7 @@ namespace Modules\Workflow\Controller;
 
 use Modules\Workflow\Models\WorkflowInstance;
 use Modules\Workflow\Models\WorkflowInstanceAbstract;
-use Modules\Workflow\Models\WorkflowInstanceMapper;
+use Modules\Workflow\Models\WorkflowInstanceAbstractMapper;
 use Modules\Workflow\Models\WorkflowStatus;
 use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
@@ -60,18 +60,14 @@ final class CliController extends Controller
                 $triggerIsRegex = \stripos($data['@triggerGroup'], '/') === 0;
                 $matched        = false;
 
-                if ($triggerIsRegex) {
-                    $matched = \preg_match($data['@triggerGroup'], $hook) === 1;
-                } else {
-                    $matched = $data['@triggerGroup'] === $hook;
-                }
-
-                if (!$matched && \stripos($hook, '/') === 0) {
-                    $matched = \preg_match($hook, $data['@triggerGroup']) === 1;
-                }
+                $matched = $triggerIsRegex
+                    ? \preg_match($data['@triggerGroup'], $hook) === 1
+                    : $data['@triggerGroup'] === $hook;
 
                 if ($matched) {
                     $this->runWorkflow($workflow, $hook, $data);
+                } elseif (\stripos($hook, '/') === 0) {
+                    $matched = \preg_match($hook, $data['@triggerGroup']) === 1;
                 }
             }
         }
@@ -116,13 +112,13 @@ final class CliController extends Controller
             $response->header->status = RequestStatusCode::R_400;
         }
 
-        $instance = $this->createInstanceFromRequest($request, $response);
-        $this->createModel($request->header->account, $instance, WorkflowInstanceMapper::class, 'instance', $request->getOrigin());
+        $instance = $this->createInstanceFromRequest($request);
+        $this->createModel($request->header->account, $instance, WorkflowInstanceAbstractMapper::class, 'instance', $request->getOrigin());
         $this->startInstance($request, $response, $instance);
 
         $new = clone $instance;
-        $new->end = new \DateTime('now');
-        $this->updateModel($request->header->account, $instance, $new, WorkflowInstanceMapper::class, 'instance', $request->getOrigin());
+        $new->end = new \DateTimeImmutable('now');
+        $this->updateModel($request->header->account, $instance, $new, WorkflowInstanceAbstractMapper::class, 'instance', $request->getOrigin());
 
         $view->setTemplate('/Modules/Workflow/Theme/Cli/empty-command');
 
@@ -141,7 +137,7 @@ final class CliController extends Controller
     private function validateInstanceCreate(RequestAbstract $request) : array
     {
         $val = [];
-        if (($val['id'] = !$request->hasData('id'))) {
+        if (($val['id'] = !$request->hasData('-id'))) {
             return $val;
         }
 
@@ -163,7 +159,7 @@ final class CliController extends Controller
     {
         /** @var \Modules\Workflow\Models\WorkflowTemplate $template */
         $template = WorkflowTemplateMapper::get()
-            ->where('id', (int) $request->getData('id'))
+            ->where('id', (int) $request->getData('-id'))
             ->execute();
 
         $instance = new WorkflowInstance();
@@ -185,7 +181,7 @@ final class CliController extends Controller
         }
 
         foreach ($instance->template->schema as $e) {
-            if ($e['id'] === $request->getDataString('trigger')) {
+            if ($e['id'] === $request->getDataString('-trigger')) {
                 $this->runWorkflowElement($request, $response, $actions, $instance, $e);
 
                 break;
@@ -198,10 +194,12 @@ final class CliController extends Controller
         array $actions, WorkflowInstanceAbstract $instance, array $element
     ) : void
     {
-        if (isset($actions[$element['id']])) {
+        if (isset($actions[(int) $element['id']])
+            && $actions[(int) $element['id']]['function'] !== ''
+        ) {
             $this->app->moduleManager
-                ->get($actions[$element['id']]['modules'], $actions[$element['id']]['function_type'])
-                ->{$actions[$element['id']]['function']}($request, $response, [$element]);
+                ->get($actions[(int) $element['id']]['module'], $actions[(int) $element['id']]['function_type'])
+                ->{$actions[(int) $element['id']]['function']}($request, $response, [$element]);
         }
 
         // @todo: currently all children are executed one after another, maybe consider parallel execution

@@ -44,6 +44,14 @@ class WorkflowInstanceAbstract
     public string $title = '';
 
     /**
+     * Instance data.
+     *
+     * @var string
+     * @since 1.0.0
+     */
+    public string $data = '';
+
+    /**
      * Instance status.
      *
      * @var int

@@ -369,7 +369,7 @@
                 "de": "Zeitgesteuerter Trigger (Job/Task)"
             },
             "function_type": "Api",
-            "function": "apiRun",
+            "function": "",
             "module": "Workflow",
             "function_install": {
                 "module": "Workflow",
@@ -408,7 +408,7 @@
                 "de": "Konsolenbefehl"
             },
             "function_type": "Api",
-            "function": "apiRun",
+            "function": "",
             "module": "Workflow",
             "inputs": [
                 "cmd",
@@ -443,7 +443,7 @@
                 "de": "Workflow Script"
             },
             "function_type": "Api",
-            "function": "apiRun",
+            "function": "",
             "module": "Workflow",
             "inputs": [
                 "{*}"

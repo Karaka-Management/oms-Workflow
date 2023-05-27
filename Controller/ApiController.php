@@ -21,7 +21,6 @@ use Modules\Media\Models\PathSettings;
 use Modules\Workflow\Models\PermissionCategory;
 use Modules\Workflow\Models\WorkflowInstanceAbstract;
 use Modules\Workflow\Models\WorkflowInstanceAbstractMapper;
-use Modules\Workflow\Models\WorkflowStatus;
 use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Account\PermissionType;
@@ -497,7 +496,7 @@ final class ApiController extends Controller
 
         $job->interval = $settings['settings']['interval'] ?? '';
         $job->command   = 'php '
-            . FileUtils::absolute(__DIR__ . '/../../../Cli/cli.php')
+            . FileUtils::absolute(__DIR__ . '/../../../cli.php')
             . ' /workflow/instance -id '
             . $template->id
             . ' -trigger 1005500005';
