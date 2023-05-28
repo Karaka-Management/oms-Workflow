@@ -494,7 +494,7 @@ final class ApiController extends Controller
 
         $job = TaskFactory::create($id);
 
-        $job->interval = $settings['settings']['interval'] ?? '';
+        $job->interval  = $settings['settings']['interval'] ?? '';
         $job->command   = 'php '
             . FileUtils::absolute(__DIR__ . '/../../../cli.php')
             . ' /workflow/instance -id '

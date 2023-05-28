@@ -116,7 +116,7 @@ final class CliController extends Controller
         $this->createModel($request->header->account, $instance, WorkflowInstanceAbstractMapper::class, 'instance', $request->getOrigin());
         $this->startInstance($request, $response, $instance);
 
-        $new = clone $instance;
+        $new      = clone $instance;
         $new->end = new \DateTimeImmutable('now');
         $this->updateModel($request->header->account, $instance, $new, WorkflowInstanceAbstractMapper::class, 'instance', $request->getOrigin());
 
@@ -162,7 +162,7 @@ final class CliController extends Controller
             ->where('id', (int) $request->getData('-id'))
             ->execute();
 
-        $instance = new WorkflowInstance();
+        $instance           = new WorkflowInstance();
         $instance->template = $template;
 
         return $instance;

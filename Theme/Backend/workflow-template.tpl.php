@@ -12,18 +12,17 @@
  */
 declare(strict_types=1);
 
-use phpOMS\Uri\UriFactory;
 use phpOMS\Views\View;
 
 /**
- * @var \phpOMS\Views\View                  $this
+ * @var \phpOMS\Views\View                $this
  * @var \Modules\Workflow\Models\Template $template
  */
 $template = $this->getData('template');
 
 $actions = \json_decode(\file_get_contents(__DIR__ . '/../../Definitions/actions.json'), true);
 
-function renderWorkflow(array $leaf, array $actions)
+function renderWorkflow(array $leaf, array $actions) : void
 {
     foreach ($leaf as $e) {
         echo <<<NEWDOC
@@ -61,7 +60,7 @@ function renderWorkflow(array $leaf, array $actions)
 
         if (!empty($e['children'])) {
             echo '<ul>';
-            renderWorkflow($e['children'], $actions);
+            \renderWorkflow($e['children'], $actions);
             echo '</ul>';
         }
 
@@ -69,7 +68,7 @@ function renderWorkflow(array $leaf, array $actions)
     }
 }
 
-function renderElements(array $leaf, array $actions)
+function renderElements(array $leaf, array $actions) : void
 {
     foreach ($leaf as $e) {
         $name = View::html($actions[(int) $e['id']]['name']);
@@ -81,7 +80,7 @@ function renderElements(array $leaf, array $actions)
         </section>
         NEWDOC;
 
-        renderElements($e['children'], $actions);
+        \renderElements($e['children'], $actions);
     }
 }
 
@@ -98,7 +97,7 @@ if (!empty($template->schema)) :
                 <div class="portlet-body">
                     <ul class="tree center">
                     <?php
-                        renderWorkflow($level, $actions);
+                        \renderWorkflow($level, $actions);
                     ?>
                     </ul>
                 </div>

@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Modules\Workflow\Controller;
 
 use Modules\Media\Models\CollectionMapper;
-use Modules\Media\Models\NullMedia;
 use Modules\Workflow\Models\WorkflowControllerInterface;
 use Modules\Workflow\Models\WorkflowInstanceAbstractMapper;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
