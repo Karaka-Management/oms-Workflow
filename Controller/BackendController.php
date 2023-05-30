@@ -58,7 +58,7 @@ final class BackendController extends Controller
             ->with('tags')
             ->with('tags/title')
             ->where('virtualPath', $path)
-            ->where('tags/title/language', $response->getLanguage())
+            ->where('tags/title/language', $response->header->l11n->language)
             ->execute();
 
         list($collection, $parent) = CollectionMapper::getCollectionsByPath($path);

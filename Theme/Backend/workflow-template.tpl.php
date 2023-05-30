@@ -112,7 +112,7 @@ if (!empty($template->schema)) :
             <?php foreach ($actions as $action) : ?>
                 <section class="portlet">
                     <div class="portlet-body"><?= $this->printHtml($action['name']); ?></div>
-                    <div class="portlet-body"><?= $this->printHtml($action['description'][$this->request->getLanguage()]); ?></div>
+                    <div class="portlet-body"><?= $this->printHtml($action['description'][$this->request->header->l11n->language]); ?></div>
                 </section>
             <?php endforeach; ?>
         </div>

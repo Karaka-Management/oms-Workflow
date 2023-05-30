@@ -324,7 +324,7 @@ final class ApiController extends Controller
         $view = new View($this->app->l11nManager, $request, $response);
 
         $view->addData('tcoll', $tcoll);
-        $view->addData('lang', $request->getData('lang') ?? $request->getLanguage());
+        $view->addData('lang', $request->getData('lang') ?? $request->header->l11n->language);
         $view->addData('instance', $instance);
         $view->addData('template', $instance->template);
         $view->addData('basepath', __DIR__ . '/../../../');
