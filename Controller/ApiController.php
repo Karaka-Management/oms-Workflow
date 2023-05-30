@@ -86,7 +86,7 @@ final class ApiController extends Controller
     public function apiWorkflowExport(HttpRequest $request, HttpResponse $response, mixed $data = null) : void
     {
         if (!empty($val = $this->validateExport($request))) {
-            $response->set('export', new FormValidation($val));
+            $response->data['export'] = new FormValidation($val);
             $response->header->status = RequestStatusCode::R_400;
 
             return;
@@ -347,11 +347,11 @@ final class ApiController extends Controller
      */
     public function apiWorkflowTemplateCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
     {
-        $uploadedFiles = $request->getFiles();
+        $uploadedFiles = $request->files;
         $files         = [];
 
         if (!empty($val = $this->validateTemplateCreate($request))) {
-            $response->set('template_create', new FormValidation($val));
+            $response->data['template_create'] = new FormValidation($val);
             $response->header->status = RequestStatusCode::R_400;
 
             return;
@@ -631,7 +631,7 @@ final class ApiController extends Controller
     public function apiWorkflowInstanceCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
     {
         if (!empty($val = $this->validateInstanceCreate($request))) {
-            $response->set('instance_create', new FormValidation($val));
+            $response->data['instance_create'] = new FormValidation($val);
             $response->header->status = RequestStatusCode::R_400;
 
             return;

@@ -108,7 +108,7 @@ final class CliController extends Controller
         $view = new View($this->app->l11nManager, $request, $response);
 
         if (!empty($val = $this->validateInstanceCreate($request))) {
-            $response->set('instance_create', new FormValidation($val));
+            $response->data['instance_create'] = new FormValidation($val);
             $response->header->status = RequestStatusCode::R_400;
         }
 
