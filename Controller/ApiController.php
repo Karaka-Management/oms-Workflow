@@ -86,7 +86,7 @@ final class ApiController extends Controller
     public function apiWorkflowExport(HttpRequest $request, HttpResponse $response, mixed $data = null) : void
     {
         if (!empty($val = $this->validateExport($request))) {
-            $response->set('export', new FormValidation($val));
+            $response->data['export'] = new FormValidation($val);
             $response->header->status = RequestStatusCode::R_400;
 
             return;
@@ -124,7 +124,7 @@ final class ApiController extends Controller
 
         $view = $this->createView($instance, $request, $response);
         $this->setWorkflowResponseHeader($view, $instance->template->name, $request, $response);
-        $view->setData('path', __DIR__ . '/../../../');
+        $view->data['path'] = __DIR__ . '/../../../';
 
         $response->set('export', $view);
     }
@@ -323,11 +323,11 @@ final class ApiController extends Controller
 
         $view = new View($this->app->l11nManager, $request, $response);
 
-        $view->addData('tcoll', $tcoll);
-        $view->addData('lang', $request->getData('lang') ?? $request->getLanguage());
-        $view->addData('instance', $instance);
-        $view->addData('template', $instance->template);
-        $view->addData('basepath', __DIR__ . '/../../../');
+        $view->data['tcoll'] = $tcoll;
+        $view->data['lang'] = $request->getData('lang') ?? $request->header->l11n->language;
+        $view->data['instance'] = $instance;
+        $view->data['template'] = $instance->template;
+        $view->data['basepath'] = __DIR__ . '/../../../';
 
         return $view;
     }
@@ -347,11 +347,11 @@ final class ApiController extends Controller
      */
     public function apiWorkflowTemplateCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
     {
-        $uploadedFiles = $request->getFiles();
+        $uploadedFiles = $request->files;
         $files         = [];
 
         if (!empty($val = $this->validateTemplateCreate($request))) {
-            $response->set('template_create', new FormValidation($val));
+            $response->data['template_create'] = new FormValidation($val);
             $response->header->status = RequestStatusCode::R_400;
 
             return;
@@ -631,7 +631,7 @@ final class ApiController extends Controller
     public function apiWorkflowInstanceCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
     {
         if (!empty($val = $this->validateInstanceCreate($request))) {
-            $response->set('instance_create', new FormValidation($val));
+            $response->data['instance_create'] = new FormValidation($val);
             $response->header->status = RequestStatusCode::R_400;
 
             return;

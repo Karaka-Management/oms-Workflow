@@ -50,7 +50,7 @@ final class BackendController extends Controller
     {
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-template-list');
-        $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
         $path      = \str_replace('+', ' ', (string) ($request->getData('path') ?? '/'));
         $templates = WorkflowTemplateMapper::getAll()
@@ -58,16 +58,16 @@ final class BackendController extends Controller
             ->with('tags')
             ->with('tags/title')
             ->where('virtualPath', $path)
-            ->where('tags/title/language', $response->getLanguage())
+            ->where('tags/title/language', $response->header->l11n->language)
             ->execute();
 
         list($collection, $parent) = CollectionMapper::getCollectionsByPath($path);
 
-        $view->addData('parent', $parent);
-        $view->addData('collections', $collection);
-        $view->addData('path', $path);
-        $view->addData('reports', $templates);
-        $view->addData('account', $this->app->accountManager->get($request->header->account));
+        $view->data['parent'] = $parent;
+        $view->data['collections'] = $collection;
+        $view->data['path'] = $path;
+        $view->data['reports'] = $templates;
+        $view->data['account'] = $this->app->accountManager->get($request->header->account);
 
         return $view;
     }
@@ -87,7 +87,7 @@ final class BackendController extends Controller
     public function viewWorkflowTemplate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
-        $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
         /** @var \Modules\Workflow\Models\WorkflowTemplate $template */
         $template = WorkflowTemplateMapper::get()
@@ -97,7 +97,7 @@ final class BackendController extends Controller
             ->where('id', (int) $request->getData('id'))
             ->execute();
 
-        $view->setData('template', $template);
+        $view->data['template'] = $template;
 
         if ($template->source->findFile('template-profile.tpl.php')->id > 0) {
             require_once $template->source->findFile('WorkflowController.php')->getPath();
@@ -109,7 +109,7 @@ final class BackendController extends Controller
             $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-template');
         }
 
-        $head = $response->get('Content')->getData('head');
+        $head = $response->get('Content')->head;
         $head->addAsset(AssetType::JSLATE, 'Resources/mermaid/mermaid.min.js?v=1.0.0');
         $head->addAsset(AssetType::JSLATE, 'Modules/Workflow/Controller.js?v=1.0.0', ['type' => 'module']);
 
@@ -132,7 +132,7 @@ final class BackendController extends Controller
     {
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-template-create');
-        $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
         return $view;
     }
@@ -153,12 +153,12 @@ final class BackendController extends Controller
     {
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-dashboard');
-        $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
         $instances = WorkflowInstanceAbstractMapper::getAll()
             ->execute();
 
-        $view->setData('instances', $instances);
+        $view->data['instances'] = $instances;
 
         return $view;
     }
@@ -179,13 +179,13 @@ final class BackendController extends Controller
     {
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-instance-list');
-        $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
         /** @var \Modules\Workflow\Models\WorkflowInstanceAbstract $instances */
         $instances = WorkflowInstanceAbstractMapper::getAll()
             ->execute();
 
-        $view->setData('instances', $instances);
+        $view->data['instances'] = $instances;
 
         return $view;
     }
@@ -205,7 +205,7 @@ final class BackendController extends Controller
     public function viewInstance(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
-        $view->addData('nav', $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response));
+        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
         /** @var \Modules\Workflow\Models\WorkflowInstanceAbstract $instance */
         $instance = WorkflowInstanceAbstractMapper::get()
@@ -220,7 +220,7 @@ final class BackendController extends Controller
             ->limit()
             ->execute();
 
-        $view->addData('template', $template);
+        $view->data['template'] = $template;
 
         if ($template->source->findFile('instance-profile.tpl.php')->id > 0) {
             require_once $template->source->findFile('WorkflowController.php')->getPath();
