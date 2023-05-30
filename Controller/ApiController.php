@@ -124,7 +124,7 @@ final class ApiController extends Controller
 
         $view = $this->createView($instance, $request, $response);
         $this->setWorkflowResponseHeader($view, $instance->template->name, $request, $response);
-        $view->setData('path', __DIR__ . '/../../../');
+        $view->data['path'] = __DIR__ . '/../../../';
 
         $response->set('export', $view);
     }
@@ -323,11 +323,11 @@ final class ApiController extends Controller
 
         $view = new View($this->app->l11nManager, $request, $response);
 
-        $view->addData('tcoll', $tcoll);
-        $view->addData('lang', $request->getData('lang') ?? $request->header->l11n->language);
-        $view->addData('instance', $instance);
-        $view->addData('template', $instance->template);
-        $view->addData('basepath', __DIR__ . '/../../../');
+        $view->data['tcoll'] = $tcoll;
+        $view->data['lang'] = $request->getData('lang') ?? $request->header->l11n->language;
+        $view->data['instance'] = $instance;
+        $view->data['template'] = $instance->template;
+        $view->data['basepath'] = __DIR__ . '/../../../';
 
         return $view;
     }

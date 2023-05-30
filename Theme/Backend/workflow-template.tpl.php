@@ -18,7 +18,7 @@ use phpOMS\Views\View;
  * @var \phpOMS\Views\View                $this
  * @var \Modules\Workflow\Models\Template $template
  */
-$template = $this->getData('template');
+$template = $this->data['template'];
 
 $actions = \json_decode(\file_get_contents(__DIR__ . '/../../Definitions/actions.json'), true);
 
@@ -84,7 +84,7 @@ function renderElements(array $leaf, array $actions) : void
     }
 }
 
-echo $this->getData('nav')->render(); ?>
+echo $this->data['nav']->render(); ?>
 
 <?php
 if (!empty($template->schema)) :
