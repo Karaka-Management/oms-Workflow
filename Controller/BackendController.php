@@ -63,11 +63,11 @@ final class BackendController extends Controller
 
         list($collection, $parent) = CollectionMapper::getCollectionsByPath($path);
 
-        $view->data['parent'] = $parent;
+        $view->data['parent']      = $parent;
         $view->data['collections'] = $collection;
-        $view->data['path'] = $path;
-        $view->data['reports'] = $templates;
-        $view->data['account'] = $this->app->accountManager->get($request->header->account);
+        $view->data['path']        = $path;
+        $view->data['reports']     = $templates;
+        $view->data['account']     = $this->app->accountManager->get($request->header->account);
 
         return $view;
     }
@@ -86,7 +86,7 @@ final class BackendController extends Controller
      */
     public function viewWorkflowTemplate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
     {
-        $view = new View($this->app->l11nManager, $request, $response);
+        $view              = new View($this->app->l11nManager, $request, $response);
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
         /** @var \Modules\Workflow\Models\WorkflowTemplate $template */
@@ -204,7 +204,7 @@ final class BackendController extends Controller
      */
     public function viewInstance(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
     {
-        $view = new View($this->app->l11nManager, $request, $response);
+        $view              = new View($this->app->l11nManager, $request, $response);
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
         /** @var \Modules\Workflow\Models\WorkflowInstanceAbstract $instance */

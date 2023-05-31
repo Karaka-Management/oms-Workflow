@@ -109,7 +109,7 @@ final class CliController extends Controller
 
         if (!empty($val = $this->validateInstanceCreate($request))) {
             $response->data['instance_create'] = new FormValidation($val);
-            $response->header->status = RequestStatusCode::R_400;
+            $response->header->status          = RequestStatusCode::R_400;
         }
 
         $instance = $this->createInstanceFromRequest($request);

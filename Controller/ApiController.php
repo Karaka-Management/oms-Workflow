@@ -323,8 +323,8 @@ final class ApiController extends Controller
 
         $view = new View($this->app->l11nManager, $request, $response);
 
-        $view->data['tcoll'] = $tcoll;
-        $view->data['lang'] = $request->getData('lang') ?? $request->header->l11n->language;
+        $view->data['tcoll']    = $tcoll;
+        $view->data['lang']     = $request->getData('lang') ?? $request->header->l11n->language;
         $view->data['instance'] = $instance;
         $view->data['template'] = $instance->template;
         $view->data['basepath'] = __DIR__ . '/../../../';
@@ -352,7 +352,7 @@ final class ApiController extends Controller
 
         if (!empty($val = $this->validateTemplateCreate($request))) {
             $response->data['template_create'] = new FormValidation($val);
-            $response->header->status = RequestStatusCode::R_400;
+            $response->header->status          = RequestStatusCode::R_400;
 
             return;
         }
@@ -632,7 +632,7 @@ final class ApiController extends Controller
     {
         if (!empty($val = $this->validateInstanceCreate($request))) {
             $response->data['instance_create'] = new FormValidation($val);
-            $response->header->status = RequestStatusCode::R_400;
+            $response->header->status          = RequestStatusCode::R_400;
 
             return;
         }
