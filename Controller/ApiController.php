@@ -369,7 +369,7 @@ final class ApiController extends Controller
         $collectionId = 0;
         $uploaded     = [];
 
-        if ($request->hasFiles()) {
+        if (!empty($request->files)) {
             $path = '/Modules/Workflow/' . $request->getData('name');
 
             /** @var \Modules\Media\Models\Media[] $uploaded */
