@@ -399,6 +399,8 @@ final class ApiController extends Controller
                 $request->header->account
             );
 
+            var_dump($collection->id);
+
             if ($collection->id === 0) {
                 $response->header->status = RequestStatusCode::R_403;
                 $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Couldn\'t create collection for template', null);
