@@ -168,16 +168,27 @@ final class CliController extends Controller
         return $instance;
     }
 
-    private function startInstance(RequestAbstract $request, ResponseAbstract $response, WorkflowInstanceAbstract $instance)
+    /**
+     * Start a workflow instance
+     *
+     * @param RequestAbstract          $request  Request
+     * @param ResponseAbstract         $response Response
+     * @param WorkflowInstanceAbstract $instance Workflow instance
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
+    private function startInstance(RequestAbstract $request, ResponseAbstract $response, WorkflowInstanceAbstract $instance) : void
     {
         $actionString = \file_get_contents(__DIR__ . '/../Definitions/actions.json');
         if ($actionString === false) {
-            return $instance;
+            return;
         }
 
         $actions = \json_decode($actionString, true);
         if (!\is_array($actions)) {
-            return $instance;
+            return;
         }
 
         foreach ($instance->template->schema as $e) {
@@ -189,6 +200,19 @@ final class CliController extends Controller
         }
     }
 
+    /**
+     * Run a workflow element
+     *
+     * @param RequestAbstract          $request  Request
+     * @param ResponseAbstract         $response Response
+     * @param array                    $actions  All available actions
+     * @param WorkflowInstanceAbstract $instance Current workflow instance
+     * @param array                    $element  Workflow element to run
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
     public function runWorkflowElement(
         RequestAbstract $request, ResponseAbstract $response,
         array $actions, WorkflowInstanceAbstract $instance, array $element

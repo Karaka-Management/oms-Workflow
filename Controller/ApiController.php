@@ -399,8 +399,6 @@ final class ApiController extends Controller
                 $request->header->account
             );
 
-            var_dump($collection->id);
-
             if ($collection->id === 0) {
                 $response->header->status = RequestStatusCode::R_403;
                 $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Couldn\'t create collection for template', null);
@@ -440,9 +438,21 @@ final class ApiController extends Controller
         }
 
         // perform other workflow installation actions
-        $actions = \json_decode(\file_get_contents(__DIR__ . '/../Definitions/actions.json'), true);
-        $this->installWorkflowModel($template, $actions);
+        $actionContent = \file_get_contents(__DIR__ . '/../Definitions/actions.json');
+        if ($actionContent === false) {
+            $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Template creation failed', $template);
 
+            return;
+        }
+
+        $actions = \json_decode(\file_get_contents(__DIR__ . '/../Definitions/actions.json'), true);
+        if (!\is_array($actions)) {
+            $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Template creation failed', $template);
+
+            return;
+        }
+
+        $this->installWorkflowModel($template, $actions);
         $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
     }
 

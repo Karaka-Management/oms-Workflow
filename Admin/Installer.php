@@ -95,6 +95,16 @@ final class Installer extends InstallerAbstract
         return [];
     }
 
+    /**
+     * Create a workflow template
+     *
+     * @param ApplicationAbstract $app  Application
+     * @param array               $data Workflow schemas
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
     private static function createWorkflows(ApplicationAbstract $app, array $data) : void
     {
         /** @var \Modules\Workflow\Controller\ApiController $module */
