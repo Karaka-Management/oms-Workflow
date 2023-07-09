@@ -14,12 +14,15 @@ declare(strict_types=1);
 
 namespace Modules\Workflow\Admin;
 
+use Modules\Workflow\Admin\Install\Workflow;
 use phpOMS\Application\ApplicationAbstract;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Module\InstallerAbstract;
 use phpOMS\System\File\PathException;
 use phpOMS\Uri\HttpUri;
+use phpOMS\Config\SettingsInterface;
+use phpOMS\Module\ModuleInfo;
 
 /**
  * Installer class.
@@ -38,6 +41,15 @@ final class Installer extends InstallerAbstract
      * @since 1.0.0
      */
     public const PATH = __DIR__;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function install(ApplicationAbstract $app, ModuleInfo $info, SettingsInterface $cfgHandler) : void
+    {
+        parent::install($app, $info, $cfgHandler);
+        Workflow::install($app, '');
+    }
 
     /**
      * Install data from providing modules.

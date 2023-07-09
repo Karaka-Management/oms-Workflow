@@ -25,17 +25,19 @@ echo $this->data['nav']->render(); ?>
             <div class="portlet-head"><?= $this->getHtml('Instances'); ?><i class="lni lni-download download btn end-xs"></i></div>
             <table class="default">
                 <thead>
+                    <td><?= $this->getHtml('Date'); ?>
                     <td><?= $this->getHtml('Status'); ?>
                     <td class="wf-100"><?= $this->getHtml('Title'); ?>
                 <tbody>
                 <?php
                     $c = 0;
                     foreach ($instances as $key => $instance) : ++$c;
-                        $url = \phpOMS\Uri\UriFactory::build('workflow/instance/profile?{?}&id=' . $instance->id);
+                        $url = \phpOMS\Uri\UriFactory::build('{/base}/workflow/instance/profile?{?}&id=' . $instance->id);
                 ?>
                 <tr data-href="<?= $url; ?>">
-                    <td><a href="<?= $url; ?>"><?= $this->printHtml((string) $instance->getStatus()); ?></a>
-                    <td><a href="<?= $url; ?>"><?= $this->printHtml($instance->title); ?></a>
+                    <td><a href="<?= $url; ?>"><?= $instance->createdAt->format('Y-m-d H:i:s'); ?></a>
+                    <td><a href="<?= $url; ?>"><?= $this->getHtml(':istatus-' . $instance->getStatus()); ?></a>
+                    <td><a href="<?= $url; ?>"><?= $this->printHtml($instance->template->name); ?></a>
                 <?php endforeach; if ($c == 0) : ?>
                 <tr><td colspan="6" class="empty"><?= $this->getHtml('Empty', '0', '0'); ?>
                         <?php endif; ?>

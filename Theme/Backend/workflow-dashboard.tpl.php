@@ -27,6 +27,7 @@ echo $this->data['nav']->render(); ?>
                 <thead>
                     <td><?= $this->getHtml('Status'); ?>
                     <td class="wf-100"><?= $this->getHtml('Title'); ?>
+                    <td><?= $this->getHtml('Date'); ?>
                 <tbody>
                 <?php
                     $c = 0;
@@ -35,7 +36,8 @@ echo $this->data['nav']->render(); ?>
                 ?>
                 <tr data-href="<?= $url; ?>">
                     <td><a href="<?= $url; ?>"><?= $this->printHtml((string) $instance->getStatus()); ?></a>
-                    <td><a href="<?= $url; ?>"><?= $this->printHtml($instance->title); ?></a>
+                    <td><a href="<?= $url; ?>"><?= $this->printHtml($instance->template->name); ?></a>
+                    <td><a href="<?= $url; ?>"><?= $instance->createdAt->format('Y-m-d H:i:s'); ?></a>
                 <?php endforeach; if ($c == 0) : ?>
                 <tr><td colspan="6" class="empty"><?= $this->getHtml('Empty', '0', '0'); ?>
                         <?php endif; ?>

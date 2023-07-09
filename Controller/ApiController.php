@@ -445,7 +445,7 @@ final class ApiController extends Controller
             return;
         }
 
-        $actions = \json_decode(\file_get_contents(__DIR__ . '/../Definitions/actions.json'), true);
+        $actions = \json_decode($actionContent, true);
         if (!\is_array($actions)) {
             $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Template creation failed', $template);
 

@@ -146,21 +146,14 @@ final class BackendController extends Controller
      *
      * @return RenderableInterface
      *
+     * @todo: remove, the router is already adjusted.
+     *
      * @since 1.0.0
      * @codeCoverageIgnore
      */
     public function viewDashboard(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
     {
-        $view = new View($this->app->l11nManager, $request, $response);
-        $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-dashboard');
-        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
-
-        $instances = WorkflowInstanceAbstractMapper::getAll()
-            ->execute();
-
-        $view->data['instances'] = $instances;
-
-        return $view;
+        return $this->viewInstanceList($request, $response, $data);
     }
 
     /**
@@ -183,6 +176,7 @@ final class BackendController extends Controller
 
         /** @var \Modules\Workflow\Models\WorkflowInstanceAbstract $instances */
         $instances = WorkflowInstanceAbstractMapper::getAll()
+            ->with('template')
             ->execute();
 
         $view->data['instances'] = $instances;

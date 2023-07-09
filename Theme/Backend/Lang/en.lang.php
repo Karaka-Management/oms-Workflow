@@ -19,6 +19,7 @@ return ['Workflow' => [
     'Created'          => 'Created',
     'Name'             => 'Name',
     'Creator'          => 'Creator',
+    'Date'             => 'Date',
     'Due'              => 'Due',
     'Media'            => 'Media',
     'Message'          => 'Message',
@@ -32,4 +33,8 @@ return ['Workflow' => [
     'Workflow'         => 'Workflow',
     'Workflows'        => 'Workflows',
     'Instances'        => 'Instances',
+    ':istatus-1'        => 'Started',
+    ':istatus-2'        => 'Suspended',
+    ':istatus-3'        => 'Canceled',
+    ':istatus-4'        => 'Done',
 ]];

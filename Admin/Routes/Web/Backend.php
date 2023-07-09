@@ -51,17 +51,6 @@ return [
             ],
         ],
     ],
-    '^.*/workflow/dashboard.*$' => [
-        [
-            'dest'       => '\Modules\Workflow\Controller\BackendController:viewDashboard',
-            'verb'       => RouteVerb::GET,
-            'permission' => [
-                'module' => BackendController::NAME,
-                'type'   => PermissionType::CREATE,
-                'state'  => PermissionCategory::WORKFLOW,
-            ],
-        ],
-    ],
     '^.*/workflow/instance/list.*$' => [
         [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewInstanceList',
