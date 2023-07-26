@@ -29,7 +29,6 @@ use phpOMS\DataStorage\Database\Schema\Builder as SchemaBuilder;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Message\Http\RequestStatusCode;
-use phpOMS\Message\NotificationLevel;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Model\Message\FormValidation;
@@ -351,8 +350,8 @@ final class ApiController extends Controller
         $files         = [];
 
         if (!empty($val = $this->validateTemplateCreate($request))) {
-            $response->data['template_create'] = new FormValidation($val);
-            $response->header->status          = RequestStatusCode::R_400;
+            $response->header->status = RequestStatusCode::R_400;
+            $this->createInvalidCreateResponse($request, $response, $val);
 
             return;
         }
@@ -401,7 +400,7 @@ final class ApiController extends Controller
 
             if ($collection->id === 0) {
                 $response->header->status = RequestStatusCode::R_403;
-                $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Couldn\'t create collection for template', null);
+                $this->createInvalidCreateResponse($request, $response, $collection);
 
                 return;
             }
@@ -440,20 +439,22 @@ final class ApiController extends Controller
         // perform other workflow installation actions
         $actionContent = \file_get_contents(__DIR__ . '/../Definitions/actions.json');
         if ($actionContent === false) {
-            $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Template creation failed', $template);
+            $response->header->status = RequestStatusCode::R_400;
+            $this->createInvalidCreateResponse($request, $response, $template);
 
             return;
         }
 
         $actions = \json_decode($actionContent, true);
         if (!\is_array($actions)) {
-            $this->fillJsonResponse($request, $response, NotificationLevel::ERROR, 'Template', 'Template creation failed', $template);
+            $response->header->status = RequestStatusCode::R_400;
+            $this->createInvalidCreateResponse($request, $response, $template);
 
             return;
         }
 
         $this->installWorkflowModel($template, $actions);
-        $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Template', 'Template successfully created', $template);
+        $this->createStandardCreateResponse($request, $response, $template);
     }
 
     /**
@@ -643,8 +644,8 @@ final class ApiController extends Controller
     public function apiWorkflowInstanceCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
     {
         if (!empty($val = $this->validateInstanceCreate($request))) {
-            $response->data['instance_create'] = new FormValidation($val);
-            $response->header->status          = RequestStatusCode::R_400;
+            $response->header->status = RequestStatusCode::R_400;
+            $this->createInvalidCreateResponse($request, $response, $val);
 
             return;
         }
@@ -657,15 +658,8 @@ final class ApiController extends Controller
             ->execute();
 
         $instance = $this->createInstanceFromRequest($request, $template);
-
-        $this->createModel(
-            $request->header->account,
-            $instance,
-            WorkflowInstanceAbstractMapper::class,
-            'instance',
-            $request->getOrigin()
-        );
-        $this->fillJsonResponse($request, $response, NotificationLevel::OK, 'Instance', 'Instance successfully created', $instance);
+        $this->createModel($request->header->account, $instance, WorkflowInstanceAbstractMapper::class, 'instance', $request->getOrigin());
+        $this->createStandardCreateResponse($request, $response, $instance);
     }
 
     /**
