@@ -52,7 +52,7 @@ final class BackendController extends Controller
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-template-list');
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
-        $path      = \str_replace('+', ' ', (string) ($request->getData('path') ?? '/'));
+        $path      = \strtr($request->getDataString('path') ?? '/', '+', ' ');
         $templates = WorkflowTemplateMapper::getAll()
             ->with('createdBy')
             ->with('tags')
