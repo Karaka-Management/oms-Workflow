@@ -16,13 +16,13 @@ namespace Modules\Workflow\Admin;
 
 use Modules\Workflow\Admin\Install\Workflow;
 use phpOMS\Application\ApplicationAbstract;
+use phpOMS\Config\SettingsInterface;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Module\InstallerAbstract;
+use phpOMS\Module\ModuleInfo;
 use phpOMS\System\File\PathException;
 use phpOMS\Uri\HttpUri;
-use phpOMS\Config\SettingsInterface;
-use phpOMS\Module\ModuleInfo;
 
 /**
  * Installer class.
