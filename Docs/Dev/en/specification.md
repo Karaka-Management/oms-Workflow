@@ -115,8 +115,8 @@ return [
     ],
     'de' => [
         'Identifier' => 'Translation in German',
-	],
-	'it' => [
+    ],
+    'it' => [
         'Identifier' => 'Translation in Italian',
     ],
 ];
