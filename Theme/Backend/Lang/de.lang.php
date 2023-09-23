@@ -13,6 +13,8 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
+    'Available'         => 'Available',
+    'Active'            => 'Active',
     'CC'        => 'Cc',
     'Created'   => 'Erstellt',
     'Creator'   => 'Schöpfer',
@@ -28,4 +30,9 @@ return ['Workflow' => [
     'Upload'    => 'Hochladen',
     'Workflow'  => 'Arbeitsablauf',
     'Workflows' => 'Workflows.',
+    'Instances'         => 'Instances',
+    ':istatus-1'        => 'Started',
+    ':istatus-2'        => 'Suspended',
+    ':istatus-3'        => 'Canceled',
+    ':istatus-4'        => 'Done',
 ]];
