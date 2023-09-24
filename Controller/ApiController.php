@@ -534,9 +534,7 @@ final class ApiController extends Controller
             return '';
         }
 
-        $content = \str_replace('{workflow_id}', (string) $template->id, $content);
-
-        return $content;
+        return \str_replace('{workflow_id}', (string) $template->id, $content);
     }
 
     /**
@@ -703,9 +701,7 @@ final class ApiController extends Controller
         /** @var \Modules\Workflow\Models\WorkflowControllerInterface $controller */
         $controller = new \Modules\Workflow\Controller\WorkflowController($this->app, $template);
 
-        $instance = $controller->createInstanceFromRequest($request, $template);
-
-        return $instance;
+        return $controller->createInstanceFromRequest($request, $template);
     }
 
     /**
