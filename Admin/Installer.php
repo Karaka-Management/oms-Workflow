@@ -106,6 +106,7 @@ final class Installer extends InstallerAbstract
         self::createTriggers($apiApp, $workflowData['triggers'] ?? []);
         self::createActions($apiApp, $workflowData['actions'] ?? []);
         self::createWorkflows($apiApp, $workflowData['workflows'] ?? []);
+        self::installWorkflow($apiApp, $workflowData['templates'] ?? []);
 
         return [];
     }
@@ -216,38 +217,40 @@ final class Installer extends InstallerAbstract
         /** @var \Modules\Workflow\Controller\ApiController $module */
         $module = $app->moduleManager->get('Workflow');
 
-        $response = new HttpResponse();
-        $request  = new HttpRequest(new HttpUri(''));
+        foreach ($data as $template) {
+            $response = new HttpResponse();
+            $request  = new HttpRequest(new HttpUri(''));
 
-        $request->header->account = 1;
-        $request->setData('name', $data['name']);
+            $request->header->account = 1;
+            $request->setData('name', $template['name']);
 
-        $tempPath = __DIR__ . '/../../../temp/';
+            $tempPath = __DIR__ . '/../../../temp/';
 
-        $workflowFiles = \scandir(__DIR__ . '/../../..' . $data['path']);
-        if ($workflowFiles === false) {
-            return;
-        }
-
-        foreach ($workflowFiles as $filePath) {
-            if (!\is_file(__DIR__ . '/../../..' . $data['path'] . '/' . $filePath) || $filePath === '..' || $filePath === '.') {
-                continue;
+            $workflowFiles = \scandir(__DIR__ . '/../../..' . $template['path']);
+            if ($workflowFiles === false) {
+                return;
             }
 
-            \copy(
-                __DIR__ . '/../../..' . $data['path'] . '/' . $filePath,
-                $tempPath . $filePath
-            );
+            foreach ($workflowFiles as $filePath) {
+                if (!\is_file(__DIR__ . '/../../..' . $template['path'] . '/' . $filePath) || $filePath === '..' || $filePath === '.') {
+                    continue;
+                }
 
-            $request->addFile([
-                'error'    => \UPLOAD_ERR_OK,
-                'type'     => \substr($filePath, \strrpos($filePath, '.') + 1),
-                'name'     => $filePath,
-                'tmp_name' => $tempPath . $filePath,
-                'size'     => \filesize($tempPath . $filePath),
-            ]);
+                \copy(
+                    __DIR__ . '/../../..' . $template['path'] . '/' . $filePath,
+                    $tempPath . $filePath
+                );
+
+                $request->addFile([
+                    'error'    => \UPLOAD_ERR_OK,
+                    'type'     => \substr($filePath, \strrpos($filePath, '.') + 1),
+                    'name'     => $filePath,
+                    'tmp_name' => $tempPath . $filePath,
+                    'size'     => \filesize($tempPath . $filePath),
+                ]);
+            }
+
+            $module->apiWorkflowTemplateCreate($request, $response);
         }
-
-        $module->apiWorkflowTemplateCreate($request, $response);
     }
 }
