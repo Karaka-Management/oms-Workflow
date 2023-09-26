@@ -86,6 +86,12 @@ final class BackendController extends Controller
      */
     public function viewWorkflowTemplate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
     {
+        $head  = $response->data['Content']->head;
+        $nonce = $this->app->appSettings->getOption('script-nonce');
+
+        $head->addAsset(AssetType::JSLATE, 'Resources/mermaid/mermaid.min.js?v=1.0.0', ['nonce' => $nonce]);
+        $head->addAsset(AssetType::JSLATE, 'Modules/Workflow/Controller.js?v=1.0.0', ['nonce' => $nonce, 'type' => 'module']);
+
         $view              = new View($this->app->l11nManager, $request, $response);
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
@@ -108,10 +114,6 @@ final class BackendController extends Controller
         } else {
             $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-template');
         }
-
-        $head = $response->data['Content']->head;
-        $head->addAsset(AssetType::JSLATE, 'Resources/mermaid/mermaid.min.js?v=1.0.0');
-        $head->addAsset(AssetType::JSLATE, 'Modules/Workflow/Controller.js?v=1.0.0', ['type' => 'module']);
 
         return $view;
     }
