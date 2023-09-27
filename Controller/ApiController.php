@@ -336,7 +336,7 @@ final class ApiController extends Controller
      *
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
-     * @param mixed            $data     Generic data
+     * @param array            $data     Generic data
      *
      * @return void
      *
@@ -344,7 +344,7 @@ final class ApiController extends Controller
      *
      * @since 1.0.0
      */
-    public function apiWorkflowTemplateCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
+    public function apiWorkflowTemplateCreate(RequestAbstract $request, ResponseAbstract $response, array $data = []) : void
     {
         $uploadedFiles = $request->files;
         $files         = [];
@@ -633,13 +633,13 @@ final class ApiController extends Controller
      *
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
-     * @param mixed            $data     Generic data
+     * @param array            $data     Generic data
      *
      * @return void
      *
      * @since 1.0.0
      */
-    public function apiWorkflowInstanceCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
+    public function apiWorkflowInstanceCreate(RequestAbstract $request, ResponseAbstract $response, array $data = []) : void
     {
         if (!empty($val = $this->validateInstanceCreate($request))) {
             $response->header->status = RequestStatusCode::R_400;

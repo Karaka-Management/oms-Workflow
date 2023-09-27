@@ -39,14 +39,14 @@ final class BackendController extends Controller
      *
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
-     * @param mixed            $data     Generic data
+     * @param array            $data     Generic data
      *
      * @return RenderableInterface
      *
      * @since 1.0.0
      * @codeCoverageIgnore
      */
-    public function viewWorkflowTemplateList(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
+    public function viewWorkflowTemplateList(RequestAbstract $request, ResponseAbstract $response, array $data = []) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-template-list');
@@ -77,14 +77,14 @@ final class BackendController extends Controller
      *
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
-     * @param mixed            $data     Generic data
+     * @param array            $data     Generic data
      *
      * @return RenderableInterface
      *
      * @since 1.0.0
      * @codeCoverageIgnore
      */
-    public function viewWorkflowTemplate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
+    public function viewWorkflowTemplate(RequestAbstract $request, ResponseAbstract $response, array $data = []) : RenderableInterface
     {
         $head  = $response->data['Content']->head;
         $nonce = $this->app->appSettings->getOption('script-nonce');
@@ -123,14 +123,14 @@ final class BackendController extends Controller
      *
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
-     * @param mixed            $data     Generic data
+     * @param array            $data     Generic data
      *
      * @return RenderableInterface
      *
      * @since 1.0.0
      * @codeCoverageIgnore
      */
-    public function viewWorkflowTemplateCreate(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
+    public function viewWorkflowTemplateCreate(RequestAbstract $request, ResponseAbstract $response, array $data = []) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-template-create');
@@ -144,7 +144,7 @@ final class BackendController extends Controller
      *
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
-     * @param mixed            $data     Generic data
+     * @param array            $data     Generic data
      *
      * @return RenderableInterface
      *
@@ -153,7 +153,7 @@ final class BackendController extends Controller
      * @since 1.0.0
      * @codeCoverageIgnore
      */
-    public function viewDashboard(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
+    public function viewDashboard(RequestAbstract $request, ResponseAbstract $response, array $data = []) : RenderableInterface
     {
         return $this->viewInstanceList($request, $response, $data);
     }
@@ -163,14 +163,14 @@ final class BackendController extends Controller
      *
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
-     * @param mixed            $data     Generic data
+     * @param array            $data     Generic data
      *
      * @return RenderableInterface
      *
      * @since 1.0.0
      * @codeCoverageIgnore
      */
-    public function viewInstanceList(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
+    public function viewInstanceList(RequestAbstract $request, ResponseAbstract $response, array $data = []) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-instance-list');
@@ -191,14 +191,14 @@ final class BackendController extends Controller
      *
      * @param RequestAbstract  $request  Request
      * @param ResponseAbstract $response Response
-     * @param mixed            $data     Generic data
+     * @param array            $data     Generic data
      *
      * @return RenderableInterface
      *
      * @since 1.0.0
      * @codeCoverageIgnore
      */
-    public function viewInstance(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : RenderableInterface
+    public function viewInstance(RequestAbstract $request, ResponseAbstract $response, array $data = []) : RenderableInterface
     {
         $view              = new View($this->app->l11nManager, $request, $response);
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
