@@ -398,17 +398,17 @@ final class ApiController extends Controller
                 $request->header->account
             );
 
-            if ($collection->id === 0) {
+            $collection->setPath('/Modules/Media/Files/Modules/Workflow/' . ($request->getDataString('name') ?? ''));
+            $collection->setVirtualPath('/Modules/Workflow');
+
+            $this->createModel($request->header->account, $collection, CollectionMapper::class, 'collection', $request->getOrigin());
+
+            if ($collection->id < 1) {
                 $response->header->status = RequestStatusCode::R_403;
                 $this->createInvalidCreateResponse($request, $response, $collection);
 
                 return;
             }
-
-            $collection->setPath('/Modules/Media/Files/Modules/Workflow/' . ($request->getDataString('name') ?? ''));
-            $collection->setVirtualPath('/Modules/Workflow');
-
-            $this->createModel($request->header->account, $collection, CollectionMapper::class, 'collection', $request->getOrigin());
 
             $collectionId = $collection->id;
         }
