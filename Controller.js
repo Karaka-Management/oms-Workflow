@@ -1,8 +1,9 @@
+import { jsOMS }      from '../../jsOMS/Utils/oLib.js';
 import { Autoloader } from '../../jsOMS/Autoloader.js';
 
-Autoloader.defineNamespace('jsOMS.Modules');
+Autoloader.defineNamespace('omsApp.Modules');
 
-jsOMS.Modules.Workflow = class {
+omsApp.Modules.Workflow = class {
     /**
      * @constructor
      *
