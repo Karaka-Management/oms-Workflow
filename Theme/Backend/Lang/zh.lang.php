@@ -13,7 +13,6 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'Updated'    => '',
     ':istatus-1' => '',
     ':istatus-2' => '',
     ':istatus-3' => '',
@@ -35,6 +34,7 @@ return ['Workflow' => [
     'Task'       => '任务',
     'Title'      => '标题',
     'To'         => '到',
+    'Updated'    => '',
     'Upload'     => '上传',
     'Workflow'   => '工作流程',
     'Workflows'  => '工作流程',

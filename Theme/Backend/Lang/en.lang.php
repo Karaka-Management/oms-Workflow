@@ -13,7 +13,6 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'Updated'    => '',
     ':istatus-1' => 'Started',
     ':istatus-2' => 'Suspended',
     ':istatus-3' => 'Canceled',
@@ -35,6 +34,7 @@ return ['Workflow' => [
     'Task'       => 'Task',
     'Title'      => 'Title',
     'To'         => 'To',
+    'Updated'    => '',
     'Upload'     => 'Upload',
     'Workflow'   => 'Workflow',
     'Workflows'  => 'Workflows',

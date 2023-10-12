@@ -13,7 +13,6 @@
 declare(strict_types=1);
 
 return ['Workflow' => [
-    'Updated'    => '',
     ':istatus-1' => '',
     ':istatus-2' => '',
     ':istatus-3' => '',
@@ -35,6 +34,7 @@ return ['Workflow' => [
     'Task'       => 'Zadanie',
     'Title'      => 'Tytuł',
     'To'         => 'Do',
+    'Updated'    => '',
     'Upload'     => 'Wgrywać',
     'Workflow'   => 'Przepływ pracy',
     'Workflows'  => 'Przepływ pracy',
