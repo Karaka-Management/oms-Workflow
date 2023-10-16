@@ -37,7 +37,7 @@ final class NullWorkflowInstanceAbstractTest extends \PHPUnit\Framework\TestCase
     public function testId() : void
     {
         $null = new NullWorkflowInstanceAbstract(2);
-        self::assertEquals(2, $null->getId());
+        self::assertEquals(2, $null->id);
     }
 
     /**
