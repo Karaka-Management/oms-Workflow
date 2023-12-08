@@ -150,7 +150,7 @@ final class CliController extends Controller
      *
      * @return WorkflowInstanceAbstract
      *
-     * @todo: How to handle workflow instances which are not saved in the database and are continued?
+     * @todo How to handle workflow instances which are not saved in the database and are continued?
      *
      * @since 1.0.0
      */
@@ -225,9 +225,9 @@ final class CliController extends Controller
                 ->{$actions[(int) $element['id']]['function']}($request, $response, [$element]);
         }
 
-        // @todo: currently all children are executed one after another, maybe consider parallel execution
+        // @todo currently all children are executed one after another, maybe consider parallel execution
         foreach ($element['children'] as $child) {
-            // @todo: pass previous results (probably needs a populator for input variables based on previous output variables)
+            // @todo pass previous results (probably needs a populator for input variables based on previous output variables)
             $this->runWorkflowElement($request, $response, $actions, $instance, $child);
         }
     }

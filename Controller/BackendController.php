@@ -148,7 +148,7 @@ final class BackendController extends Controller
      *
      * @return RenderableInterface
      *
-     * @todo: remove, the router is already adjusted.
+     * @todo remove, the router is already adjusted.
      *
      * @since 1.0.0
      * @codeCoverageIgnore

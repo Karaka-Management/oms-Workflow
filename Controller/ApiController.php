@@ -469,7 +469,7 @@ final class ApiController extends Controller
      * @return void
      *
      * @since 1.0.0
-     * @todo: also implement the delete and update functions
+     * @todo also implement the delete and update functions
      */
     private function installWorkflowModel(WorkflowTemplate $template, array $actions) : void
     {
@@ -693,7 +693,7 @@ final class ApiController extends Controller
     {
         $controller = null;
 
-        // @todo: implement default workflow instance;
+        // @todo implement default workflow instance;
 
         $file = $template->source->findFile('WorkflowController.php');
         require_once $file->getAbsolutePath();
