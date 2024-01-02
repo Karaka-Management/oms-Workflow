@@ -17,7 +17,7 @@ namespace Modules\Workflow\Models;
 use phpOMS\Stdlib\Base\Enum;
 
 /**
- * Permision state enum.
+ * Permission category enum.
  *
  * @package Modules\Workflow\Models
  * @license OMS License 2.0
