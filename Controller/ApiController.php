@@ -26,6 +26,7 @@ use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Account\PermissionType;
 use phpOMS\Autoloader;
 use phpOMS\DataStorage\Database\Schema\Builder as SchemaBuilder;
+use phpOMS\Localization\ISO639x1Enum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Message\Http\RequestStatusCode;
@@ -323,7 +324,7 @@ final class ApiController extends Controller
         $view = new View($this->app->l11nManager, $request, $response);
 
         $view->data['tcoll']    = $tcoll;
-        $view->data['lang']     = $request->getData('lang') ?? $request->header->l11n->language;
+        $view->data['lang']     = ISO639x1Enum::tryFromValue($request->getData('lang')) ?? $request->header->l11n->language;
         $view->data['instance'] = $instance;
         $view->data['template'] = $instance->template;
         $view->data['basepath'] = __DIR__ . '/../../../';
@@ -526,7 +527,7 @@ final class ApiController extends Controller
      *
      * @return string
      *
-     * @sicne 1.0.0
+     * @since 1.0.0
      */
     private function parseKeys(string $content, WorkflowTemplate $template) : string
     {

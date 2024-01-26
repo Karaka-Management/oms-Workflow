@@ -32,10 +32,10 @@ echo $this->data['nav']->render(); ?>
                 <?php
                     $c = 0;
                     foreach ($instances as $key => $instance) : ++$c;
-                        $url = \phpOMS\Uri\UriFactory::build('{/base}/admin/instance/single?{?}&id=' . $instance->id);
+                        $url = \phpOMS\Uri\UriFactory::build('{/base}/admin/instance/view?{?}&id=' . $instance->id);
                 ?>
                 <tr data-href="<?= $url; ?>">
-                    <td><a href="<?= $url; ?>"><?= $this->printHtml((string) $instance->getStatus()); ?></a>
+                    <td><a href="<?= $url; ?>"><?= $this->printHtml((string) $instance->status); ?></a>
                     <td><a href="<?= $url; ?>"><?= $this->printHtml($instance->template->name); ?></a>
                     <td><a href="<?= $url; ?>"><?= $instance->createdAt->format('Y-m-d H:i:s'); ?></a>
                 <?php endforeach; if ($c == 0) : ?>

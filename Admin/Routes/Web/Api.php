@@ -18,7 +18,7 @@ use phpOMS\Account\PermissionType;
 use phpOMS\Router\RouteVerb;
 
 return [
-    '^.*/workflow/instance/export.*$' => [
+    '^.*/workflow/instance/export(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Workflow\Controller\ApiController:apiWorkflowExport',
             'verb'       => RouteVerb::GET,
@@ -29,7 +29,7 @@ return [
             ],
         ],
     ],
-    '^.*/workflow/template.*$' => [
+    '^.*/workflow/template(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Workflow\Controller\ApiController:apiWorkflowTemplateCreate',
             'verb'       => RouteVerb::PUT,
@@ -40,7 +40,7 @@ return [
             ],
         ],
     ],
-    '^.*/workflow/instance.*$' => [
+    '^.*/workflow/instance(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Workflow\Controller\ApiController:apiWorkflowInstanceCreate',
             'verb'       => RouteVerb::PUT,

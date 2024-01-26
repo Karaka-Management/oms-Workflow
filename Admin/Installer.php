@@ -22,7 +22,6 @@ use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Module\InstallerAbstract;
 use phpOMS\Module\ModuleInfo;
 use phpOMS\System\File\PathException;
-use phpOMS\Uri\HttpUri;
 
 /**
  * Installer class.
@@ -128,7 +127,7 @@ final class Installer extends InstallerAbstract
 
         foreach ($data as $name => $workflow) {
             $response = new HttpResponse();
-            $request  = new HttpRequest(new HttpUri(''));
+            $request  = new HttpRequest();
 
             $request->header->account = 1;
             $request->setData('name', $name);
@@ -219,7 +218,7 @@ final class Installer extends InstallerAbstract
 
         foreach ($data as $template) {
             $response = new HttpResponse();
-            $request  = new HttpRequest(new HttpUri(''));
+            $request  = new HttpRequest();
 
             $request->header->account = 1;
             $request->setData('name', $template['name']);

@@ -18,7 +18,7 @@ use phpOMS\Account\PermissionType;
 use phpOMS\Router\RouteVerb;
 
 return [
-    '^.*/workflow/template/list.*$' => [
+    '^.*/workflow/template/list(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowTemplateList',
             'verb'       => RouteVerb::GET,
@@ -29,7 +29,7 @@ return [
             ],
         ],
     ],
-    '^.*/workflow/template/profile.*$' => [
+    '^.*/workflow/template/view(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowTemplate',
             'verb'       => RouteVerb::GET,
@@ -40,7 +40,7 @@ return [
             ],
         ],
     ],
-    '^.*/workflow/template/create.*$' => [
+    '^.*/workflow/template/create(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewWorkflowTemplateCreate',
             'verb'       => RouteVerb::GET,
@@ -51,7 +51,7 @@ return [
             ],
         ],
     ],
-    '^.*/workflow/instance/list.*$' => [
+    '^.*/workflow/instance/list(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewInstanceList',
             'verb'       => RouteVerb::GET,
@@ -62,7 +62,7 @@ return [
             ],
         ],
     ],
-    '^.*/workflow/instance/profile.*$' => [
+    '^.*/workflow/instance/view(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Workflow\Controller\BackendController:viewInstance',
             'verb'       => RouteVerb::GET,
