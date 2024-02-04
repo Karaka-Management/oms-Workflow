@@ -31,6 +31,12 @@ use phpOMS\Views\View;
  * @license OMS License 2.0
  * @link    https://jingga.app
  * @since   1.0.0
+ *
+ * @todo Implement approval process with automatic action
+ *      https://github.com/Karaka-Management/oms-Workflow/issues/6
+ *      https://github.com/Karaka-Management/oms-InvestmentManagement/issues/2
+ *      https://github.com/Karaka-Management/oms-Billing/issues/24
+ *      https://github.com/Karaka-Management/Karaka/issues/270
  */
 final class BackendController extends Controller
 {

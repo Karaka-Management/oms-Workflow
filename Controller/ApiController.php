@@ -373,7 +373,7 @@ final class ApiController extends Controller
             $path = '/Modules/Workflow/' . $request->getData('name');
 
             /** @var \Modules\Media\Models\Media[] $uploaded */
-            $uploaded = $this->app->moduleManager->get('Media')->uploadFiles(
+            $uploaded = $this->app->moduleManager->get('Media', 'Api')->uploadFiles(
                 names: $request->getDataList('names'),
                 fileNames: $request->getDataList('filenames'),
                 files: $uploadedFiles,
