@@ -34,7 +34,7 @@
                 "type": 3,
                 "subtype": 1,
                 "name": "Templates",
-                "uri": "{/base}/workflow/template/list",
+                "uri": "{/base}/workflow/template/list?{?}",
                 "target": "self",
                 "icon": null,
                 "order": 5,
