@@ -19,31 +19,23 @@ use Modules\Workflow\Models\NullWorkflowTemplate;
 /**
  * @internal
  */
+#[\PHPUnit\Framework\Attributes\CoversClass(\Modules\Workflow\Models\NullWorkflowTemplate::class)]
 final class NullWorkflowTemplateTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @covers \Modules\Workflow\Models\NullWorkflowTemplate
-     * @group module
-     */
+    #[\PHPUnit\Framework\Attributes\Group('module')]
     public function testNull() : void
     {
         self::assertInstanceOf('\Modules\Workflow\Models\WorkflowTemplate', new NullWorkflowTemplate());
     }
 
-    /**
-     * @covers \Modules\Workflow\Models\NullWorkflowTemplate
-     * @group module
-     */
+    #[\PHPUnit\Framework\Attributes\Group('module')]
     public function testId() : void
     {
         $null = new NullWorkflowTemplate(2);
         self::assertEquals(2, $null->id);
     }
 
-    /**
-     * @covers \Modules\Workflow\Models\NullWorkflowTemplate
-     * @group module
-     */
+    #[\PHPUnit\Framework\Attributes\Group('module')]
     public function testJsonSerialize() : void
     {
         $null = new NullWorkflowTemplate(2);
