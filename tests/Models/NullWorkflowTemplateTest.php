@@ -22,7 +22,7 @@ use Modules\Workflow\Models\NullWorkflowTemplate;
 final class NullWorkflowTemplateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @covers Modules\Workflow\Models\NullWorkflowTemplate
+     * @covers \Modules\Workflow\Models\NullWorkflowTemplate
      * @group module
      */
     public function testNull() : void
@@ -31,7 +31,7 @@ final class NullWorkflowTemplateTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers Modules\Workflow\Models\NullWorkflowTemplate
+     * @covers \Modules\Workflow\Models\NullWorkflowTemplate
      * @group module
      */
     public function testId() : void
@@ -41,7 +41,7 @@ final class NullWorkflowTemplateTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers Modules\Workflow\Models\NullWorkflowTemplate
+     * @covers \Modules\Workflow\Models\NullWorkflowTemplate
      * @group module
      */
     public function testJsonSerialize() : void
