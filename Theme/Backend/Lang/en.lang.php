@@ -38,4 +38,7 @@ return ['Workflow' => [
     'Upload'     => 'Upload',
     'Workflow'   => 'Workflow',
     'Workflows'  => 'Workflows',
+    'Data'       => 'Data',
+    'End'        => 'End',
+    'Instance'   => 'Instance',
 ]];

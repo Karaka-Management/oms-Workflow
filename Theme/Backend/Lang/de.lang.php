@@ -37,5 +37,8 @@ return ['Workflow' => [
     'Updated'    => 'Upddate',
     'Upload'     => 'Hochladen',
     'Workflow'   => 'Arbeitsablauf',
-    'Workflows'  => 'Workflows.',
+    'Workflows'  => 'Workflows',
+    'Data'       => 'Daten',
+    'End'        => 'Ende',
+    'Instance'   => 'Instanz',
 ]];

@@ -50,7 +50,7 @@ final class CliController extends Controller
     public function runWorkflowFromHook(mixed ...$data) : void
     {
         /** @var \Modules\Workflow\Models\WorkflowTemplate[] $workflows */
-        $workflows = WorkflowTemplateMapper::getAll()->where('status', WorkflowStatus::ACTIVE)->execute();
+        $workflows = WorkflowTemplateMapper::getAll()->where('status', WorkflowStatus::ACTIVE)->executeGetArray();
         foreach ($workflows as $workflow) {
             $hooks = $workflow->getHooks();
 

@@ -65,7 +65,7 @@ final class BackendController extends Controller
             ->with('tags/title')
             ->where('virtualPath', $path)
             ->where('tags/title/language', $response->header->l11n->language)
-            ->execute();
+            ->executeGetArray();
 
         list($collection, $parent) = CollectionMapper::getCollectionsByPath($path);
 
@@ -185,7 +185,7 @@ final class BackendController extends Controller
         /** @var \Modules\Workflow\Models\WorkflowInstanceAbstract $instances */
         $instances = WorkflowInstanceAbstractMapper::getAll()
             ->with('template')
-            ->execute();
+            ->executeGetArray();
 
         $view->data['instances'] = $instances;
 
@@ -210,25 +210,23 @@ final class BackendController extends Controller
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
         /** @var \Modules\Workflow\Models\WorkflowInstanceAbstract $instance */
-        $instance = WorkflowInstanceAbstractMapper::get()
+        $view->data['instance'] = WorkflowInstanceAbstractMapper::get()
             ->where('id', (int) $request->getData('id'))
             ->execute();
 
         /** @var \Modules\Workflow\Models\WorkflowTemplate $template */
-        $template = WorkflowTemplateMapper::get()
+        $view->data['template'] = WorkflowTemplateMapper::get()
             ->with('source')
             ->with('source/sources')
-            ->where('id',  $instance->template->id)
+            ->where('id',  $view->data['instance']->template->id)
             ->limit()
             ->execute();
 
-        $view->data['template'] = $template;
-
-        if ($template->source->findFile('instance-profile.tpl.php')->id > 0) {
-            require_once $template->source->findFile('WorkflowController.php')->getPath();
+        if ($view->data['template']->source->findFile('instance-profile.tpl.php')->id > 0) {
+            require_once $view->data['template']->source->findFile('WorkflowController.php')->getPath();
 
             /** @var WorkflowControllerInterface $controller */
-            $controller = new \Modules\Workflow\Controller\WorkflowController($this->app, $template);
+            $controller = new \Modules\Workflow\Controller\WorkflowController($this->app, $view->data['template']);
             $controller->createInstanceViewFromRequest($view, $request, $response);
         } else {
             $view->setTemplate('/Modules/Workflow/Theme/Backend/workflow-instance');

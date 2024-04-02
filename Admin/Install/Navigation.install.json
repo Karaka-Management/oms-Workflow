@@ -56,7 +56,8 @@
                 "from": "Workflow",
                 "permission": { "permission": 4, "category": null, "element": null },
                 "parent": 1005501001,
-                "children": []
+                "children": [],
+                "status": 3
             }
         ]
     }

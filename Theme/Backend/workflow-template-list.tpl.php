@@ -29,8 +29,8 @@ $accountDir = $account->id . ' ' . $account->login;
 $collections = $this->data['collections'];
 $mediaPath   = \urldecode($this->getData('path') ?? '/');
 
-$previous = empty($templates) ? 'workflow/template/list' : '{/base}/workflow/template/list?{?}&id=' . \reset($templates)->id . '&ptype=p';
-$next     = empty($templates) ? 'workflow/template/list' : '{/base}/workflow/template/list?{?}&id=' . \end($templates)->id . '&ptype=n';
+$previous = empty($templates) ? 'workflow/template/list' : '{/base}/workflow/template/list?{?}&offset=' . \reset($templates)->id . '&ptype=p';
+$next     = empty($templates) ? 'workflow/template/list' : '{/base}/workflow/template/list?{?}&offset=' . \end($templates)->id . '&ptype=n';
 
 echo $this->data['nav']->render(); ?>
 <div class="row">
