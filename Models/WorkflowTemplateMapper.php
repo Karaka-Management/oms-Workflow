@@ -19,7 +19,7 @@ use Modules\Media\Models\CollectionMapper;
 use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
 
 /**
- * Mapper class.
+ * WorkflowTemplate mapper class.
  *
  * @package Modules\Workflow\Models
  * @license OMS License 2.0

@@ -23,6 +23,7 @@ return [
             'dest'       => '\Modules\Workflow\Controller\ApiController:apiWorkflowExport',
             'verb'       => RouteVerb::GET,
             'csrf'       => true,
+            'active' => true,
             'permission' => [
                 'module' => ApiController::NAME,
                 'type'   => PermissionType::READ,
@@ -35,6 +36,7 @@ return [
             'dest'       => '\Modules\Workflow\Controller\ApiController:apiWorkflowTemplateCreate',
             'verb'       => RouteVerb::PUT,
             'csrf'       => true,
+            'active' => true,
             'permission' => [
                 'module' => ApiController::NAME,
                 'type'   => PermissionType::CREATE,
@@ -47,6 +49,7 @@ return [
             'dest'       => '\Modules\Workflow\Controller\ApiController:apiWorkflowInstanceCreate',
             'verb'       => RouteVerb::PUT,
             'csrf'       => true,
+            'active' => true,
             'permission' => [
                 'module' => ApiController::NAME,
                 'type'   => PermissionType::CREATE,

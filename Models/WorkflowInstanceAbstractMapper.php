@@ -18,7 +18,7 @@ use Modules\Admin\Models\AccountMapper;
 use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
 
 /**
- * Mapper class.
+ * WorkflowInstanceAbstract mapper class.
  *
  * @package Modules\Workflow\Models
  * @license OMS License 2.0
