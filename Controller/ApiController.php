@@ -347,8 +347,7 @@ final class ApiController extends Controller
      */
     public function apiWorkflowTemplateCreate(RequestAbstract $request, ResponseAbstract $response, array $data = []) : void
     {
-        $uploadedFiles = $request->files;
-        $files         = [];
+        $files = [];
 
         if (!empty($val = $this->validateTemplateCreate($request))) {
             $response->header->status = RequestStatusCode::R_400;
@@ -367,23 +366,23 @@ final class ApiController extends Controller
         }
 
         $collectionId = 0;
-        $uploaded     = [];
+        $uploaded     = new NullCollection();
 
         if (!empty($request->files)) {
             $path = '/Modules/Workflow/' . $request->getData('name');
 
-            /** @var \Modules\Media\Models\Media[] $uploaded */
+            /** @var \Modules\Media\Models\Collection $uploaded */
             $uploaded = $this->app->moduleManager->get('Media', 'Api')->uploadFiles(
                 names: $request->getDataList('names'),
                 fileNames: $request->getDataList('filenames'),
-                files: $uploadedFiles,
+                files: $request->files,
                 account: $request->header->account,
                 basePath: __DIR__ . '/../../../Modules/Media/Files' . $path,
                 virtualPath: $path,
                 pathSettings: PathSettings::FILE_PATH
             );
 
-            foreach ($uploaded as $upload) {
+            foreach ($uploaded->sources as $upload) {
                 if ($upload->id === 0) {
                     continue;
                 }
@@ -391,27 +390,14 @@ final class ApiController extends Controller
                 $files[] = $upload;
             }
 
-            /** @var \Modules\Media\Models\Collection $collection */
-            $collection = $this->app->moduleManager->get('Media')->createMediaCollectionFromMedia(
-                $request->getDataString('name') ?? '',
-                $request->getDataString('description') ?? '',
-                $files,
-                $request->header->account
-            );
-
-            $collection->setPath('/Modules/Media/Files/Modules/Workflow/' . ($request->getDataString('name') ?? ''));
-            $collection->setVirtualPath('/Modules/Workflow');
-
-            $this->createModel($request->header->account, $collection, CollectionMapper::class, 'collection', $request->getOrigin());
-
-            if ($collection->id < 1) {
+            if ($uploaded->id < 1) {
                 $response->header->status = RequestStatusCode::R_403;
-                $this->createInvalidCreateResponse($request, $response, $collection);
+                $this->createInvalidCreateResponse($request, $response, $uploaded);
 
                 return;
             }
 
-            $collectionId = $collection->id;
+            $collectionId = $uploaded->id;
         }
 
         $template = $this->createTemplateFromRequest($request, $collectionId);
