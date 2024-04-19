@@ -20,6 +20,7 @@ use Modules\Workflow\Models\WorkflowInstanceAbstractMapper;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
 use phpOMS\Asset\AssetType;
 use phpOMS\Contract\RenderableInterface;
+use phpOMS\Message\Http\RequestStatusCode;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Views\View;
@@ -206,13 +207,21 @@ final class BackendController extends Controller
      */
     public function viewInstance(RequestAbstract $request, ResponseAbstract $response, array $data = []) : RenderableInterface
     {
-        $view              = new View($this->app->l11nManager, $request, $response);
-        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
+        $view = new View($this->app->l11nManager, $request, $response);
 
         /** @var \Modules\Workflow\Models\WorkflowInstanceAbstract $instance */
         $view->data['instance'] = WorkflowInstanceAbstractMapper::get()
             ->where('id', (int) $request->getData('id'))
             ->execute();
+
+        if ($view->data['instance']->id === 0) {
+            $response->header->status = RequestStatusCode::R_404;
+            $view->setTemplate('/Web/Backend/Error/404');
+
+            return $view;
+        }
+
+        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
         /** @var \Modules\Workflow\Models\WorkflowTemplate $template */
         $view->data['template'] = WorkflowTemplateMapper::get()
