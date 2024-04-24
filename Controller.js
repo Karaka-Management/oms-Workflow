@@ -1,8 +1,8 @@
-import { jsOMS }      from '../../jsOMS/Utils/oLib.js';
 import { Autoloader } from '../../jsOMS/Autoloader.js';
 
 Autoloader.defineNamespace('omsApp.Modules');
 
+/* global omsApp, mermaid */
 omsApp.Modules.Workflow = class {
     /**
      * @constructor
@@ -16,7 +16,7 @@ omsApp.Modules.Workflow = class {
 
     bind (id)
     {
-        mermaid.initialize({startOnLoad:true});
+        mermaid.initialize({ startOnLoad: true });
     };
 
     bindElement (chart)
