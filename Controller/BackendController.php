@@ -209,7 +209,6 @@ final class BackendController extends Controller
     {
         $view = new View($this->app->l11nManager, $request, $response);
 
-        /** @var \Modules\Workflow\Models\WorkflowInstanceAbstract $instance */
         $view->data['instance'] = WorkflowInstanceAbstractMapper::get()
             ->where('id', (int) $request->getData('id'))
             ->execute();
@@ -223,7 +222,6 @@ final class BackendController extends Controller
 
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1005501001, $request, $response);
 
-        /** @var \Modules\Workflow\Models\WorkflowTemplate $template */
         $view->data['template'] = WorkflowTemplateMapper::get()
             ->with('source')
             ->with('source/sources')
