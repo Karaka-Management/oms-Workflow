@@ -35,9 +35,15 @@ use phpOMS\Views\View;
  *
  * @todo Implement approval process with automatic action
  *      https://github.com/Karaka-Management/oms-Workflow/issues/6
- *      https://github.com/Karaka-Management/oms-InvestmentManagement/issues/2
- *      https://github.com/Karaka-Management/oms-Billing/issues/24
- *      https://github.com/Karaka-Management/Karaka/issues/270
+ *      https://github.com/Karaka-Management/oms-InvestmentManagement/issues/2 (Investment)
+ *      https://github.com/Karaka-Management/oms-Billing/issues/24 (Invoice elements)
+ *      https://github.com/Karaka-Management/Karaka/issues/270 (Multi level approval)
+ *      https://github.com/Karaka-Management/oms-HumanResourceTimeRecording/issues/8 (Vacation)
+ *      https://github.com/Karaka-Management/oms-HumanResourceTimeRecording/issues/7 (Clocking change)
+ *      https://github.com/Karaka-Management/oms-QualityManagement/issues/2 (Quality report)
+ *
+ * @todo Implement Exchange runner
+ *      https://github.com/Karaka-Management/oms-Exchange/issues/1
  */
 final class BackendController extends Controller
 {

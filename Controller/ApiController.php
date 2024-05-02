@@ -508,7 +508,7 @@ final class ApiController extends Controller
     /**
      * Parse and replace placeholder elements
      *
-     * @param string           $content  Cotnent to replace
+     * @param string           $content  Content to replace
      * @param WorkflowTemplate $template Tempalate model
      *
      * @return string
