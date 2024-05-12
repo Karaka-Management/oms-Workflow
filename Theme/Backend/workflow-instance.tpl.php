@@ -17,7 +17,7 @@ echo $this->data['nav']->render();
 ?>
 <div class="row">
     <div class="col-xs-12 col-md-6">
-        <div class="portlet">
+        <section class="portlet">
             <div class="portlet-head"><?= $this->getHtml('Instance'); ?></div>
             <div class="portlet-body">
                 <table class="list wf-100">
@@ -40,6 +40,6 @@ echo $this->data['nav']->render();
                     <tr><td colspan="2"><pre><?= $this->printHtml($this->data['instance']->data); ?></pre>
                 </table>
             </div>
-        </div>
+        </section>
     </div>
 </div>

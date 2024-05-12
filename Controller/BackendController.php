@@ -41,6 +41,7 @@ use phpOMS\Views\View;
  *      https://github.com/Karaka-Management/oms-HumanResourceTimeRecording/issues/8 (Vacation)
  *      https://github.com/Karaka-Management/oms-HumanResourceTimeRecording/issues/7 (Clocking change)
  *      https://github.com/Karaka-Management/oms-QualityManagement/issues/2 (Quality report)
+ *      https://github.com/Karaka-Management/Karaka/issues/265 (Sanction checks for all accounts)
  *
  * @todo Implement Exchange runner
  *      https://github.com/Karaka-Management/oms-Exchange/issues/1
