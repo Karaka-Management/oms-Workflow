@@ -169,6 +169,10 @@ final class ApiController extends Controller
 
         switch ($request->getData('type')) {
             case 'pdf':
+                if (!isset($tcoll['pdf'])) {
+                    break;
+                }
+
                 $response->header->set(
                     'Content-disposition', 'attachment; filename="'
                     . $name . '.'
@@ -179,6 +183,10 @@ final class ApiController extends Controller
                 $view->setTemplate('/' . \substr($tcoll['pdf']->getPath(), 0, -8), 'pdf.php');
                 break;
             case 'csv':
+                if (!isset($tcoll['csv'])) {
+                    break;
+                }
+
                 $response->header->set(
                     'Content-disposition', 'attachment; filename="'
                     . $name . '.'
@@ -190,6 +198,10 @@ final class ApiController extends Controller
                 break;
             case 'xls':
             case 'xlsx':
+                if (!isset($tcoll['excel'])) {
+                    break;
+                }
+
                 $response->header->set(
                     'Content-disposition', 'attachment; filename="'
                     . $name . '.'
@@ -201,6 +213,10 @@ final class ApiController extends Controller
                 break;
             case 'doc':
             case 'docx':
+                if (!isset($tcoll['word'])) {
+                    break;
+                }
+
                 $response->header->set(
                     'Content-disposition', 'attachment; filename="'
                     . $name . '.'
@@ -212,6 +228,10 @@ final class ApiController extends Controller
                 break;
             case 'ppt':
             case 'pptx':
+                if (!isset($tcoll['powerpoint'])) {
+                    break;
+                }
+
                 $response->header->set(
                     'Content-disposition', 'attachment; filename="'
                     . $name . '.'
@@ -222,10 +242,18 @@ final class ApiController extends Controller
                 $view->setTemplate('/' . \substr($tcoll['powerpoint']->getPath(), 0, -8), 'ppt.php');
                 break;
             case 'json':
+                if (!isset($tcoll['json'])) {
+                    break;
+                }
+
                 $response->header->set('Content-Type', MimeType::M_JSON, true);
                 $view->setTemplate('/' . \substr($tcoll['json']->getPath(), 0, -9), 'json.php');
                 break;
             default:
+                if (!isset($tcoll['template'])) {
+                    break;
+                }
+
                 $response->header->set('Content-Type', 'text/html; charset=utf-8');
                 $view->setTemplate('/' . \substr($tcoll['template']->getPath(), 0, -8));
         }

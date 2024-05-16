@@ -16,7 +16,7 @@ By default the application will test during the installation process if the Cli 
 
 # Setup
 
-This module doesn't have any additional setup requirements since it is installed during the application install process.
+This module doesn't have any additional setup requirements.
 
 # Features
 
