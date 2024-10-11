@@ -4,7 +4,7 @@ The **Workflow** module allows organizations to automize and structure internal 
 
 ## Target Group
 
-The target group for this module is every organization which would like to create organization specific workflows/processes. The implementation of such workflows requires programming knowledge in PHP and potentially JavaScript. Other modules may provide their own example workflows which provide a good starting point and may be useful with minor configuration adjustments.
+The target group for this module is every organization which would like to create organization specific workflows/processes. The implementation of such workflows requires programming knowledge in PHP and potentially JS. Other modules may provide their own example workflows which provide a good starting point and may be useful with minor configuration adjustments.
 
 # Requirements
 
