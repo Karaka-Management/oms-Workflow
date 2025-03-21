@@ -104,37 +104,14 @@ final class Installer extends InstallerAbstract
 
         self::createTriggers($apiApp, $workflowData['triggers'] ?? []);
         self::createActions($apiApp, $workflowData['actions'] ?? []);
-        self::createWorkflows($apiApp, $workflowData['workflows'] ?? []);
+
+        // Workflows possible to also define in the ui
+        self::installWorkflow($apiApp, $workflowData['workflows'] ?? []);
+
+        // Workflows only programmable
         self::installWorkflow($apiApp, $workflowData['templates'] ?? []);
 
         return [];
-    }
-
-    /**
-     * Create a workflow template
-     *
-     * @param ApplicationAbstract $app  Application
-     * @param array               $data Workflow schemas
-     *
-     * @return void
-     *
-     * @since 1.0.0
-     */
-    private static function createWorkflows(ApplicationAbstract $app, array $data) : void
-    {
-        /** @var \Modules\Workflow\Controller\ApiController $module */
-        $module = $app->moduleManager->get('Workflow');
-
-        foreach ($data as $name => $workflow) {
-            $response = new HttpResponse();
-            $request  = new HttpRequest();
-
-            $request->header->account = 1;
-            $request->setData('name', $name);
-            $request->setData('schema', \json_encode($workflow));
-
-            $module->apiWorkflowTemplateCreate($request, $response);
-        }
     }
 
     /**
@@ -216,12 +193,23 @@ final class Installer extends InstallerAbstract
         /** @var \Modules\Workflow\Controller\ApiController $module */
         $module = $app->moduleManager->get('Workflow');
 
-        foreach ($data as $template) {
+        foreach ($data as $id => $template) {
             $response = new HttpResponse();
             $request  = new HttpRequest();
 
             $request->header->account = 1;
-            $request->setData('name', $template['name']);
+            if (($temlate['name'] ?? null) !== null) {
+                $request->setData('name', $template['name']);
+            } else {
+                $request->setData('name', $id);
+                $request->setData('schema', \json_encode($template));
+            }
+
+            if (($template['path'] ?? null) == null) {
+                $module->apiWorkflowTemplateCreate($request, $response);
+
+                continue;
+            }
 
             $tempPath = __DIR__ . '/../../../temp/';
 

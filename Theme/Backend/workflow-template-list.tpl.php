@@ -27,7 +27,7 @@ $accountDir = $account->id . ' ' . $account->login;
 
 /** @var \Modules\Media\Models\Collection[] */
 $collections = $this->data['collections'];
-$mediaPath   = \urldecode($this->getData('path') ?? '/');
+$mediaPath   = \urldecode($this->data['path'] ?? '/');
 
 $previous = empty($templates) ? 'workflow/template/list' : '{/base}/workflow/template/list?{?}&offset=' . \reset($templates)->id . '&ptype=p';
 $next     = empty($templates) ? 'workflow/template/list' : '{/base}/workflow/template/list?{?}&offset=' . \end($templates)->id . '&ptype=n';

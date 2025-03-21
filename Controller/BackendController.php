@@ -103,6 +103,7 @@ final class BackendController extends Controller
         $head  = $response->data['Content']->head;
         $nonce = $this->app->appSettings->getOption('script-nonce');
 
+        $head->addAsset(AssetType::JSLATE, 'Resources/d3/d3.min.js?v=' . $this->app->version, ['nonce' => $nonce]);
         $head->addAsset(AssetType::JSLATE, 'Resources/mermaid/mermaid.min.js?v=' . $this->app->version, ['nonce' => $nonce]);
         $head->addAsset(AssetType::JSLATE, 'Modules/Workflow/Controller.js?v=' . self::VERSION, ['nonce' => $nonce, 'type' => 'module']);
 
@@ -114,7 +115,7 @@ final class BackendController extends Controller
             ->with('source')
             ->with('source/sources')
             ->with('createdBy')
-            ->where('id', (int) $request->getData('id'))
+            ->where('id', $request->getDataInt('id') ?? 0)
             ->execute();
 
         $view->data['template'] = $template;
@@ -217,7 +218,7 @@ final class BackendController extends Controller
         $view = new View($this->app->l11nManager, $request, $response);
 
         $view->data['instance'] = WorkflowInstanceAbstractMapper::get()
-            ->where('id', (int) $request->getData('id'))
+            ->where('id', $request->getDataInt('id') ?? 0)
             ->execute();
 
         if ($view->data['instance']->id === 0) {

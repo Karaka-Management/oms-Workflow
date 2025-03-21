@@ -1,18 +1,18 @@
 {
     "triggers": [
-        "PRE:Module:Workflow:workflow_template-create",
-        "POST:Module:Workflow:workflow_template-create",
-        "PRE:Module:Workflow:workflow_template-update",
-        "POST:Module:Workflow:workflow_template-update",
-        "PRE:Module:Workflow:workflow_template-delete",
-        "POST:Module:Workflow:workflow_template-delete",
+        "PRE:Workflow:workflow_template-create",
+        "POST:Workflow:workflow_template-create",
+        "PRE:Workflow:workflow_template-update",
+        "POST:Workflow:workflow_template-update",
+        "PRE:Workflow:workflow_template-delete",
+        "POST:Workflow:workflow_template-delete",
 
-        "PRE:Module:Workflow:workflow_instance-create",
-        "POST:Module:Workflow:workflow_instance-create",
-        "PRE:Module:Workflow:workflow_instance-update",
-        "POST:Module:Workflow:workflow_instance-update",
-        "PRE:Module:Workflow:workflow_instance-delete",
-        "POST:Module:Workflow:workflow_instance-delete"
+        "PRE:Workflow:workflow_instance-create",
+        "POST:Workflow:workflow_instance-create",
+        "PRE:Workflow:workflow_instance-update",
+        "POST:Workflow:workflow_instance-update",
+        "PRE:Workflow:workflow_instance-delete",
+        "POST:Workflow:workflow_instance-delete"
     ],
     "actions": {
         "1005500001": {
@@ -270,9 +270,9 @@
                     "default": null,
                     "pattern": null,
                     "examples": [
-                        "PRE:Module:Billing:bill-create",
-                        "PRE:Module:Billing:bill-update.*",
-                        "PRE:Module:Billing:bill-update-{$id}"
+                        "PRE:Billing:bill-create",
+                        "PRE:Billing:bill-update.*",
+                        "PRE:Billing:bill-update-{$id}"
                     ],
                     "required": true,
                     "title": {

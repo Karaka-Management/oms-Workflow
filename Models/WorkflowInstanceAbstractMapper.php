@@ -41,6 +41,8 @@ final class WorkflowInstanceAbstractMapper extends DataMapperFactory
         'workflow_instance_title'      => ['name' => 'workflow_instance_title',       'type' => 'string',   'internal' => 'title'],
         'workflow_instance_status'     => ['name' => 'workflow_instance_status',      'type' => 'int',      'internal' => 'status'],
         'workflow_instance_data'       => ['name' => 'workflow_instance_data',      'type' => 'string',      'internal' => 'data'],
+        'workflow_instance_int'       => ['name' => 'workflow_instance_int',      'type' => 'int',      'internal' => 'data_int'],
+        'workflow_instance_ref'       => ['name' => 'workflow_instance_ref',      'type' => 'int',      'internal' => 'ref'],
         'workflow_instance_template'   => ['name' => 'workflow_instance_template',         'type' => 'int',               'internal' => 'template'],
         'workflow_instance_created_at' => ['name' => 'workflow_instance_created_at', 'type' => 'DateTimeImmutable', 'internal' => 'createdAt', 'readonly' => true],
         'workflow_instance_created_by' => ['name' => 'workflow_instance_created_by', 'type' => 'int', 'internal' => 'createdBy', 'readonly' => true],
@@ -60,6 +62,21 @@ final class WorkflowInstanceAbstractMapper extends DataMapperFactory
         'template' => [
             'mapper'   => WorkflowTemplateMapper::class,
             'external' => 'workflow_instance_template',
+        ],
+    ];
+
+    /**
+     * Has many relation.
+     *
+     * @var array<string, array{mapper:class-string, table:string, self?:?string, external?:?string, column?:string}>
+     * @since 1.0.0
+     */
+    public const HAS_MANY = [
+        'steps' => [
+            'mapper'   => WorkflowStepMapper::class,
+            'table'    => 'workflow_step',
+            'self'     => 'workflow_step_instance',
+            'external' => null,
         ],
     ];
 

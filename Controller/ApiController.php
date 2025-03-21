@@ -23,6 +23,7 @@ use Modules\Workflow\Models\WorkflowInstanceAbstract;
 use Modules\Workflow\Models\WorkflowInstanceAbstractMapper;
 use Modules\Workflow\Models\WorkflowTemplate;
 use Modules\Workflow\Models\WorkflowTemplateMapper;
+use Modules\Workflow\Models\WorkflowTemplateStatus;
 use phpOMS\Account\PermissionType;
 use phpOMS\Autoloader;
 use phpOMS\DataStorage\Database\Schema\Builder as SchemaBuilder;
@@ -98,7 +99,7 @@ final class ApiController extends Controller
             ->with('template/source')
             ->with('template/source/sources')
             ->with('createdBy')
-            ->where('id', (int) $request->getData('id'))
+            ->where('id', $request->getDataInt('id') ?? 0)
             ->execute();
 
         $accountId = $request->header->account;
@@ -165,7 +166,7 @@ final class ApiController extends Controller
     private function setWorkflowResponseHeader(View $view, string $name, RequestAbstract $request, ResponseAbstract $response) : void
     {
         /** @var array{lang?:\Modules\Media\Models\Media, cfg?:\Modules\Media\Models\Media, excel?:\Modules\Media\Models\Media, word?:\Modules\Media\Models\Media, powerpoint?:\Modules\Media\Models\Media, pdf?:\Modules\Media\Models\Media, csv?:\Modules\Media\Models\Media, json?:\Modules\Media\Models\Media, template?:\Modules\Media\Models\Media, css?:array<string, \Modules\Media\Models\Media>, js?:array<string, \Modules\Media\Models\Media>, db?:array<string, \Modules\Media\Models\Media>, other?:array<string, \Modules\Media\Models\Media>} $tcoll */
-        $tcoll = $view->getData('tcoll') ?? [];
+        $tcoll = $view->data['tcoll'] ?? [];
 
         switch ($request->getData('type')) {
             case 'pdf':
@@ -669,7 +670,7 @@ final class ApiController extends Controller
         $template = WorkflowTemplateMapper::get()
             ->with('source')
             ->with('source/sources')
-            ->where('id', (int) $request->getData('template'))
+            ->where('id', $request->getDataInt('template'))
             ->execute();
 
         $instance = $this->createInstanceFromRequest($request, $template);
@@ -738,5 +739,144 @@ final class ApiController extends Controller
      */
     public function apiWorkflowImport(HttpRequest $request, HttpResponse $response, mixed $data = null) : void
     {
+    }
+
+    /**
+     * Api method to handle the bill workflow
+     *
+     * @param int    $account Account who created the model
+     * @param mixed  $old     Old value
+     * @param mixed  $new     New value (unused, should be null)
+     * @param int    $type    Module model type
+     * @param string $trigger What triggered this log?
+     * @param string $module  Module name
+     * @param string $ref     Reference to other model
+     * @param string $content Message
+     * @param string $ip      Ip
+     *
+     * @return mixed
+     *
+     * @since 1.0.0
+     */
+    public function hookWorkflowChangeState(
+        int $account,
+        mixed $old,
+        mixed $new,
+        ?int $type = null,
+        string $trigger = '',
+        ?string $module = null,
+        ?string $ref = null,
+        ?string $content = null,
+        ?string $ip = null
+    ) : mixed
+    {
+        $template = WorkflowTemplateMapper::get()
+            ->with('source')
+            ->with('source/sources')
+            ->where('module', $module)
+            ->where('type', $type ?? 0)
+            ->executeGet();
+
+        if ($template->id === 0) {
+            $template = WorkflowTemplateMapper::get()
+                ->with('source')
+                ->with('source/sources')
+                ->where('module', $module)
+                ->executeGet();
+        }
+
+        if ($template->id === 0 || $template->status != WorkflowTemplateStatus::ACTIVE) {
+            return null;
+        }
+
+        require_once $template->source->findFile('WorkflowController.php')->getPath();
+
+        /** @var WorkflowControllerInterface $controller */
+        $controller = new \Modules\Workflow\Controller\WorkflowController($this->app, $template);
+        return $controller->hookChangeState(
+            $template,
+            $account,
+            $old,
+            $new,
+            $type,
+            $trigger,
+            $module,
+            $ref,
+            $content,
+            $ip
+        );
+    }
+
+    /**
+     * Api method to handle the bill workflow
+     *
+     * @param int    $account Account who created the model
+     * @param mixed  $old     Old value
+     * @param mixed  $new     New value (unused, should be null)
+     * @param int    $type    Module model type
+     * @param string $trigger What triggered this log?
+     * @param string $module  Module name
+     * @param string $ref     Reference to other model
+     * @param string $content Message
+     * @param string $ip      Ip
+     *
+     * @return mixed
+     *
+     * @since 1.0.0
+     */
+    public function apiWorkflowHandleState(
+        int $account,
+        mixed $old,
+        mixed $new,
+        ?int $type = null,
+        string $trigger = '',
+        ?string $module = null,
+        ?string $ref = null,
+        ?string $content = null,
+        ?string $ip = null
+    ) : mixed
+    {
+        $template = WorkflowTemplateMapper::get()
+            ->with('source')
+            ->with('source/sources')
+            ->where('module', $module)
+            ->where('type', $type ?? 0)
+            ->executeGet();
+
+        if ($template->id === 0) {
+            $template = WorkflowTemplateMapper::get()
+                ->with('source')
+                ->with('source/sources')
+                ->where('module', $module)
+                ->executeGet();
+        }
+
+        if ($template->id === 0 || $template->status != WorkflowTemplateStatus::ACTIVE) {
+            return null;
+        }
+
+        require_once $template->source->findFile('WorkflowController.php')->getPath();
+
+        $response = new HttpResponse();
+        $request  = new HttpRequest();
+        $request->header->account = $account;
+
+        /** @var WorkflowControllerInterface $controller */
+        $controller = new \Modules\Workflow\Controller\WorkflowController($this->app, $template);
+        return $controller->apiHandleState(
+            $request,
+            $response,
+            [
+                'template' => $template,
+                'old' => $old,
+                'new' => $new,
+                'type' => $type,
+                'trigger' => $trigger,
+                'module' => $module,
+                'ref' => $ref,
+                'content' => $content,
+                'ip' => $ip
+            ]
+        );
     }
 }

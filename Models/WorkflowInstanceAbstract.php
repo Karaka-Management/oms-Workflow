@@ -25,7 +25,7 @@ use Modules\Admin\Models\NullAccount;
  * @link    https://jingga.app
  * @since   1.0.0
  */
-class WorkflowInstanceAbstract
+class WorkflowInstanceAbstract implements \JsonSerializable
 {
     /**
      * ID.
@@ -52,6 +52,22 @@ class WorkflowInstanceAbstract
     public string $data = '';
 
     /**
+     * Instance data.
+     *
+     * @var int
+     * @since 1.0.0
+     */
+    public int $data_int = 0;
+
+    /**
+     * Reference.
+     *
+     * @var int
+     * @since 1.0.0
+     */
+    public int $ref = 0;
+
+    /**
      * Instance status.
      *
      * @var int
@@ -66,6 +82,14 @@ class WorkflowInstanceAbstract
      * @since 1.0.0
      */
     public WorkflowTemplate $template;
+
+    /**
+     * Workflow steps.
+     *
+     * @var WorkflowStep[]
+     * @since 1.0.0
+     */
+    public array $steps = [];
 
     /**
      * Creator.
@@ -101,5 +125,28 @@ class WorkflowInstanceAbstract
         $this->template  = new NullWorkflowTemplate();
         $this->createdBy = new NullAccount();
         $this->createdAt = new \DateTimeImmutable('now');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray() : array
+    {
+        return [
+            'id'        => $this->id,
+            'title'     => $this->title,
+            'createdAt' => $this->createdAt,
+            'data'      => $this->data,
+            'data_int'  => $this->data_int,
+            'ref'       => $this->ref,
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize() : mixed
+    {
+        return $this->toArray();
     }
 }

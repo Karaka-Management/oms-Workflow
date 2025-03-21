@@ -15,9 +15,7 @@ declare(strict_types=1);
 namespace Modules\Workflow\Models;
 
 use Modules\Admin\Models\Account;
-use Modules\Admin\Models\Module;
 use Modules\Admin\Models\NullAccount;
-use Modules\Admin\Models\NullModule;
 use Modules\Media\Models\Collection;
 use Modules\Media\Models\NullCollection;
 
@@ -29,7 +27,7 @@ use Modules\Media\Models\NullCollection;
  * @link    https://jingga.app
  * @since   1.0.0
  */
-class WorkflowTemplate
+class WorkflowStep
 {
     /**
      * ID.
@@ -40,39 +38,28 @@ class WorkflowTemplate
     public int $id = 0;
 
     /**
-     * Name.
-     *
-     * @var string
-     * @since 1.0.0
-     */
-    public string $name = '';
-
-    /**
-     * Type.
-     *
-     * This is only for internal usage per module.
-     * Modules may use this to internally handle workflows
+     * Order.
      *
      * @var int
      * @since 1.0.0
      */
-    public int $type = 0;
+    public int $order = 0;
 
     /**
-     * Description.
+     * Comment.
      *
      * @var string
      * @since 1.0.0
      */
-    public string $description = '';
+    public string $comment = '';
 
     /**
-     * Description.
+     * Data.
      *
      * @var string
      * @since 1.0.0
      */
-    public string $descriptionRaw = '';
+    public string $data = '';
 
     /**
      * Status.
@@ -80,7 +67,7 @@ class WorkflowTemplate
      * @var int
      * @since 1.0.0
      */
-    public int $status = WorkflowTemplateStatus::ACTIVE;
+    public int $status = 0;
 
     /**
      * Creator.
@@ -99,22 +86,20 @@ class WorkflowTemplate
     public \DateTimeImmutable $createdAt;
 
     /**
-     * Module.
+     * Instance.
      *
-     * @var null|Module
+     * @var WorkflowInstanceAbstract
      * @since 1.0.0
      */
-    public ?Module $module = null;
+    public WorkflowInstanceAbstract $instance;
 
     /**
-     * Template source.
+     * Media.
      *
-     * @var Collection
+     * @var null|Collection
      * @since 1.0.0
      */
-    public Collection $source;
-
-    public array $schema = [];
+    public ?Collection $media = null;
 
     /**
      * Constructor.
@@ -125,7 +110,7 @@ class WorkflowTemplate
     {
         $this->createdBy = new NullAccount();
         $this->createdAt = new \DateTimeImmutable('now');
-        $this->source    = new NullCollection();
+        $this->instance  = new NullWorkflowInstanceAbstract();
     }
 
     /**

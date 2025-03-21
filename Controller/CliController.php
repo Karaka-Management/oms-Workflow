@@ -49,9 +49,15 @@ final class CliController extends Controller
      */
     public function runWorkflowFromHook(mixed ...$data) : void
     {
+        // @performance This seems incredibly bad.
+        //      We are loading always ALL workflows to find the correct one
         /** @var \Modules\Workflow\Models\WorkflowTemplate[] $workflows */
-        $workflows = WorkflowTemplateMapper::getAll()->where('status', WorkflowStatus::ACTIVE)->executeGetArray();
+        $workflows = WorkflowTemplateMapper::getAll()
+            ->where('status', WorkflowStatus::ACTIVE)
+            ->executeGetArray();
+
         foreach ($workflows as $workflow) {
+            // @todo This isn't even implemented (see getHooks function, which is empty)
             $hooks = $workflow->getHooks();
 
             foreach ($hooks as $hook) {

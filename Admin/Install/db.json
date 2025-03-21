@@ -15,6 +15,11 @@
                 "default": null,
                 "null": true
             },
+            "workflow_template_type": {
+                "name": "workflow_template_type",
+                "type": "INT",
+                "null": false
+            },
             "workflow_template_status": {
                 "name": "workflow_template_status",
                 "type": "INT",
@@ -37,6 +42,14 @@
                 "type": "TEXT",
                 "default": null,
                 "null": true
+            },
+            "workflow_template_module": {
+                "name": "workflow_template_module",
+                "type": "VARCHAR(190)",
+                "null": true,
+                "default": null,
+                "foreignTable": "module",
+                "foreignKey": "module_id"
             },
             "workflow_template_media": {
                 "name": "workflow_template_media",
@@ -73,8 +86,7 @@
             "workflow_instance_title": {
                 "name": "workflow_instance_title",
                 "type": "VARCHAR(255)",
-                "default": null,
-                "null": true
+                "null": false
             },
             "workflow_instance_status": {
                 "name": "workflow_instance_status",
@@ -84,6 +96,16 @@
             "workflow_instance_data": {
                 "name": "workflow_instance_data",
                 "type": "TEXT",
+                "null": false
+            },
+            "workflow_instance_int": {
+                "name": "workflow_instance_int",
+                "type": "INT",
+                "null": false
+            },
+            "workflow_instance_ref": {
+                "name": "workflow_instance_ref",
+                "type": "INT",
                 "null": false
             },
             "workflow_instance_template": {
@@ -106,6 +128,65 @@
             },
             "workflow_instance_created_by": {
                 "name": "workflow_instance_created_by",
+                "type": "INT",
+                "null": false,
+                "foreignTable": "account",
+                "foreignKey": "account_id"
+            }
+        }
+    },
+    "workflow_step": {
+        "name": "workflow_step",
+        "fields": {
+            "workflow_step_id": {
+                "name": "workflow_step_id",
+                "type": "INT",
+                "null": false,
+                "primary": true,
+                "autoincrement": true
+            },
+            "workflow_step_order": {
+                "name": "workflow_step_order",
+                "type": "INT",
+                "null": false
+            },
+            "workflow_step_status": {
+                "name": "workflow_step_status",
+                "type": "INT",
+                "null": false
+            },
+            "workflow_step_comment": {
+                "name": "workflow_step_comment",
+                "type": "TEXT",
+                "null": false
+            },
+            "workflow_step_data": {
+                "name": "workflow_step_data",
+                "type": "TEXT",
+                "null": false
+            },
+            "workflow_step_instance": {
+                "name": "workflow_step_instance",
+                "type": "INT",
+                "null": false,
+                "foreignTable": "workflow_instance",
+                "foreignKey": "workflow_instance_id"
+            },
+            "workflow_step_media": {
+                "name": "workflow_step_media",
+                "type": "INT",
+                "null": true,
+                "default": null,
+                "foreignTable": "media",
+                "foreignKey": "media_id"
+            },
+            "workflow_step_created_at": {
+                "name": "workflow_step_created_at",
+                "type": "DATETIME",
+                "null": false
+            },
+            "workflow_step_created_by": {
+                "name": "workflow_step_created_by",
                 "type": "INT",
                 "null": false,
                 "foreignTable": "account",

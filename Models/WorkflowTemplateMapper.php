@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Modules\Workflow\Models;
 
 use Modules\Admin\Models\AccountMapper;
+use Modules\Admin\Models\ModuleMapper;
 use Modules\Media\Models\CollectionMapper;
 use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
 
@@ -40,10 +41,12 @@ final class WorkflowTemplateMapper extends DataMapperFactory
     public const COLUMNS = [
         'workflow_template_id'         => ['name' => 'workflow_template_id',         'type' => 'int',      'internal' => 'id'],
         'workflow_template_status'     => ['name' => 'workflow_template_status',     'type' => 'int',      'internal' => 'status'],
+        'workflow_template_type'     => ['name' => 'workflow_template_type',     'type' => 'int',      'internal' => 'type'],
         'workflow_template_name'       => ['name' => 'workflow_template_name',       'type' => 'string',   'internal' => 'name'],
         'workflow_template_desc'       => ['name' => 'workflow_template_desc',       'type' => 'string',   'internal' => 'description'],
         'workflow_template_descRaw'    => ['name' => 'workflow_template_descRaw',    'type' => 'string',   'internal' => 'descriptionRaw'],
         'workflow_template_schema'     => ['name' => 'workflow_template_schema',    'type' => 'Json',   'internal' => 'schema'],
+        'workflow_template_module'      => ['name' => 'workflow_template_module',      'type' => 'string',   'internal' => 'module'],
         'workflow_template_media'      => ['name' => 'workflow_template_media',      'type' => 'int',   'internal' => 'source'],
         'workflow_template_created_at' => ['name' => 'workflow_template_created_at', 'type' => 'DateTimeImmutable', 'internal' => 'createdAt', 'readonly' => true],
         'workflow_template_created_by' => ['name' => 'workflow_template_created_by', 'type' => 'int', 'internal' => 'createdBy', 'readonly' => true],
@@ -72,6 +75,10 @@ final class WorkflowTemplateMapper extends DataMapperFactory
         'createdBy' => [
             'mapper'   => AccountMapper::class,
             'external' => 'workflow_template_created_by',
+        ],
+        'module' => [
+            'mapper'   => ModuleMapper::class,
+            'external' => 'workflow_template_module',
         ],
     ];
 
